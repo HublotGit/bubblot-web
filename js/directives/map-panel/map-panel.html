@@ -1,0 +1,53 @@
+<!-- Map PANEL -->
+<div class="map-panel">
+        <form>
+            <fieldset>
+                <legend>Time slot</legend>
+                From: Day <input type="date" name="dataStartDay" class="start-day"> Time <input type="time" name="dataStartTime" class="start-time"><br>
+                <br>
+                To: Day <input type="date" name="dataStopDay" class="stop-day"> Time <input type="time" name="dataStopTime" class="stop-time"><br><br>
+                <input type="submit" value="Submit" class="submit-time" ng-click="extractData()">
+                <br>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>Data to display</legend>
+                General:<br>
+                <div class="btn-path" ng-click="displayPath=!displayPath" ng-class="{on:displayPath}">PATH</div>
+                <div class="btn-vi" ng-click="displayVa=!displayVa" ng-class="{on:displayVa}" style="left: 26%">V-A</div>
+                <div class="btn-rec" ng-click="displayMovie=!displayMovie" ng-class="{on:displayMovie}"style="left: 42%">MOVIE</div>
+                <br><br><br>
+                V-A data:<br>
+                <div class="btn-fe" ng-click="displayFe=!displayFe" ng-class="{on:displayFe}">Fe</div>
+                <div class="btn-pb" ng-click="displayPb=!displayPb" ng-class="{on:displayPb}" style="left: 17%">Pb</div>
+                <div class="btn-cu" ng-click="displayCu=!displayCu" ng-class="{on:displayCu}" style="left: 30%">Cu</div>
+                <div class="btn-sn" ng-click="displaySn=!displaySn" ng-class="{on:displaySn}" style="left: 44%">Sn</div>
+                <br><br><br>
+                Nose data:<br>
+                <div class="btn-magnetism" ng-click="displayMagn=!displayMagn" ng-class="{on:displayMagn}">Magnetism</div>
+                <div class="btn-turbidity" style="left: 50%" ng-click="displayTurbi=!displayTurbi" ng-class="{on:displayTurbi}">Turbidity</div>
+                <br><br><br>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>Informations</legend>
+                <fieldset style="position:absolute;top:65%;right:3%;height:29%;width:45%">
+                    <legend class="panel-graph-container"></legend>
+                    <div style="height: 80%; width: 93%;position:absolute;left:2%;top:15%;">
+                        <canvas style="height:100;width:110;"></canvas>
+                        <div class="metal-vi fe" ng-class="{on:vaCursor}">Fe</div>
+                        <div class="metal-vi pb" ng-class="{on:vaCursor}">Pb</div>
+                        <div class="metal-vi cu" ng-class="{on:vaCursor}">Cu</div>
+                        <div class="metal-vi sn" ng-class="{on:vaCursor}">Sn</div>
+                    </div>
+                </fieldset>
+                Bubblot: <span class="bubblot-info"></span><br><br>
+                Day: <span class="date-info"></span><br><br>
+                Time: <span class="time-info"></span><br><br>
+                Lat: <span class="lat-info"></span><br><br>
+                Long: <span class="long-info"></span><br><br>
+                Depth: <span class="depth-info"></span><br><br>
+                Temp: <span class="temp-info"></span><br>
+            </fieldset>
+        </form>
+</div>

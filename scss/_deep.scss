@@ -1,0 +1,180 @@
+@import "mixins";
+// Cadran Deep
+
+$colorProgressPie: $secondColor;
+$colorProgressOk: $mainColor;
+$bgcProgressBar: #a2bf6a;
+$colorLedSecuOk: #a2bf6a;
+$colorLedSecuError: red;
+$colorBtnBallast: #a2bf6a;
+
+$widthProgressBarMax: 40%;
+$heightProgressBar: 6%;
+$positionYProgressBar: 26.6%;
+$positionXSpotlightProgressBar: 37.3%;
+$positionXFoglightProgressBar: $positionXSpotlightProgressBar;
+$heightLedSecu:15px;
+$positionXLedSecu: 45px;
+$positionYLedSecu: 20px;
+
+
+$widthProgressBarMaxFocus: 120px;
+$heightProgressBarFocus: 15px;
+$positionYProgressBarFocus: 80px;
+$positionXSpotlightProgressBarFocus: 115px;
+$heightLedSecuFocus:25px;
+$positionXLedSecuFocus:85px;
+$positionYLedSecuFocus:40px;
+$positionXFoglightProgressBarFocus: $positionXSpotlightProgressBarFocus;
+
+$progressBarDefault: 75%;
+$progressBarColor: $secondColor;
+
+.deep {
+
+   .cadran {
+      background: url('../img/deep/cadran-small.svg') no-repeat center;
+      background-size: 229% 230%;
+   }
+
+   .progress-pie {
+      width: 100%;
+      height: 100%;
+      background-color: $colorProgressPie;
+      @include centerItem($centerValue);
+      z-index: 2;
+   }
+
+   .circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      transform: translateX(-50%) translateY(-50%) rotate(-45deg);
+   }
+
+   .security-progressbar, .ballast-progressbar {
+      position: absolute;
+      height: $widthProgressBarMax;
+      width: $heightProgressBar;
+      top: $positionYProgressBar;
+      background-color: $bgcProgressBar;
+      z-index: 10;
+      .progress-bar {
+         position: absolute;
+         top: 0;
+         left: 0;
+         bottom: 0;
+         width: 0;
+         background-color: $progressBarColor;
+         transition: width 0.4s;
+      }
+      .indicateur {
+         left: 0;
+         width: 100%;
+         height: 9.3%;
+         opacity: 1;
+         //transition: top 0.4s, background 0.4s;
+         @include centerItemY($centerValue);
+      }
+   }
+
+   .security-progressbar {
+      left: $positionXSpotlightProgressBar;
+   }
+
+   .ballast-progressbar {
+      right: $positionXFoglightProgressBar;
+   }
+   .btn-ballast {
+      position: absolute;
+      width: $heightLedSecu;
+      height: $heightLedSecu;
+      bottom: $positionYLedSecu;
+      right: $positionXLedSecu;
+      text-align: center;
+      line-height: 10%;
+      background-color: $colorBtnBallast;
+      color:black;
+      z-index: 10;
+      cursor: pointer;
+      @include fontUse($fontFamilly, 10px, $fontWeight);
+      @include border(50%);
+    }
+
+      .led-security {
+        position: absolute;
+        width: 12%;
+        height: 12%;
+        bottom: 11%;
+        left: 27%;
+        text-align: center;
+        line-height: 18px;
+        background: url('../img/deep/led-circle-green.svg') no-repeat center;
+        background-size: 105% 105%;
+        color:black;
+        z-index: 10;
+        cursor: auto;
+        @include fontUse($fontFamilly, 12px, $fontWeight);
+        @include border(50%);
+      &.error {
+          background: url('../img/deep/led-circle-red.svg') no-repeat center;
+      }
+    }
+
+   &.focus-right {
+
+      .cadran {
+         background: url('../img/deep/cadran.svg') no-repeat center;
+         background-size: 229% 230%;
+      }
+
+      .security-progressbar, .ballast-progressbar {
+         height: $widthProgressBarMaxFocus;
+         width: $heightProgressBarFocus;
+         top: $positionYProgressBarFocus;
+         .indicateur {
+            width: $heightProgressBarFocus;
+         }
+      }
+
+      .security-progressbar {
+         left: $positionXSpotlightProgressBarFocus;
+      }
+
+      .ballast-progressbar {
+         right: $positionXFoglightProgressBarFocus;
+      }
+
+      .btn-ballast {
+      position: absolute;
+      width: $heightLedSecuFocus;
+      height: $heightLedSecuFocus;
+      bottom: $positionYLedSecuFocus;
+      right: $positionXLedSecuFocus;
+      text-align: center;
+      line-height: 16%;
+      background-color: $colorBtnBallast;
+      color:black;
+      z-index: 10;
+      cursor: pointer;
+      @include fontUse($fontFamilly, 15px, $fontWeight);
+      @include border(50%);
+      &.fill {
+         background-color: $colorBtnBallast ;
+      }
+      }
+
+      .ballast-progressbar{
+        .indicateur{
+          transition: top 1.5s;
+        }
+      }
+
+      .led-security {
+        line-height: 35px;
+        @include fontUse($fontFamilly, 22px, $fontWeight);
+      }
+   }
+
+}

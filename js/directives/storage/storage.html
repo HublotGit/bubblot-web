@@ -1,0 +1,27 @@
+<div id="storage" class="cadrans-container storage ">
+    <div class="cadran"></div>
+    <div class="cleaner-container">
+        <div class="btn-cleaner injection"  ng-class="{on:pumpOn}" ng-click="initTimer()">PUMP</div>
+        <div class="btn-cleaner clogging">AIR</div>
+    </div>
+    <div class="storage-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar" ng-class="{inject:(pumpOn && !filledOk)}"></div>
+        </div>
+        <div class="storage" ng-class="{filled:filledOk}">
+            <div class="storage-evolution" ng-class="{un:(pumpOn && !filledOk)}"></div>
+        </div>
+        <div class="storage" ng-class="{filled:filledOk}">
+            <div class="storage-evolution" ng-class="{deux:(pumpOn && !filledOk)}"></div>
+        </div>
+        <div class="storage" ng-class="{filled:filledOk}">
+            <div class="storage-evolution" ng-class="{trois:(pumpOn && !filledOk)}"></div>
+        </div>
+        <div class="storage" ng-class="{filled:filledOk}"> 
+            <div class="storage-evolution"  ng-class="{quatre:(pumpOn && !filledOk)}"></div>
+        </div>
+        <div class="storage" ng-class="{filled:filledOk}">
+            <div class="storage-evolution"  ng-class="{cinq:(pumpOn && !filledOk)}"></div>
+        </div>
+    </div>
+</div>

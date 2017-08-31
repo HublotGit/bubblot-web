@@ -1,0 +1,96 @@
+@import "mixins";
+// Cadran Nose
+
+$widthDotWaring: 13.3%;
+$positionXDotWarning: 43.3%;
+
+.nose {
+
+   .cadran {
+      background: url('../img/nose/cadran-small.svg') no-repeat center;
+      background-size: 229% 230%;
+   }
+
+   .progress-pie {
+      width: 100%;
+      height: 100%;
+      background-color: $colorProgressPie;
+      @include centerItem($centerValue);
+      z-index: 2;
+   }
+
+   .circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      transform: translateX(-50%) translateY(-50%) rotate(-45deg);
+      &.reverse {
+         transform: translateX(-50%) translateY(-50%) rotate(223deg);
+      }
+   }
+
+   .warning {
+      position: absolute;
+      top: $positionXDotWarning;
+      width: $widthDotWaring;
+      height: $widthDotWaring;
+      background-color: $secondColor;
+      z-index: 20;
+      @include border(50%);
+      @include centerItemX($centerValue);
+      .dot {
+         width: $widthDotWaring - 1.3%;
+         height: $widthDotWaring - 1.3%;
+         z-index: 21;
+         @include border(50%);
+         animation: recordOn 0.5s infinite;
+         @include centerItem($centerValue);
+      }
+   }
+
+   .btn-draw {
+      bottom: 9.3%;
+      padding: 3px 6px;
+      color: $mainColor;
+      text-transform: uppercase;
+      border: 1px solid $mainColor;
+      z-index: 10;
+      pointer-events: none;
+      @include border(3px);
+      @include fontUse($fontFamilly, 9px, $fontWeight);
+      @include centerItemX($centerValue);
+      animation: recordOn 2s infinite;
+   }
+
+   &.focus-left {
+
+      .cadran {
+         background: url('../img/nose/cadran.svg') no-repeat center;
+         background-size: 229% 230%;
+      }
+
+      .btn-draw {
+          pointer-events: auto;
+          cursor: pointer;
+         @include fontUse($fontFamilly, 25px, $fontWeight);
+      }
+   }
+}
+
+
+// ANIMATION
+@keyframes recordOn {
+   0% {
+      opacity: 0;
+   }
+   10% {
+      opacity: 1;
+   }
+   90% {
+      opacity: 1;
+   }
+   100% {
+      opacity: 0;
+   }
+}

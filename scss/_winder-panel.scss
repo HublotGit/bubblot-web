@@ -1,0 +1,117 @@
+@import "mixins";
+// Cadran winder panel 
+.winder-panel {
+    opacity: 1;
+    &.off{
+        opacity: 0.5;
+    }
+   .cadran {
+      &.one{
+          background: url('../img/winderPanel/cadran1.svg') no-repeat center;
+          background-size: 229% 230%;
+      }
+      &.two{
+          background: url('../img/winderPanel/cadran2.svg') no-repeat center;
+          background-size: 229% 230%;
+      }
+      &.three{
+          background: url('../img/winderPanel/cadran3.svg') no-repeat center;
+          background-size: 229% 230%;
+      }
+      &.four{
+          background: url('../img/winderPanel/cadran4.svg') no-repeat center;
+          background-size: 229% 230%;
+      }
+   }
+   .progress-pie {
+      width: 100%;
+      height: 100%;
+      background-color: $colorProgressPie;
+      @include centerItem($centerValue);
+      z-index: 2;
+   }
+   .circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      transform: translateX(-50%) translateY(-50%) rotate(-45deg);
+   }
+   .min-pressure1, .min-pressure2, .min-pressure3, .min-pressure4,{
+        position: absolute;
+        left: 21%;
+        top: 30%;
+        height: 10%;
+        width: 17%;
+        z-index: 13;
+        font-size: 150%; 
+        text-align: right; 
+    }
+    .text-length, .text-m, .text-pressure, .text-bar{
+        position: absolute;
+        font-family: arial;
+        font-size: 20px;
+        z-index: 13;
+    }
+    .text-length{
+        @include centerItemX(50%);
+        top: 45%;
+        @include fontUse($fontFamilly, 20px, $fontWeight);
+        text-transform: uppercase;
+    }
+    .text-m{
+        right: 19%;
+        top: 58%;
+        @include fontUse($fontFamilly, 26px, $fontWeight);
+    }
+    .text-pressure{
+        @include centerItemX(50%);
+        top: 22%;
+        @include fontUse($fontFamilly, 17px, $fontWeight);
+        text-transform: uppercase;
+    }
+    .text-bar{
+        right: 47%;
+        top: 31%;
+        @include fontUse($fontFamilly, 22px, $fontWeight);
+    }
+   .panel-container{
+       position: absolute;
+       left:22%;
+       top: 54%;
+       width: 46%;
+       height: 18%;
+       background-color: black;
+       z-index: 11;
+       @include border(10px);
+       
+       .winder1, .winder2, .winder3, .winder4{
+            @include centerItem(50%);
+            width: 100%;
+            height: 100%; 
+            color: red;
+            letter-spacing:2px;
+            text-align: right;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 40px;
+            line-height: 60px;
+            z-index: 13;
+        }
+   }
+   .btn-quittance-pressure{
+        position: absolute;
+        left: 55%;
+        top: 31%;
+        padding: 3px 6px;
+        color: orange;
+        text-transform: uppercase;
+        border: 2px solid black;
+        z-index: 12;
+        cursor: pointer;
+        @include border(3px);
+        @include fontUse($fontFamilly, 14px, bolder);
+        background-color: black
+   }
+
+}

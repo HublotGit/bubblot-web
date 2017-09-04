@@ -621,8 +621,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
 
     var couch, couchExternal, couchAuth;
     function init() {
-        //Connect to Yocto modules
-       // connectYoctoBubblot("169.254.93.133", serialBubblot1, bubblot1YoctoModules);
+        //Connect to Yocto module
         connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
         // connectYoctoWinder("192.168.137.18", serialWinder, winderYoctoModules);
         // connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
@@ -1160,10 +1159,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         VSP3Radius = $scope.rightData.engine3Radius;
         VSP4Radius = $scope.rightData.engine4Radius;
 
-        VSP1AngleServo1 = -VSP1Radius / 100 / 45 * 1000 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
+        VSP1AngleServo1 = -VSP1Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
             - 1.915 * Math.pow(10, -4) * Math.pow(VSP1Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP1Angle, 2) - 1.610 * Math.pow(10, -1) * VSP1Angle
             - 22.44);
-        VSP1AngleServo2 = -VSP1Radius / 100 / 45 * 1000 * (-5.415 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 4.225 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
+        VSP1AngleServo2 = -VSP1Radius / 45 * 10 * (-5.415 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 4.225 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
             - 9.197 * Math.pow(10, -5) * Math.pow(VSP1Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP1Angle, 2) + 2.585 * Math.pow(10, -1) * VSP1Angle
             + 31.42);
         if (bubblot1YoctoModules.yServo1_VSPTopLeft_X) {

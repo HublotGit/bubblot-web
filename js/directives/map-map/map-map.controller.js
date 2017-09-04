@@ -139,195 +139,198 @@
                 }
             }
             //Loop for running through each bubblot data
-            for (var j = 0; j < $scope.datax.length; j++) {
-                //Loop for running through each measurement point of bubblot j
-                for (var i = 0; i < $scope.datax[j].length; i++) {
-                    //Corrdinates x y of the bubblot j
-                    var x = $scope.datax[j][i];
-                    var y = $scope.datay[j][i];
-                    //Draw path of the bubblot j
-                    context.lineWidth = 3 / $scope.zoom;
-                    if (j == 0) context.strokeStyle = 'red';
-                    else if (j == 1) context.strokeStyle = 'green';
-                    else if (j == 2) context.strokeStyle = 'blue';
-                    if ($scope.displayPath && i < $scope.datax[j].length - 1) {
-                        var newDate = new Date($scope.dates[j][i][0], $scope.dates[j][i][1] - 1, $scope.dates[j][i][2], $scope.dates[j][i][3], $scope.dates[j][i][4], $scope.dates[j][i][5], 0);
-                        var oldDate = new Date($scope.dates[j][i+1][0], $scope.dates[j][i+1][1] - 1, $scope.dates[j][i+1][2], $scope.dates[j][i+1][3], $scope.dates[j][i+1][4], $scope.dates[j][i+1][5], 0);
-                        if(oldDate-newDate < 60000){
-                            context.beginPath();
-                            context.moveTo(x, y);
-                            context.lineTo($scope.datax[j][i + 1], $scope.datay[j][i + 1]);
-                            context.closePath();
-                            context.stroke();
-                        }
-                    }
-                    //Draw magnetism of the bubblot j
-                    if ($scope.displayMagn) {
-                        context.strokeStyle = 'white';
-                        context.lineWidth = 2 / $scope.zoom;
-                        if ($scope.avgMagnetism[j][i] > 0.8) {
-                            context.beginPath();
-                            context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                            context.beginPath();
-                            context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                            context.beginPath();
-                            context.arc(x, y, 12 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                            context.beginPath();
-                            context.arc(x, y, 16 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                        }
-                        else if ($scope.avgMagnetism[j][i] > 0.6) {
-                            context.beginPath();
-                            context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                            context.beginPath();
-                            context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                            context.beginPath();
-                            context.arc(x, y, 12 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                        }
-                        else if ($scope.avgMagnetism[j][i] > 0.4) {
-                            context.beginPath();
-                            context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                            context.beginPath();
-                            context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                        }
-                        else {
-                            context.beginPath();
-                            context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
-                            context.closePath();
-                            context.stroke();
-                        }
-                    }
-                    //Draw VA for bubblot j
-                    if ($scope.displayVa && $scope.isVa[j][i]) {
-                        context.fillStyle = 'black';
-                        context.beginPath();
-                        context.arc(x, y, 7 / $scope.zoom, 0, 2 * Math.PI, false);
-                        context.closePath();
-                        context.fill();
-                        context.strokeStyle = 'white';
-                        context.lineWidth = 2 / $scope.zoom;
-                        context.beginPath();
-                        context.arc(x, y, 7 / $scope.zoom, 0, 2 * Math.PI, false);
-                        context.closePath();
-                        context.stroke();
-                    }
-                    //Draw Fe for bubblot j
-                    if ($scope.displayFe && $scope.isFe[j][i]) {
-                        context.fillStyle = 'red';
-                        context.beginPath();
-                        context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
-                        context.closePath();
-                        context.fill();
-                    }
-                    //Draw Pb for bubblot j
-                    else if ($scope.displayPb && $scope.isPb[j][i]) {
-                        context.fillStyle = '#798081';
-                        context.beginPath();
-                        context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
-                        context.closePath();
-                        context.fill();
-                    }
-                    //Draw Cu for bubblot j
-                    else if ($scope.displayCu && $scope.isCu[j][i]) {
-                        context.fillStyle = '#B36700';
-                        context.beginPath();
-                        context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
-                        context.closePath();
-                        context.fill();
-                    }
-                    //Draw Sn for bubblot j
-                    else if ($scope.displaySn && $scope.isSn[j][i]) {
-                        context.fillStyle = '#CECECE';
-                        context.beginPath();
-                        context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
-                        context.closePath();
-                        context.fill();
-                    }
-                    //Draw turbibity for bubblot j
-                    if ($scope.displayTurbi && $scope.isTurbi[j][i]) {
-                        var spiraleX = x, spiraleY = y;
-                        var spiraleAngle = 0;
-                        context.lineWidth = 1 / $scope.zoom;
-                        //If no turbidity
-                        if ($scope.avgTurbi[j][i][0] < 0.3 && $scope.avgTurbi[j][i][1] < 0.3 && $scope.avgTurbi[j][i][2] < 0.3) {
-                            context.strokeStyle = 'aqua';
-                            while (spiraleAngle < 6 * Math.PI) {
+                for (var j = 0; j < $scope.datax.length; j++) {
+                    //Loop for running through each measurement point of bubblot j
+                    if($scope.datax[j]){
+                        for (var i = 0; i < $scope.datax[j].length; i++) {
+                            //Corrdinates x y of the bubblot j
+                            var x = $scope.datax[j][i];
+                            var y = $scope.datay[j][i];
+                            //Draw path of the bubblot j
+                            context.lineWidth = 3 / $scope.zoom;
+                            if (j == 0) context.strokeStyle = 'red';
+                            else if (j == 1) context.strokeStyle = 'green';
+                            else if (j == 2) context.strokeStyle = 'blue';
+                            if ($scope.displayPath && i < $scope.datax[j].length - 1) {
+                                var newDate = new Date($scope.dates[j][i][0], $scope.dates[j][i][1] - 1, $scope.dates[j][i][2], $scope.dates[j][i][3], $scope.dates[j][i][4], $scope.dates[j][i][5], 0);
+                                var oldDate = new Date($scope.dates[j][i+1][0], $scope.dates[j][i+1][1] - 1, $scope.dates[j][i+1][2], $scope.dates[j][i+1][3], $scope.dates[j][i+1][4], $scope.dates[j][i+1][5], 0);
+                                if(oldDate-newDate < 60000){
+                                    context.beginPath();
+                                    context.moveTo(x, y);
+                                    context.lineTo($scope.datax[j][i + 1], $scope.datay[j][i + 1]);
+                                    context.closePath();
+                                    context.stroke();
+                                }
+                            }
+                            //Draw magnetism of the bubblot j
+                            if ($scope.displayMagn) {
+                                context.strokeStyle = 'white';
+                                context.lineWidth = 2 / $scope.zoom;
+                                if ($scope.avgMagnetism[j][i] > 0.8) {
+                                    context.beginPath();
+                                    context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                    context.beginPath();
+                                    context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                    context.beginPath();
+                                    context.arc(x, y, 12 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                    context.beginPath();
+                                    context.arc(x, y, 16 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                }
+                                else if ($scope.avgMagnetism[j][i] > 0.6) {
+                                    context.beginPath();
+                                    context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                    context.beginPath();
+                                    context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                    context.beginPath();
+                                    context.arc(x, y, 12 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                }
+                                else if ($scope.avgMagnetism[j][i] > 0.4) {
+                                    context.beginPath();
+                                    context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                    context.beginPath();
+                                    context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                }
+                                else {
+                                    context.beginPath();
+                                    context.arc(x, y, 4 / $scope.zoom, 0, 2 * Math.PI, false);
+                                    context.closePath();
+                                    context.stroke();
+                                }
+                            }
+                            //Draw VA for bubblot j
+                            if ($scope.displayVa && $scope.isVa[j][i]) {
+                                context.fillStyle = 'black';
                                 context.beginPath();
-                                context.moveTo(spiraleX, spiraleY);
-                                spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
-                                spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
-                                context.lineTo(spiraleX, spiraleY);
+                                context.arc(x, y, 7 / $scope.zoom, 0, 2 * Math.PI, false);
+                                context.closePath();
+                                context.fill();
+                                context.strokeStyle = 'white';
+                                context.lineWidth = 2 / $scope.zoom;
+                                context.beginPath();
+                                context.arc(x, y, 7 / $scope.zoom, 0, 2 * Math.PI, false);
                                 context.closePath();
                                 context.stroke();
-                                spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
                             }
-                        }
-                        //If red turbidity
-                        else if ($scope.avgTurbi[j][i][0] > $scope.avgTurbi[j][i][1] && $scope.avgTurbi[j][i][0] > $scope.avgTurbi[j][i][2]) {
-                            context.strokeStyle = 'red';
-                            while (spiraleAngle < $scope.avgTurbi[j][i][0] * 6 * Math.PI) {
+                            //Draw Fe for bubblot j
+                            if ($scope.displayFe && $scope.isFe[j][i]) {
+                                context.fillStyle = 'red';
                                 context.beginPath();
-                                context.moveTo(spiraleX, spiraleY);
-                                spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
-                                spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
-                                context.lineTo(spiraleX, spiraleY);
+                                context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
                                 context.closePath();
-                                context.stroke();
-                                spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+                                context.fill();
                             }
-                        }
-                        //If green turbidity
-                        else if ($scope.avgTurbi[j][i][1] > $scope.avgTurbi[j][i][2]) {
-                            context.strokeStyle = 'green';
-                            while (spiraleAngle < $scope.avgTurbi[j][i][1] * 6 * Math.PI) {
+                            //Draw Pb for bubblot j
+                            else if ($scope.displayPb && $scope.isPb[j][i]) {
+                                context.fillStyle = '#798081';
                                 context.beginPath();
-                                context.moveTo(spiraleX, spiraleY);
-                                spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
-                                spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
-                                context.lineTo(spiraleX, spiraleY);
+                                context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
                                 context.closePath();
-                                context.stroke();
-                                spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+                                context.fill();
                             }
-                        }
-                        //If blue turbidity
-                        else {
-                            context.strokeStyle = 'blue';
-                            while (spiraleAngle < $scope.avgTurbi[j][i][2] * 6 * Math.PI) {
+                            //Draw Cu for bubblot j
+                            else if ($scope.displayCu && $scope.isCu[j][i]) {
+                                context.fillStyle = '#B36700';
                                 context.beginPath();
-                                context.moveTo(spiraleX, spiraleY);
-                                spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
-                                spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
-                                context.lineTo(spiraleX, spiraleY);
+                                context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
                                 context.closePath();
-                                context.stroke();
-                                spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+                                context.fill();
+                            }
+                            //Draw Sn for bubblot j
+                            else if ($scope.displaySn && $scope.isSn[j][i]) {
+                                context.fillStyle = '#CECECE';
+                                context.beginPath();
+                                context.arc(x, y, 8 / $scope.zoom, 0, 2 * Math.PI, false);
+                                context.closePath();
+                                context.fill();
+                            }
+                            //Draw turbibity for bubblot j
+                            if ($scope.displayTurbi && $scope.isTurbi[j][i]) {
+                                var spiraleX = x, spiraleY = y;
+                                var spiraleAngle = 0;
+                                context.lineWidth = 1 / $scope.zoom;
+                                //If no turbidity
+                                if ($scope.avgTurbi[j][i][0] < 0.3 && $scope.avgTurbi[j][i][1] < 0.3 && $scope.avgTurbi[j][i][2] < 0.3) {
+                                    context.strokeStyle = 'aqua';
+                                    while (spiraleAngle < 6 * Math.PI) {
+                                        context.beginPath();
+                                        context.moveTo(spiraleX, spiraleY);
+                                        spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
+                                        spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
+                                        context.lineTo(spiraleX, spiraleY);
+                                        context.closePath();
+                                        context.stroke();
+                                        spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+                                    }
+                                }
+                                //If red turbidity
+                                else if ($scope.avgTurbi[j][i][0] > $scope.avgTurbi[j][i][1] && $scope.avgTurbi[j][i][0] > $scope.avgTurbi[j][i][2]) {
+                                    context.strokeStyle = 'red';
+                                    while (spiraleAngle < $scope.avgTurbi[j][i][0] * 6 * Math.PI) {
+                                        context.beginPath();
+                                        context.moveTo(spiraleX, spiraleY);
+                                        spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
+                                        spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
+                                        context.lineTo(spiraleX, spiraleY);
+                                        context.closePath();
+                                        context.stroke();
+                                        spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+                                    }
+                                }
+                                //If green turbidity
+                                else if ($scope.avgTurbi[j][i][1] > $scope.avgTurbi[j][i][2]) {
+                                    context.strokeStyle = 'green';
+                                    while (spiraleAngle < $scope.avgTurbi[j][i][1] * 6 * Math.PI) {
+                                        context.beginPath();
+                                        context.moveTo(spiraleX, spiraleY);
+                                        spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
+                                        spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
+                                        context.lineTo(spiraleX, spiraleY);
+                                        context.closePath();
+                                        context.stroke();
+                                        spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+                                    }
+                                }
+                                //If blue turbidity
+                                else {
+                                    context.strokeStyle = 'blue';
+                                    while (spiraleAngle < $scope.avgTurbi[j][i][2] * 6 * Math.PI) {
+                                        context.beginPath();
+                                        context.moveTo(spiraleX, spiraleY);
+                                        spiraleX = x + 0.8 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
+                                        spiraleY = y + 0.8 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
+                                        context.lineTo(spiraleX, spiraleY);
+                                        context.closePath();
+                                        context.stroke();
+                                        spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+                                    }
+                                }
+                            }
+                            //Draw movie for bubblot j
+                            if ($scope.displayMovie && $scope.isMovie[j][i]) {
+                                context.drawImage(imgMovie, x, y, 20 / $scope.zoom, 30 / $scope.zoom);
                             }
                         }
-                    }
-                    //Draw movie for bubblot j
-                    if ($scope.displayMovie && $scope.isMovie[j][i]) {
-                        context.drawImage(imgMovie, x, y, 20 / $scope.zoom, 30 / $scope.zoom);
                     }
                 }
-            }
+
         }
     }
 

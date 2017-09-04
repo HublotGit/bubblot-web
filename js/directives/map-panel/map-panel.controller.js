@@ -55,7 +55,6 @@
         //Extract data from the database into the program memory
         $scope.extractData = function (element) {
             //Get time slot 
-            console.log("hello");
             var dataStartYear = parseInt(startDay[0].value[0] + startDay[0].value[1] + startDay[0].value[2] + startDay[0].value[3]);
             var dataStartMonth = parseInt(startDay[0].value[5] + startDay[0].value[6]);
             var dataStartDay = parseInt(startDay[0].value[8] + startDay[0].value[9]);
@@ -87,7 +86,6 @@
             };
             //Searching in the database
             couch.get("bubblot", viewUrl, queryOptions).then(({data, headers, status}) => {
-                console.log(data);
                 //Loop for running through each data received
                 for (var i = 0; i < data.rows.length; i++) {
                     //Get from which bubblot comes the data

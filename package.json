@@ -9,7 +9,7 @@
     "min_height": 1080
   },
   "dependencies": {
-    "angular": "^1.5.5",
+    "angular": "^1.6.6",
     "browser-sync": "^2.12.10",
     "gulp": "^3.9.1",
     "gulp-sass": "^2.3.1",

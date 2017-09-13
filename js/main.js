@@ -248,7 +248,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         yTilt_Roll: null,
         yTilt_Pitch: null,
         yCompass: null,
-        yAccelerometer: null,
         yServo1_Camera: null,
         yServo1_VSPTopLeft_X: null,
         yServo1_VSPTopLeft_Y: null,
@@ -272,11 +271,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         yGenericSensor: 'RX010V_12345',
         yDigitalIO: 'MAXIO_12345',
         yTilt: 'Y3DMK001-68844',
-        yCompass: 'Y3DMK001-69321',
-        yAccelerometer: 'Y3DMK001-69321',
+        yCompass: 'Y3DMK001-68844',
         yGps: 'GPS_12345',
-        //yServo1: 'SERVORC1-510C2',
-        yServo2: 'SERVORC1-510C2',
+        yServo1: 'SERVORC1-510C2',
+        //yServo2: 'SERVORC1-510C2',
         yColorLedCluster: 'YRGBLED2-7F244',
         yTemperature: 'TMPSENS1-68156',
         yAnButton: 'YBUTTON1-80841',
@@ -341,7 +339,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yTilt_Roll = YTilt.FindTilt(serials.yTilt + ".tilt1");
                 modules.yTilt_Roll.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device 3D Tilt ' + serials.yTilt);
+                        console.log('Using module ' + serials.yTilt + ".tilt1");
                         modules.yTilt_Roll.registerValueCallback(computeRoll);
                     }
                     else {
@@ -351,7 +349,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yTilt_Pitch = YTilt.FindTilt(serials.yTilt + ".tilt2");
                 modules.yTilt_Pitch.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device 3D Tilt ' + serials.yTilt);
+                        console.log('Using module ' + serials.yTilt + ".tilt2");
                         modules.yTilt_Pitch.registerValueCallback(computePitch);
                     }
                     else {
@@ -362,23 +360,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yCompass = YCompass.FindCompass(serials.yCompass + ".compass");
                 modules.yCompass.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device 3D Compass ' + serials.yCompass);
+                        console.log('Using module ' + serials.yCompass + ".compass");
                         modules.yCompass.registerValueCallback(computeCompass);
                     }
                     else {
                         console.log("Can't find module " + serials.yCompass + ".compass");
-                    }
-                })
-                //Connexion to accelerometer module
-                modules.yAccelerometer = YAccelerometer.FindAccelerometer(serials.yAccelerometer + ".accelerometer");
-                modules.yAccelerometer.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using device 3D Accelerometer ' + serials.yAccelerometer);
-                        modules.yAccelerometer.set_gravityCancellation(Y_ENABLED_TRUE);
-                        modules.yAccelerometer.registerValueCallback(computeAcc);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yAccelerometer + ".accelerometer");
                     }
                 })
             }
@@ -388,7 +374,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yGps_Latitude = YGps.FindGps(serials.yGps + ".latitude");
                 modules.yGps_Latitude.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device GPS ' + serials.yGps);
+                        console.log('Using module ' + serials.yGps + ".latitude");
                         modules.yGps_Latitude.registerValueCallback(computeLatitude);
                     }
                     else {
@@ -402,7 +388,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yDigitalIO = YDigitalIO.FindDigitalIO(serials.yDigitalIO + ".digitalIO");
                 modules.yDigitalIO.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device Digital-IO ' + serials.yDigitalIO);
+                        console.log('Using module ' + serials.yDigitalIO + ".digitalIO");
                         modules.yDigitalIO.set_portDirection(252);
                         modules.yDigitalIO.set_portPolarity(0); // polarity set to regular
                         modules.yDigitalIO.set_portOpenDrain(3);
@@ -416,43 +402,43 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             }
             ).then(() => {
                 // by default use any connected module suitable for the demo
-                //Connexion to servo module
-                modules.yServo1_Camera = YServo.FindServo(serials.yServo2 + ".servo1");
+                //Connexion to servo 1 module 
+                modules.yServo1_Camera = YServo.FindServo(serials.yServo1 + ".servo1");
                 modules.yServo1_Camera.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device Servo 1' + serials.yServo2);
+                        console.log('Using module ' + serials.yServo1 + ".servo1");
                     }
                     else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo1");
+                        console.log("Can't find module " + serials.yServo1 + ".servo1");
                     }
                 })
-                modules.yServo1_VSPTopLeft_X = YServo.FindServo(serials.yServo2 + ".servo3");
+                modules.yServo1_VSPTopLeft_X = YServo.FindServo(serials.yServo1 + ".servo3");
                 modules.yServo1_VSPTopLeft_X.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device Servo 3' + serials.yServo2);
+                        console.log("Using module " + serials.yServo1 + ".servo3");
                         modules.yServo1_VSPTopLeft_X.set_position(0);
                     }
                     else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo3");
+                        console.log("Can't find module " + serials.yServo1 + ".servo3");
                     }
                 })
-                modules.yServo1_VSPTopLeft_Y = YServo.FindServo(serials.yServo2 + ".servo2");
+                modules.yServo1_VSPTopLeft_Y = YServo.FindServo(serials.yServo1 + ".servo2");
                 modules.yServo1_VSPTopLeft_Y.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device Servo 2' + serials.yServo2);
+                        console.log('Using module ' + serials.yServo1 + ".servo2");
                         modules.yServo1_VSPTopLeft_Y.set_position(0);
                     }
                     else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo2");
+                        console.log("Can't find module " + serials.yServo1 + ".servo2");
                     }
                 })
-                modules.yServo2_Thrust = YServo.FindServo(serials.yServo2 + ".servo4");
+                modules.yServo2_Thrust = YServo.FindServo(serials.yServo1 + ".servo4");
                 modules.yServo2_Thrust.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device Servo 3' + serials.yServo2);
+                        console.log('Using module ' + serials.yServo1 + ".servo4");
                     }
                     else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo4");
+                        console.log("Can't find module " + serials.yServo1 + ".servo4");
                     }
                 })
             }
@@ -462,7 +448,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yTemperature = YTemperature.FindTemperature(serials.yTemperature + ".temperature");
                 modules.yTemperature.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device temperature ' + serials.yTemperature);
+                        console.log('Using device ' + serials.yTemperature + ".temperature");
                         modules.yTemperature.registerValueCallback(computeTemp);
                     }
                     else {
@@ -488,10 +474,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             ).then(() => {
                 // by default use any connected module suitable for the demo
                 //Connexion to anbutton module
-                console.log('Using device anbutton ' + serials.yAnButton);
                 modules.yAnButton_Turbidity = YAnButton.FindAnButton(serials.yAnButton + ".anButton2");
                 modules.yAnButton_Turbidity.isOnline().then((onLine) => {
                     if (onLine) {
+                        console.log('Using device ' + serials.yAnButton + ".anButton1");
                         modules.yAnButton_Turbidity.registerValueCallback(computeTurbidity);
                     }
                     else {
@@ -502,10 +488,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             ).then(() => {
                 // by default use any connected module suitable for the demo
                 //Connexion to led module
-                console.log('Using device Color Led ' + serials.yColorLedCluster);
                 modules.yColorLedCluster_Turbidity = YColorLedCluster.FindColorLedCluster(serials.yColorLedCluster);
                 modules.yColorLedCluster_Turbidity.isOnline().then((onLine) => {
                     if (onLine) {
+                        console.log('Using module ' + serials.yColorLedCluster);
                     }
                     else {
                         console.log("Can't find module " + serials.yColorLedCluster);
@@ -531,7 +517,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yPwmOutput_pump = YPwmOutput.FindPwmOutput(serials.yPwmOutput + ".pwmOutput1");
                 modules.yPwmOutput_pump.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using Pump PWM Tx' + serials.yPwmOutput);
+                        console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
                         modules.yPwmOutput_pump.set_frequency(20000);
                         modules.yPwmOutput_pump.set_enabled(Y_ENABLED_TRUE);
                         modules.yPwmOutput_pump.set_dutyCycle(0);
@@ -551,7 +537,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         }
         ).then(() => {
             // Setup the API to use the VirtualHub on local machine
-            return YAPI.RegisterHub('http://' + 'localhost' + ':4444', errmsg);
+            return YAPI.RegisterHub('http://' + ipaddress + ':4444', errmsg);
         }
             ).then(() => {
                 // by default use any connected module suitable for the demo
@@ -559,7 +545,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yRelay1_Winder1Forward = YRelay.FindRelay(serials.yRelay1 + ".relay1");
                 modules.yRelay1_Winder1Forward.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device Relay ' + serials.yRelay1 + ".relay1");
+                        console.log('Using module ' + serials.yRelay1 + ".relay1");
                     }
                     else {
                         console.log("Can't find module " + serials.yRelay1 + ".relay1");
@@ -568,7 +554,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yRelay1_Winder1Backward = YRelay.FindRelay(serials.yRelay1 + ".relay2");
                 modules.yRelay1_Winder1Backward.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device Relay ' + serials.yRelay1);
+                        console.log('Using module ' + serials.yRelay1 + ".relay2");
                     }
                     else {
                         console.log("Can't find module " + serials.yRelay1 + ".relay2");
@@ -581,7 +567,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yPwmOutput1_Winder1Speed = YPwmOutput.FindPwmOutput(serials.yPwmOutput1 + ".pwmOutput1");
                 modules.yPwmOutput1_Winder1Speed.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device PWM Tx ' + serials.yPwmOutput1);
+                        console.log('Using module ' + serials.yPwmOutput1 + ".pwmOutput1");
                         modules.yPwmOutput1_Winder1Speed.set_frequency(5000);
                         modules.yPwmOutput1_Winder1Speed.set_enabled(Y_ENABLED_TRUE);
                         modules.yPwmOutput1_Winder1Speed.set_dutyCycle(0);
@@ -597,7 +583,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 modules.yPwmInput1_Winder1Length = YPwmInput.FindPwmInput(serials.yPwmInput1 + ".pwmInput1");
                 modules.yPwmInput1_Winder1Length.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device PWM Rx ' + serials.yPwmInput1);
+                        console.log('Using module ' + serials.yPwmInput1 + ".pwmInput1");
                         modules.yPwmInput1_Winder1Length.resetCounter();
                         modules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
 
@@ -623,7 +609,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     function init() {
         //Connect to Yocto module
         connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
-        // connectYoctoWinder("192.168.137.18", serialWinder, winderYoctoModules);
+        connectYoctoWinder("192.168.137.137", serialWinder, winderYoctoModules);
         // connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
 
@@ -1063,12 +1049,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             else clearInterval(intervalDataSave);
         });
     }
-    var bubblotDeltaRoll = 0, bubblotPreviousDeltaRoll = 0, bubblotRoll = 0;
-    var bubblotDeltaPitch = 0, bubblotPreviousDeltaPitch = 0, bubblotPitch = 0;
-    var bubblotDeltaYaw = 0, bubblotPreviousDeltaYaw = 0, bubblotYaw = 0;
-    var bubblotDeltaX = 0, bubblotRelatX = 0, bubblotRelatVX = 0, accX;
-    var bubblotDeltaY = 0, bubblotRelatY = 0, bubblotRelatVY = 0, accY;
-    var bubblotDeltaZ = 0, bubblotRelatZ = 0, bubblotRelatVZ = 0, accZ;
     function getEvent() {
         if (module3dconnexion) {
             var result = module3dconnexion.get3dEvent();
@@ -1100,52 +1080,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                     else if (-spwData.rx < 0) $scope.rightData.engine1Angle = 180 / Math.PI * Math.atan(-spwData.rx / spwData.rz) + 360;
                     else $scope.rightData.engine1Angle = 180 / Math.PI * Math.atan(-spwData.rx / spwData.rz);
                     $scope.rightData.engine1Radius = (spwData.rz * spwData.rz + spwData.rx * spwData.rx) / (VSPRadiusMax * VSPRadiusMax) * 80;
-                    /*
-                    bubblotDeltaRoll = -spwData.rz / VSPRadiusMax * 45;
-                    bubblotDeltaPitch = -spwData.rx / VSPRadiusMax * 45;
-                    bubblotDeltaYaw = -spwData.ry / VSPRadiusMax * 45;
-                    if (Math.abs(spwData.rz) > Math.abs(spwData.rx) && Math.abs(spwData.rz) > Math.abs(spwData.ry) &&
-                        ((bubblotDeltaRoll > 5 && bubblotDeltaRoll > bubblotPreviousDeltaRoll) ||
-                            (bubblotDeltaRoll < -5 && bubblotDeltaRoll < bubblotPreviousDeltaRoll))) {
-                        bubblotRoll = mainVm.roll + parseInt(bubblotDeltaRoll);
-                        bubblotPitch = mainVm.pitch;
-                        bubblotYaw = mainVm.yaw;
-                        regulPosition();
-                    }
-                    else if (Math.abs(spwData.rx) > Math.abs(spwData.ry) &&
-                        (bubblotDeltaPitch > 5 && bubblotDeltaPitch > bubblotPreviousDeltaPitch) ||
-                        (bubblotDeltaPitch < -5 && bubblotDeltaPitch < bubblotPreviousDeltaPitch)) {
-                        bubblotPitch = mainVm.pitch + parseInt(bubblotDeltaPitch);
-                        bubblotRoll = mainVm.roll;
-                        bubblotYaw = mainVm.yaw;
-                        regulPosition();
-                    }
-                    else if ((bubblotDeltaYaw > 5 && bubblotDeltaYaw > bubblotPreviousDeltaYaw) ||
-                        (bubblotDeltaYaw < -5 && bubblotDeltaYaw < bubblotPreviousDeltaYaw)) {
-                        bubblotYaw = mainVm.yaw + parseInt(bubblotDeltaYaw);
-                        bubblotPitch = mainVm.pitch;
-                        bubblotRoll = mainVm.roll;
-                        regulPosition();
-                    }
-                    bubblotPreviousDeltaRoll = bubblotDeltaRoll;
-                    bubblotPreviousDeltaPitch = bubblotDeltaPitch;
-                    bubblotPreviousDeltaYaw = bubblotDeltaYaw;
-                    */
 
                 }
-                /*else {
-                    spacerx = 50 + parseFloat(spwData.rx) / 10;
-                    spacery = 50 + parseFloat(spwData.rz) / 10;
-                    if (!div3DConnexion) {
-                        div3DConnexion = $("#fond-marin #indicator3dconnexion")[0];
-                        div3DConnexion2 = $("#fond-marin2 #indicator3dconnexion")[0];
-                    }
-                    div3DConnexion.style.top = spacerx + '%';
-                    div3DConnexion.style.left = spacery + '%';
-                    div3DConnexion2.style.top = spacerx + '%';
-                    div3DConnexion2.style.left = spacery + '%';
-                    $scope.$apply();
-                }*/
             }
         }
 
@@ -1224,16 +1160,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         }
     }
     function computePitch(object, value) {
-        if (mainVm.previousPitch > 90 && value < -90) {
-            mainVm.pitch = mainVm.pitch + (value - mainVm.previousPitch + 360);
-        }
-        else if (mainVm.previousPitch < -90 && value > 90) {
-            mainVm.pitch = mainVm.pitch + (value - mainVm.previousPitch - 360);
-        }
-        else {
-            mainVm.pitch = mainVm.pitch + (value - mainVm.previousPitch);
-        }
-        mainVm.previousPitch = value;
         $scope.leftDataPump.horizonPitch = value;
         $scope.leftData.horizonPitch = value;
         if (!receivedPitch) {
@@ -1242,19 +1168,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 getValues();
             }
         }
-        //regulPosition();
     }
     function computeRoll(object, value) {
-        if (mainVm.previousRoll > 90 && value < -90) {
-            mainVm.roll = mainVm.roll + (value - mainVm.previousRoll + 360);
-        }
-        else if (mainVm.previousRoll < -90 && value > 90) {
-            mainVm.roll = mainVm.roll + (value - mainVm.previousRoll - 360);
-        }
-        else {
-            mainVm.roll = mainVm.roll + (value - mainVm.previousRoll);
-        }
-        mainVm.previousRoll = value;
         $scope.leftDataPump.horizonRoll = value;
         $scope.leftData.horizonRoll = value;
         if (!receivedRoll) {
@@ -1263,33 +1178,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 getValues();
             }
         }
-        //regulPosition();
     }
     function computeCompass(object, value) {
-        if (mainVm.previousYaw > 270 && value < 90) {
-            mainVm.yaw = mainVm.yaw + (value - mainVm.previousYaw + 360);
-        }
-        else if (mainVm.previousYaw < 90 && value > 270) {
-            mainVm.yaw = mainVm.yaw + (value - mainVm.previousYaw - 360);
-        }
-        else {
-            mainVm.yaw = mainVm.yaw + (value - mainVm.previousYaw);
-        }
-        mainVm.previousYaw = value;
-        /*
-        if (mainVm.yaw > 360) {
-            $scope.leftData.twistLeft = true;
-        }
-        else if (mainVm.yaw < -360) {
-            $scope.leftData.twistRight = true;
-        }
-        else {
-            $scope.leftData.twistLeft = false;
-            $scope.leftData.twistRight = false;
-        }
-        */
         $scope.leftDataPump.gpsCompass = value;
-        //regulPosition();
         $scope.$apply();
     }
     function computeLatitude(object, value) {
@@ -1308,10 +1199,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         console.log($scope.leftData.turbidityRed);
         totalTurbi = 0;
         amountTurbi = 0;
-    }
-    function computeAcc(object, value) {
-        accY = -value * Math.sin($scope.leftData.horizonRoll * Math.PI / 180);
-        accX = -value * Math.sin($scope.leftData.horizonPitch * Math.PI / 180);
     }
     function switchDirection1Ok(object, value) {
         switchDirection1 = false;
@@ -1363,70 +1250,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         allScreen.removeEventListener('mousemove', mousemove);
         allScreen.removeEventListener('mouseup', mouseup);
     }
-    var deltaRoll, deltaPitch, deltaYaw, prevDeltaRoll = 0, prevDeltaPitch = 0, prevDeltaYaw = 0, consigne = 0;
-    function regulPosition() {
-        deltaRoll = bubblotRoll - parseInt($scope.leftData.horizonRoll);
-        if (deltaRoll > 45) deltaRoll = 45;
-        else if (deltaRoll < -45) deltaRoll = -45;
-        deltaPitch = bubblotPitch - parseInt($scope.leftData.horizonPitch);
-        if (deltaPitch > 45) deltaPitch = 45;
-        else if (deltaPitch < -45) deltaPitch = -45;
-        deltaYaw = bubblotYaw - mainVm.yaw;
-        if (deltaYaw > 45) deltaYaw = 45;
-        else if (deltaYaw < -45) deltaYaw = -45;
-
-        if (Math.abs(deltaRoll) / 45 > Math.abs(deltaPitch) / 45 && Math.abs(deltaRoll) / 45 > Math.abs(deltaYaw) / 45) {
-            if (deltaRoll > 0) {
-                $scope.rightData.engine1Angle = 180;
-                $scope.rightData.engine2Angle = 180;
-                $scope.rightData.engine3Angle = 0;
-                $scope.rightData.engine4Angle = 0;
-            }
-            else {
-                $scope.rightData.engine1Angle = 0;
-                $scope.rightData.engine2Angle = 0;
-                $scope.rightData.engine3Angle = 180;
-                $scope.rightData.engine4Angle = 180;
-            }
-            consigne = Math.abs(deltaRoll) / 45 * 100;
-        }
-        else if (Math.abs(deltaPitch) / 45 > Math.abs(deltaYaw) / 45) {
-            if (deltaPitch > 0) {
-                $scope.rightData.engine1Angle = 90;
-                $scope.rightData.engine2Angle = 90;
-                $scope.rightData.engine3Angle = 270;
-                $scope.rightData.engine4Angle = 270;
-            }
-            else {
-                $scope.rightData.engine1Angle = 270;
-                $scope.rightData.engine2Angle = 270;
-                $scope.rightData.engine3Angle = 90;
-                $scope.rightData.engine4Angle = 90;
-            }
-            consigne = Math.abs(deltaPitch) / 45 * 100;
-        }
-        else {
-            if (deltaYaw > 0) {
-                $scope.rightData.engine1Angle = 90;
-                $scope.rightData.engine2Angle = 270;
-                $scope.rightData.engine3Angle = 90;
-                $scope.rightData.engine4Angle = 270;
-            }
-            else {
-                $scope.rightData.engine1Angle = 270;
-                $scope.rightData.engine2Angle = 90;
-                $scope.rightData.engine3Angle = 270;
-                $scope.rightData.engine4Angle = 90;
-            }
-            consigne = Math.abs(deltaYaw) / 45 * 100;
-        }
-        if (consigne > 100) consigne = 100;
-        $scope.rightData.engine1Radius = consigne;
-        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
-        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
-        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
-        $scope.$apply();
-    }
+    
     var counter1 = 0, counter2 = 0, counter3 = 0;
 
     //Save the data in the database

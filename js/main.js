@@ -953,11 +953,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 //Stop de motor and wait 5s before switching direction
                 if (winderYoctoModules.yPwmOutput1_Winder1Speed) {
                     winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(0);
-                    setTimeout(switchDirection1Ok, 4000);
+                    setTimeout(railDirectionTimeout, 4000);
                 }
             }
-            else if (winderYoctoModules.yPwmOutput1_Winder1Speed && !switchDirection1) {
-                winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(Math.abs(value) / 5.5 * 100);
+            else if (!switchDirection1) {
+                if (winderYoctoModules.yRelay1_Winder1Direction) {
+                    if(value > 0) winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
+                    else if(value < 0) winderYoctoModules.yRelay1_Winder1Direction.set_state(false);
+                }
+                if(winderYoctoModules.yPwmOutput1_Winder1Speed) winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(Math.abs(value) / 5.5 * 100);
             }
             previousSpeed2 = previousSpeed1;
             previousSpeed1 = value;
@@ -1185,7 +1189,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         totalTurbi = 0;
         amountTurbi = 0;
     }
-    function switchDirection1Ok(object, value) {
+    function railDirectionTimeout(object, value) {
         if (winderYoctoModules.yRelay1_Winder1Direction && $scope.winderData.winderSpeed1 > 0) {
             winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
         }

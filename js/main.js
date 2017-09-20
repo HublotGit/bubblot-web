@@ -264,7 +264,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         yTemperature: null,
         yAnButton_turbidity: null
     }
-
+ 
     var serialBubblot1 = {
         yPwmOutput1: 'PWM1_12345',
         yPwmOutput2: 'PWM2_12345',
@@ -306,8 +306,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     }
 
     var winderYoctoModules = {
-        yRelay1_Winder1Forward: null,
-        yRelay1_Winder1Backward: null,
+        yRelay1_Winder1Direction: null,
         yPwmOutput1_Winder1Speed: null,
         yPwmInput1_Winder1Length: null
     }
@@ -542,22 +541,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             ).then(() => {
                 // by default use any connected module suitable for the demo
                 //Connexion to relay module
-                modules.yRelay1_Winder1Forward = YRelay.FindRelay(serials.yRelay1 + ".relay1");
-                modules.yRelay1_Winder1Forward.isOnline().then((onLine) => {
+                modules.yRelay1_Winder1Direction = YRelay.FindRelay(serials.yRelay1 + ".relay1");
+                modules.yRelay1_Winder1Direction.isOnline().then((onLine) => {
                     if (onLine) {
                         console.log('Using module ' + serials.yRelay1 + ".relay1");
                     }
                     else {
                         console.log("Can't find module " + serials.yRelay1 + ".relay1");
-                    }
-                })
-                modules.yRelay1_Winder1Backward = YRelay.FindRelay(serials.yRelay1 + ".relay2");
-                modules.yRelay1_Winder1Backward.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yRelay1 + ".relay2");
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yRelay1 + ".relay2");
                     }
                 })
             }
@@ -609,7 +599,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     function init() {
         //Connect to Yocto module
         connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
-        connectYoctoWinder("192.168.137.137", serialWinder, winderYoctoModules);
+        connectYoctoWinder("192.168.137.110", serialWinder, winderYoctoModules);
         // connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
 
@@ -964,12 +954,12 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             $scope.winderData.winderSpeed4 = $scope.winderData.mainControl * 10 + value;
         });
         $scope.$watch('winderData.winderSpeed1', function (value) {
-            if (previousSpeed1 * value < 0) {
+            if (previousSpeed1 * value <= 0) {
                 switchDirection1 = true;
                 //Stop de motor and wait 5s before switching direction
                 if (winderYoctoModules.yPwmOutput1_Winder1Speed) {
                     winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(0);
-                    setTimeout(switchDirection1Ok, 5000);
+                    setTimeout(switchDirection1Ok, 4000);
                 }
             }
             previousSpeed1 = value;
@@ -1202,13 +1192,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     }
     function switchDirection1Ok(object, value) {
         switchDirection1 = false;
-        if (winderYoctoModules.yRelay1_Winder1Forward && $scope.winderData.winderSpeed1 > 0) {
-            winderYoctoModules.yRelay1_Winder1Forward.set_state(true);
-            winderYoctoModules.yRelay1_Winder1Backward.set_state(true);
+        if (winderYoctoModules.yRelay1_Winder1Direction && $scope.winderData.winderSpeed1 > 0) {
+            winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
         }
-        else if (winderYoctoModules.yRelay1_Winder1Forward) {
-            winderYoctoModules.yRelay1_Winder1Forward.set_state(false);
-            winderYoctoModules.yRelay1_Winder1Backward.set_state(false);
+        else if (winderYoctoModules.yRelay1_Winder1Direction) {
+            winderYoctoModules.yRelay1_Winder1Direction.set_state(false);
         }
         winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100);
     }

@@ -919,7 +919,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             }
         });
         $scope.$watch('winderData.railMode', function (value) {
-            if(value) winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+            if(value) {
+                winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+            }
         });
         $scope.$watch('winderData.mainControl', function (value) {
             if ($scope.winderData.railMode) {
@@ -1116,7 +1118,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         if ($scope.winderData.railMode && winderYoctoModules.yPwmInput1_Winder1Length) {
             winderYoctoModules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
                 if ($scope.winderData.railLength1 <= 100 && $scope.winderData.railLength1 >= 0) {
-                    if($scope.winderData.winderDirection1) $scope.winderData.railLength1 = $scope.winderData.railLength1 + (value - previousRailLength)/100;
+                    if(winderDirection1) $scope.winderData.railLength1 = $scope.winderData.railLength1 + (value - previousRailLength)/100;
                     else $scope.winderData.railLength1 = $scope.winderData.railLength1 - (value - previousRailLength)/100;
                     previousRailLength = value;
                     if ($scope.winderData.railLength1 > 100){

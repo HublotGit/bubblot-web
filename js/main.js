@@ -43,7 +43,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         VSP4AngleServo1,
         VSP4AngleServo2;
 
-    var previousSpeed1 = 0, previousSpeed2=0;
+    var previousSpeed1 = 0, previousSpeed2 = 0;
     var switchDirection1 = false;
     $scope.leftData = {
         focusLeftIndex: 0,
@@ -258,7 +258,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         yTemperature: null,
         yAnButton_turbidity: null
     }
- 
+
     var serialBubblot1 = {
         yPwmOutput1: 'PWM1_12345',
         yPwmOutput2: 'PWM2_12345',
@@ -296,7 +296,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     }
 
     var serialPump = {
-        yPwmOutput:'YPWMTX01-4FFB9',
+        yPwmOutput: 'YPWMTX01-4FFB9',
     }
 
     var winderYoctoModules = {
@@ -569,9 +569,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                     if (onLine) {
                         console.log('Using module ' + serials.yPwmInput1 + ".pwmInput1");
                         modules.yPwmInput1_Winder1Length.resetCounter();
-                        modules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
-
-                        });
+                        modules.yPwmInput1_Winder1Length.registerValueCallback(computeWinderLength);
                     }
                     else {
                         console.log("Can't find module " + serials.yPwmInput1 + ".pwmInput1");
@@ -595,7 +593,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
         connectYoctoWinder("192.168.137.110", serialWinder, winderYoctoModules);
         // connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
-        setInterval(computeWinderLength, 1000);
 
         var writeToSerial = ['$V;', '$Ltech=01;'];
         var indexSerial = 0;
@@ -958,10 +955,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
             }
             else if (!switchDirection1) {
                 if (winderYoctoModules.yRelay1_Winder1Direction) {
-                    if(value > 0) winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
-                    else if(value < 0) winderYoctoModules.yRelay1_Winder1Direction.set_state(false);
+                    if (value > 0) winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
+                    else if (value < 0) winderYoctoModules.yRelay1_Winder1Direction.set_state(false);
                 }
-                if(winderYoctoModules.yPwmOutput1_Winder1Speed) winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(Math.abs(value) / 5.5 * 100);
+                if (winderYoctoModules.yPwmOutput1_Winder1Speed) winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(Math.abs(value) / 5.5 * 100);
             }
             previousSpeed2 = previousSpeed1;
             previousSpeed1 = value;
@@ -1099,16 +1096,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     }
 
     //Computer the length of the winder
-    function computeWinderLength() {
+    function computeWinderLength(object, value) {
         if ($scope.winderData.railMode) {
             if ($scope.winderData.railLength1 <= 100 && $scope.winderData.railLength1 >= 0) {
-                $scope.winderData.railLength1 = $scope.winderData.railLength1 + $scope.winderData.winderSpeed1;
+                $scope.winderData.railLength1 = value/10;
                 if ($scope.winderData.railLength1 > 100) $scope.winderData.railLength1 = 100;
                 else if ($scope.winderData.railLength1 < 0) $scope.winderData.railLength1 = 0;
                 $scope.$apply();
             }
             if ($scope.winderData.railLength2 <= 100 && $scope.winderData.railLength2 >= 0) {
-                $scope.winderData.railLength2 = $scope.winderData.railLength2 + $scope.winderData.winderSpeed2;
+                $scope.winderData.railLength2 = value/10;
                 if ($scope.winderData.railLength2 > 100) $scope.winderData.railLength2 = 100;
                 else if ($scope.winderData.railLength2 < 0) $scope.winderData.railLength2 = 0;
                 $scope.$apply();
@@ -1237,7 +1234,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         allScreen.removeEventListener('mousemove', mousemove);
         allScreen.removeEventListener('mouseup', mouseup);
     }
-    
+
     var counter1 = 0, counter2 = 0, counter3 = 0;
 
     //Save the data in the database
@@ -1346,7 +1343,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                     data: [],
                 }
             }
-        }).then(({data, headers, status}) => {
+        }).then(({ data, headers, status }) => {
             // data is json response 
             // headers is an object with all response headers 
             // status is statusCode number 

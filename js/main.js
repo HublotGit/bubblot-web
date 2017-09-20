@@ -1115,30 +1115,19 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 if ($scope.winderData.railLength1 <= 100 && $scope.winderData.railLength1 >= 0) {
                     if($scope.winderData.winderDirection1) $scope.winderData.railLength1 = $scope.winderData.railLength1 + (value - previousRailLength)/100;
                     else $scope.winderData.railLength1 = $scope.winderData.railLength1 - (value - previousRailLength)/100;
+                    previousRailLength = value;
                     if ($scope.winderData.railLength1 > 100){
                         $scope.winderData.railLength1 = 100;
                         winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+                        previousRailLength=0;
                     }
                     else if ($scope.winderData.railLength1 < 0){
                         $scope.winderData.railLength1 = 0;
                         winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+                        previousRailLength=0;
                     }
                     $scope.$apply();
                 }
-                if ($scope.winderData.railLength2 <= 100 && $scope.winderData.railLength2 >= 0) {
-                    if($scope.winderData.winderDirection1) $scope.winderData.railLength2 = $scope.winderData.railLength2 + (value - previousRailLength)/100;
-                    else $scope.winderData.railLength2 = $scope.winderData.railLength2 - (value - previousRailLength)/100;
-                    if ($scope.winderData.railLength2 > 100){
-                        $scope.winderData.railLength2 = 100;
-                        //winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
-                    }
-                    else if ($scope.winderData.railLength2 < 0){
-                        $scope.winderData.railLength2 = 0;
-                        //winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
-                    }
-                    $scope.$apply();
-                }
-                previousRailLength = value;
             });
         }
         else {

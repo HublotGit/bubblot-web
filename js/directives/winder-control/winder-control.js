@@ -11,7 +11,12 @@
             replace: true,
             controller: 'winderControlCtrl',
             controllerAs: 'vm',
-            scope: { mainControl: '=',  winderControl1: '=', winderControl2: '=', winderControl3: '=', winderControl4: '=', railMode: '=', help: '='}
+            scope: { mainControl: '=', winderControl1: '=', winderControl2: '=', winderControl3: '=', winderControl4: '=', railMode: '=', help: '=', railLength: '=' },
+            link: function (scope, element, attr) {
+                scope.$watch('railLength', function (value) {
+                    scope.updateLength(value);
+                });
+            }
         }
     }
 

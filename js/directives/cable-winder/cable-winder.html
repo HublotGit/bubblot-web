@@ -1,7 +1,8 @@
 
 <!-- winder CONTROL -->
 <winder-control main-control="winderData.mainControl" winder-control1="winderData.winderControl1" winder-control2="winderData.winderControl2"
-                winder-control3="winderData.winderControl3" winder-control4="winderData.winderControl4" rail-mode="winderData.railMode" help="winderData.help"></winder-control>
+                winder-control3="winderData.winderControl3" winder-control4="winderData.winderControl4" rail-mode="winderData.railMode" help="winderData.help"
+                rail-length="winderData.railLength"></winder-control>
 
 <!-- winder PANEL 1 -->
 <winder-panel1 winder-length="winderData.winderLength1" winder-speed="winderData.winderSpeed1" circle-size="panelSize" circle-thickness="panelThickness" 
@@ -19,9 +20,7 @@
 <winder-panel4 winder-length="winderData.winderLength4" winder-speed="winderData.winderSpeed4" circle-size="panelSize" circle-thickness="panelThickness" 
                 pressure="winderData.pressure4" min-pressure="winderData.minPressure4" pressure-alert="winderData.pressureAlert4" reset="winderData.reset4" rail-mode="winderData.railMode"></winder-panel4>
 
-<!-- rail PANEL -->
-<div class="cadran-rail" ng-class="{on:winderData.railMode}">
-    <div class="rail"></div>
-    <div class="motor1" style="bottom:{{winderData.railLength1}}%"></div>
-    <div class="motor2" style="bottom:{{winderData.railLength2}}%"></div>
+<!-- rail Counter -->
+<div class="rail-counter-container" ng-class="{on:winderData.railMode}">
+    <div class="rail-counter">0.0</div>
 </div>

@@ -12,6 +12,7 @@
             var winder2=document.getElementsByClassName("alert-winder2"); 
             var winder3=document.getElementsByClassName("alert-winder3"); 
             var winder4=document.getElementsByClassName("alert-winder4"); 
+            var rail=document.getElementsByClassName("alert-rail"); 
             if(($scope.pressure1 && !$scope.reset1) || ($scope.pressure2 && !$scope.reset2) || 
                 ($scope.pressure3 && !$scope.reset3) || ($scope.pressure4 && !$scope.reset4)){
                 $scope.audio=true;
@@ -66,6 +67,11 @@
                     winder4[i].style.display='block';
                 }
                 is4=true;
+            }
+            if($scope.rail){
+                for (var i = 0; i < rail.length; i++) {
+                    rail[i].style.display='block';
+                }
             }
         }
 

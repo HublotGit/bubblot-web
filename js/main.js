@@ -158,7 +158,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         pressureAlert4: false,
         reset4: false,
         railMode: false,
-        railLength: 40,
+        railLength: 0,
         help: false
     };
     $scope.mapData = {
@@ -1117,11 +1117,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     function computeWinderLength() {
         if ($scope.winderData.railMode && winderYoctoModules.yPwmInput1_Winder1Length) {
             winderYoctoModules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
-                if (value - previousRailLength < 3.9 * ($scope.winderData.winderSpeed1 / 5.5 * 100) - 30 ||
-                    value - previousRailLength > 3.9 * ($scope.winderData.winderSpeed1 / 5.5 * 100) + 30){
-                        $scope.notifData.rail = true;
+                if (value - previousRailLength < 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) - 30 ||
+                    value - previousRailLength > 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) + 30) {
+                    $scope.notifData.rail = true;
                 }
-                else $scope.notifData.rail = false;
+                else {
+                    $scope.notifData.rail = false;
+                }
                 if (winderDirection1) $scope.winderData.railLength = $scope.winderData.railLength + (value - previousRailLength) / 100;
                 else $scope.winderData.railLength = $scope.winderData.railLength - (value - previousRailLength) / 100;
                 previousRailLength = value;

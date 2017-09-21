@@ -9,7 +9,7 @@
             restrict: 'E',
             templateUrl: 'js/directives/winder-alert/winder-alert.html',
             controller: 'winderAlertCtrl',
-            scope: {pressure1: '=', reset1: '=', pressure2: '=', reset2: '=', pressure3: '=', reset3: '=', pressure4: '=', reset4: '=', audio: '=', rail:'='},
+            scope: {pressure1: '=', reset1: '=', pressure2: '=', reset2: '=', pressure3: '=', reset3: '=', pressure4: '=', reset4: '=', audio: '='},
             link: function(scope, element, attr) {
                 scope.$watch('pressure1', function (value) {
                     scope.alert();

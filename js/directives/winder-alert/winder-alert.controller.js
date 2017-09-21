@@ -68,16 +68,6 @@
                 }
                 is4=true;
             }
-            if($scope.rail){
-                for (var i = 0; i < rail.length; i++) {
-                    rail[i].style.display='block';
-                }
-            }
-            else{
-                for (var i = 0; i < rail.length; i++) {
-                    rail[i].style.display='none';
-                }
-            }
         }
 
     }

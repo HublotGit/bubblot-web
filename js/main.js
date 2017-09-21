@@ -158,6 +158,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         reset4: false,
         railMode: false,
         railLength: 0,
+        railAlert:false,
         help: false
     };
     $scope.mapData = {
@@ -225,7 +226,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         winderReset3: false,
         winderPressure4: false,
         winderReset4: false,
-        rail: false,
         audioWinder: false,
         recData: false,
         help: false
@@ -585,6 +585,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
     var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
 
     var couch, couchExternal, couchAuth;
+    var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     function init() {
         //Connect to Yocto module
         //connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
@@ -923,15 +924,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 $scope.notifData.winderPressure2 = false;
                 $scope.notifData.winderPressure3 = false;
                 $scope.notifData.winderPressure4 = false;
-                $scope.winderData.winderSpeed3=0;
-                $scope.winderData.winderSpeed4=0;
+                $scope.winderData.winderSpeed3 = 0;
+                $scope.winderData.winderSpeed4 = 0;
             }
-            else{
-                $scope.notifData.rail = false;
+            else {
+                //$scope.notifData.rail = false;
             }
-            if(winderYoctoModules.yPwmInput1_Winder1Length) {
+            if (winderYoctoModules.yPwmInput1_Winder1Length) {
                 winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
-                previousWinderPulse=1;
+                previousWinderPulse = 1;
             }
         });
         $scope.$watch('winderData.mainControl', function (value) {
@@ -958,7 +959,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         $scope.$watch('winderData.winderControl4', function (value) {
             $scope.winderData.winderSpeed4 = $scope.winderData.mainControl * 10 + value;
         });
-        var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
         $scope.$watch('winderData.winderSpeed1', function (value) {
             if (previousWinderSpeed2 * value < 0 && !switchWinderDirection1 && !stopWinderOk) {
                 switchWinderDirection1 = true;
@@ -1134,22 +1134,24 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 if (value - previousWinderPulse < 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) - 30 ||
                     value - previousWinderPulse > 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) + 30) {
                     //Speed not as expected    
-                    $scope.notifData.rail = true;
+                    $scope.winderData.railAlert = true;
                 }
                 else {
                     //Speed ok
-                    $scope.notifData.rail = false;
+                    $scope.winderData.railAlert = false;
                 }
                 //Compute rail length
-                if (winderDirection1) $scope.winderData.railLength = $scope.winderData.railLength + (value - previousWinderPulse) / 100;
-                else $scope.winderData.railLength = $scope.winderData.railLength - (value - previousWinderPulse) / 100;
-                previousWinderPulse = value;
-                if (value > 10000) {
-                    winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
-                    previousWinderPulse = 1;
-                }
-                if ($scope.winderData.railLength < 0) {
-                    $scope.winderData.railLength = 0;
+                if (!stopWinderOk) {
+                    if (winderDirection1) $scope.winderData.railLength = $scope.winderData.railLength + (value - previousWinderPulse) / 100;
+                    else $scope.winderData.railLength = $scope.winderData.railLength - (value - previousWinderPulse) / 100;
+                    previousWinderPulse = value;
+                    if (value > 10000) {
+                        winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+                        previousWinderPulse = 1;
+                    }
+                    if ($scope.winderData.railLength < 0) {
+                        $scope.winderData.railLength = 0;
+                    }
                 }
                 $scope.$apply();
             });
@@ -1158,15 +1160,17 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         else if (!$scope.winderData.railMode && winderYoctoModules.yPwmInput1_Winder1Length) {
             winderYoctoModules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
                 //Compute winder length
-                if (winderDirection1) $scope.winderData.winderLength1 = $scope.winderData.winderLength1 + (value - previousWinderPulse) / 100;
-                else $scope.winderData.winderLength1 = $scope.winderData.winderLength1 - (value - previousWinderPulse) / 100;
-                previousWinderPulse = value;
-                if (value > 10000) {
-                    winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
-                    previousWinderPulse = 1;
-                }
-                if ($scope.winderData.winderLength1 < 0) {
-                    $scope.winderData.winderLength1 = 0;
+                if (!stopWinderOk) {
+                    if (winderDirection1) $scope.winderData.winderLength1 = $scope.winderData.winderLength1 + (value - previousWinderPulse) / 100;
+                    else $scope.winderData.winderLength1 = $scope.winderData.winderLength1 - (value - previousWinderPulse) / 100;
+                    previousWinderPulse = value;
+                    if (value > 10000) {
+                        winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+                        previousWinderPulse = 1;
+                    }
+                    if ($scope.winderData.winderLength1 < 0) {
+                        $scope.winderData.winderLength1 = 0;
+                    }
                 }
                 $scope.$apply();
             });

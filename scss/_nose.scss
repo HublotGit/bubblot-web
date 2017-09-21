@@ -52,9 +52,9 @@ $positionXDotWarning: 43.3%;
    .btn-draw {
       bottom: 9.3%;
       padding: 3px 6px;
-      color: $mainColor;
+      color: $activeColor;
       text-transform: uppercase;
-      border: 1px solid $mainColor;
+      border: 1px solid $activeColor;
       z-index: 10;
       pointer-events: none;
       @include border(3px);

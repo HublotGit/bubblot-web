@@ -6,6 +6,12 @@
 
     function winderControlCtrl($scope) {
         var vm = this;
+        var railLength=document.getElementsByClassName("rail-counter");
+        $scope.updateLength  = function (value) {
+            for (var i = 0; i < railLength.length; i++) {
+                railLength[i].innerHTML=value.toFixed(1);
+            }
+        }
         $scope.stop  = function () {  
             $scope.mainControl=0;
             $scope.winderControl1=0;

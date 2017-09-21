@@ -52,8 +52,8 @@ body {
       @include border(18px);
       @include fontUse($fontFamilly, 27px, $fontWeight);
       &:hover{
-        color: $mainColor;
-        border: 5px solid $mainColor;
+        color: $activeColor;
+        border: 5px solid $activeColor;
       }
    }
    .camera-pump1, .camera-pump2{
@@ -76,32 +76,32 @@ body {
         left: 25%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
     .btn-pump{
         left: 38.5%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
     .btn-winder{
         right: 38.5%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
       .btn-map{
         right: 25%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
       .shortcut-bubblot, .shortcut-pump, .shortcut-winder, .shortcut-map{
@@ -170,8 +170,8 @@ body {
       @include fontUse($fontFamilly, 27px, $fontWeight);
       pointer-events: auto;
       &:hover{
-        color: $mainColor;
-        border: 5px solid $mainColor;
+        color: $activeColor;
+        border: 5px solid $activeColor;
       }
    }
    .camera-pump1, .camera-pump2{
@@ -194,32 +194,32 @@ body {
         left: 25%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
     .btn-pump{
         left: 38.5%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
     .btn-winder{
         right: 38.5%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
       .btn-map{
         right: 25%;
         &.disable{
           pointer-events: none;
-          color: $mainColor;
-          border: 5px solid $mainColor;
+          color: $activeColor;
+          border: 5px solid $activeColor;
         }
       }
       .shortcut-bubblot, .shortcut-pump, .shortcut-winder, .shortcut-map{
@@ -284,7 +284,7 @@ body {
           border: 5px solid red;
         }
       }
-.alert-winder1, .alert-winder2, .alert-winder3, .alert-winder4{
+.alert-winder1, .alert-winder2, .alert-winder3, .alert-winder4, .alert-rail{
         position: absolute;
         top:80px;
         right: 38.5%;
@@ -515,42 +515,26 @@ body {
    }
 }
 
-.cadran-rail{
+.rail-counter-container{
   @include centerItemX(50%);
   bottom: 30%;
-  width: 15%;
-  height: 60%;
+  width: 10%;
+  height: 8%;
+  background-color: black;
   display: none;
+  @include border(10px);
   &.on{
     display:block;
   }
-  .rail{
-    @include centerItemX(50%);
-    bottom: 0;
-    height: 100%;
-    width: 16%;
-    background-color: slategrey;
-    @include border(15px);
-  }
-  .motor1{
-    position: absolute;
-    left: 25%;
-    height: 6%;
-    width: 20%;
-    background-color: black;
-    @include border(10px);
-    transition: bottom 1s;
-    transition-timing-function: linear;
-  }
-  .motor2{
-    position: absolute;
-    right: 25%;
-    height: 6%;
-    width: 20%;
-    background-color: black;
-    @include border(10px);
-    transition: bottom 1s;
-    transition-timing-function: linear;
+  .rail-counter{
+    @include centerItemY(50%);
+    right: 0;
+    color: #c3f900;
+    letter-spacing:2px;
+    text-align: right;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 55px;
   }
 }
 

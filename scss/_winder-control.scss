@@ -80,9 +80,11 @@
         left: 15%;
         bottom: 12px;
         padding: 3px 6px;
+        width: 15%;
         color: orangered;
         text-transform: uppercase;
         border: 2px solid orangered;
+        text-align:center;
         z-index: 12;
         cursor: pointer;
         @include border(3px);
@@ -93,9 +95,11 @@
         right: 15%;
         bottom: 12px;
         padding: 3px 6px;
+        width: 15%;
         color:gray;
         text-transform: uppercase;
         border: 2px solid gray;
+        text-align:center;
         z-index: 12;
         cursor: pointer;
         @include border(3px);
@@ -105,7 +109,9 @@
         @include centerItemX(50%);
         bottom: 12px;
         padding: 3px 6px;
-        color:#dcffab;
+        width: 15%;
+        color: $mainColor;
+        text-align:center;
         text-transform: uppercase;
         border: 2px solid #dcffab;
         z-index: 12;

@@ -1,5 +1,5 @@
 /*jshint esversion: 6 */
-angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout', '$interval', function ($scope, $timeout, $interval) {
+angular.module('bubblot', []).controller('mainController', ['$scope', '$element', '$timeout', '$interval', function ($scope, $element, $timeout, $interval) {
     var mainVm = this,
         serial = '',
         digitalio,
@@ -137,28 +137,32 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         pressure1: 0.93,
         minPressure1: 0.8,
         pressureAlert1: false,
+        winderAlert1: false,
         reset1: false,
         winderLength2: 0,
         winderSpeed2: 0,
         pressure2: 0.97,
         minPressure2: 0.7,
         pressureAlert2: false,
+        winderAlert2: false,
         reset2: false,
         winderLength3: 0,
         winderSpeed3: 0,
         pressure3: 0.95,
         minPressure3: 0.7,
         pressureAlert3: false,
+        winderAlert3: false,
         reset3: false,
         winderLength4: 0,
         winderSpeed4: 0,
         pressure4: 0.9,
         minPressure4: 0.7,
         pressureAlert4: false,
+        winderAlert4: false,
         reset4: false,
         railMode: false,
         railLength: 0,
-        railAlert:false,
+        railAlert: false,
         help: false
     };
     $scope.mapData = {
@@ -926,9 +930,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
                 $scope.notifData.winderPressure4 = false;
                 $scope.winderData.winderSpeed3 = 0;
                 $scope.winderData.winderSpeed4 = 0;
+                $scope.winderData.winderAlert1 = false;
             }
             else {
-                //$scope.notifData.rail = false;
+                $scope.winderData.railAlert = false;
             }
             if (winderYoctoModules.yPwmInput1_Winder1Length) {
                 winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
@@ -1159,6 +1164,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$timeout'
         //Computation of the length for winder mode
         else if (!$scope.winderData.railMode && winderYoctoModules.yPwmInput1_Winder1Length) {
             winderYoctoModules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
+                //Compare speed with approximation
+                if (value - previousWinderPulse < 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) - 30 ||
+                    value - previousWinderPulse > 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) + 30) {
+                    //Speed not as expected    
+                    $scope.winderData.winderAlert1 = true;
+                }
+                else {
+                    //Speed ok
+                    $scope.winderData.winderAlert1 = false;
+                }
                 //Compute winder length
                 if (!stopWinderOk) {
                     if (winderDirection1) $scope.winderData.winderLength1 = $scope.winderData.winderLength1 + (value - previousWinderPulse) / 100;

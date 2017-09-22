@@ -538,10 +538,11 @@ body {
   }
 }
 .rail-warning{
-  @include centerItemX(50%);
-  bottom: 50%;
-  width: 20%;
-  height: 20%;
+  position:absolute;
+  right:40.5%;
+  bottom: 30%;
+  width: 4%;
+  height: 8%;
   background: url('../img/winderControl/warning.svg') no-repeat center;
   background-size: 100% 100%;
   display:none;
@@ -549,6 +550,7 @@ body {
     display:block;
   }
 }
+
 
 
 

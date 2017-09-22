@@ -39,7 +39,7 @@
    }
    .min-pressure1, .min-pressure2, .min-pressure3, .min-pressure4,{
         position: absolute;
-        left: 21%;
+        left: 19%;
         top: 30%;
         height: 10%;
         width: 17%;
@@ -49,35 +49,32 @@
     }
     .text-length, .text-m, .text-pressure, .text-bar{
         position: absolute;
-        font-family: arial;
-        font-size: 20px;
         z-index: 13;
     }
     .text-length{
         @include centerItemX(50%);
         top: 45%;
-        @include fontUse($fontFamilly, 20px, $fontWeight);
+        @include fontUse($fontFamilly, 20px, bold);
         text-transform: uppercase;
     }
     .text-m{
         right: 19%;
         top: 58%;
-        @include fontUse($fontFamilly, 26px, $fontWeight);
+        @include fontUse($fontFamilly, 26px, bold);
     }
     .text-pressure{
         @include centerItemX(50%);
         top: 22%;
-        @include fontUse($fontFamilly, 17px, $fontWeight);
+        @include fontUse($fontFamilly, 17px, bold);
         text-transform: uppercase;
     }
     .text-bar{
         right: 47%;
         top: 31%;
-        @include fontUse($fontFamilly, 22px, $fontWeight);
+        @include fontUse($fontFamilly, 22px, bold);
     }
    .panel-container{
-       position: absolute;
-       left:22%;
+        @include centerItemX(50%);
        top: 54%;
        width: 46%;
        height: 18%;
@@ -101,7 +98,7 @@
    }
    .btn-quittance-pressure{
         position: absolute;
-        left: 55%;
+        left: 57%;
         top: 31%;
         padding: 3px 6px;
         color: orange;
@@ -113,5 +110,18 @@
         @include fontUse($fontFamilly, 14px, bolder);
         background-color: black
    }
-
+   .winder-warning{
+    position:absolute;
+    width: 18%;
+    height: 18%;
+    right: 8%;
+    top:54%;
+    background: url('../img/winderControl/warning.svg') no-repeat center;
+    background-size: 100% 100%;
+    display:none;
+    z-index: 12;
+    &.on{
+      display:block;
+    }
+  }
 }

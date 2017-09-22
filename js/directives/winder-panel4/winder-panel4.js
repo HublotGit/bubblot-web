@@ -11,7 +11,8 @@
             replace: true,
             controller: 'winderPanel4Ctrl',
             controllerAs: 'vm',
-            scope: {winderLength: '=', winderSpeed: '=', circleSize: '=', circleThickness: '=', pressure: '=', minPressure: '=', pressureAlert: '=', reset: '=', railMode: '='},
+            scope: {winderLength: '=', winderSpeed: '=', circleSize: '=', circleThickness: '=', pressure: '=', minPressure: '=', pressureAlert: '=', 
+                    reset: '=', railMode: '=', winderAlert:'='},
             link: function(scope, element, attr) {
                 scope.$watch('winderLength', function (value) {
                     scope.updateLength(value);

@@ -4,7 +4,7 @@
         .module('bubblot')
         .controller('winderPanel1Ctrl', winderPanel1Ctrl);
 
-    function winderPanel1Ctrl($scope) {
+    function winderPanel1Ctrl($scope, $element) {
         var vm = this;
         var winderLength=document.getElementsByClassName("winder1");
         var minPressure=document.getElementsByClassName("min-pressure1"); 

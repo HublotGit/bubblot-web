@@ -303,6 +303,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
 
     var winderYoctoModules = {
         yRelay1_Winder1Direction: null,
+        yRelay1_Winder1Brake: null,
         yPwmOutput1_Winder1Speed: null,
         yPwmInput1_Winder1Length: null
     }
@@ -544,6 +545,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else {
                         console.log("Can't find module " + serials.yRelay1 + ".relay1");
+                    }
+                })
+                modules.yRelay1_Winder1Brake = YRelay.FindRelay(serials.yRelay1 + ".relay2");
+                modules.yRelay1_Winder1Brake.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using module ' + serials.yRelay1 + ".relay2");
+                        modules.yRelay1_Winder1Brake.set_state(true);
+                    }
+                    else {
+                        console.log("Can't find module " + serials.yRelay1 + ".relay2");
                     }
                 })
             }
@@ -977,12 +988,14 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             else if (!switchWinderDirection1) {
                 if (winderYoctoModules.yRelay1_Winder1Direction) {
                     if (value > 0) {
+                        winderYoctoModules.yRelay1_Winder1Brake.set_state(false);
                         winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
                         winderDirection1 = true;
                         stopWinderOk = false;
                         clearTimeout(stopWinderTime);
                     }
                     else if (value < 0) {
+                        winderYoctoModules.yRelay1_Winder1Brake.set_state(false);
                         winderYoctoModules.yRelay1_Winder1Direction.set_state(false);
                         winderDirection1 = false;
                         stopWinderOk = false;
@@ -1241,6 +1254,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
     function stopWinderTimeout() {
         stopWinderOk = true;
+        winderYoctoModules.yRelay1_Winder1Brake.set_state(true);
     }
     function winderDirectionTimeout() {
         if (winderYoctoModules.yRelay1_Winder1Direction && $scope.winderData.winderSpeed1 > 0) {

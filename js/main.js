@@ -598,7 +598,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     };
     //Open serialport for DropSens sensor
     var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
-    var railCamera=null;
+    var railCamera = null;
     var couch, couchExternal, couchAuth;
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     function init() {
@@ -615,7 +615,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             PORT = 8080;
 
         var onvif = require('onvif');
-        
+
         onvif.Discovery.probe(function (err, cams) {
             // function will be called only after timeout (5 sec by default)
             if (err) { throw err; }
@@ -771,7 +771,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //1 is pressed
             else if (keyCode == 49) {
                 isOne = true;
-                moveRailCamera(1,0,0,"1 is pressed");
             }
             //2 is pressed
             else if (keyCode == 50) {
@@ -788,6 +787,22 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //Ctrl is pressed
             else if (keyCode == 17) {
                 $scope.rightDataPump.isCtrl = true;
+            }
+            //Left arrow is pressed
+            else if (keyCode == 37) {
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress) moveRailCamera(-1, 0, 0, 'left');
+            }
+            //Right arrow is pressed
+            else if (keyCode == 39) {
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress) moveRailCamera(1, 0, 0, 'right');
+            }
+            //Up arrow is pressed
+            else if (keyCode == 38) {
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress) moveRailCamera(0, 1, 0, 'up');
+            }
+            //Down arrow is pressed
+            else if (keyCode == 40) {
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress) moveRailCamera(0, -1, 0, 'down');
             }
         };
         document.onkeyup = function (e) {
@@ -1456,7 +1471,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             // ...or err.code=EDOCCONFLICT if document with the same id already exists 
         });
     }
-    var stop_timer;
+    var stop_timer, ignore_keypress=false;
     function moveRailCamera(x_speed, y_speed, zoom_speed, msg) {
         // Step 1 - Turn off the keyboard processing (so keypresses do not buffer up)
         // Step 2 - Clear any existing 'stop' timeouts. We will re-schedule a new 'stop' command in this function 
@@ -1465,6 +1480,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
 
         // Clear any pending 'stop' commands
         if (stop_timer) clearTimeout(stop_timer);
+
+        // Pause keyboard processing
+        ignore_keypress = true;
 
         // Move the camera
         console.log('sending move command ' + msg);
@@ -1480,7 +1498,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 } else {
                     console.log('move command sent ' + msg);
                     // schedule a Stop command to run in the future 
-                    stop_timer = setTimeout(stopRailCamera, 1000);
+                    stop_timer = setTimeout(stopRailCamera, 500);
+                    ignore_keypress = false;
                 }
             });
     }

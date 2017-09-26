@@ -615,6 +615,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             PORT = 8080;
 
         var onvif = require('onvif');
+        var railCamera=null;
         onvif.Discovery.probe(function (err, cams) {
             // function will be called only after timeout (5 sec by default)
             if (err) { throw err; }
@@ -623,7 +624,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 cam.password = '';
                 console.log(cam);
             });
-            new Cam({
+            railCamera = new Cam({
                 hostname: CAMERA_HOST,
                 username: USERNAME,
                 password: PASSWORD,
@@ -634,48 +635,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     return;
                 }
                 console.log('CONNECTED');
-                var cam_obj = this;
-                var stop_timer;
-                function move(x_speed, y_speed, zoom_speed, msg) {
-                    // Step 1 - Turn off the keyboard processing (so keypresses do not buffer up)
-                    // Step 2 - Clear any existing 'stop' timeouts. We will re-schedule a new 'stop' command in this function 
-                    // Step 3 - Send the Pan/Tilt/Zoom 'move' command.
-                    // Step 4 - In the callback from the PTZ 'move' command we schedule the ONVIF Stop command to be executed after a short delay and re-enable the keyboard
-
-                    // Clear any pending 'stop' commands
-                    if (stop_timer) clearTimeout(stop_timer);
-
-                    // Move the camera
-                    console.log('sending move command ' + msg);
-                    cam_obj.continuousMove({
-                        x: x_speed,
-                        y: y_speed,
-                        zoom: zoom_speed
-                    },
-                        // completion callback function
-                        function (err, stream, xml) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('move command sent ' + msg);
-                                // schedule a Stop command to run in the future 
-                                stop_timer = setTimeout(stop, STOP_DELAY_MS);
-                            }
-                        });
-                }
-                move(0, 1, 0, 'up');
-                function stop() {
-                    // send a stop command, stopping Pan/Tilt and stopping zoom
-                    console.log('sending stop command');
-                    cam_obj.stop({ panTilt: true, zoom: true },
-                        function (err, stream, xml) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('stop command sent');
-                            }
-                        });
-                }
             });
         });
 
@@ -812,6 +771,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //1 is pressed
             else if (keyCode == 49) {
                 isOne = true;
+                moveRailCamera(1,0,0,"1 is pressed");
             }
             //2 is pressed
             else if (keyCode == 50) {
@@ -1495,6 +1455,46 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             // either request error occured 
             // ...or err.code=EDOCCONFLICT if document with the same id already exists 
         });
+    }
+    var stop_timer;
+    function moveRailCamera(x_speed, y_speed, zoom_speed, msg) {
+        // Step 1 - Turn off the keyboard processing (so keypresses do not buffer up)
+        // Step 2 - Clear any existing 'stop' timeouts. We will re-schedule a new 'stop' command in this function 
+        // Step 3 - Send the Pan/Tilt/Zoom 'move' command.
+        // Step 4 - In the callback from the PTZ 'move' command we schedule the ONVIF Stop command to be executed after a short delay and re-enable the keyboard
+
+        // Clear any pending 'stop' commands
+        if (stop_timer) clearTimeout(stop_timer);
+
+        // Move the camera
+        console.log('sending move command ' + msg);
+        railCamera.continuousMove({
+            x: x_speed,
+            y: y_speed,
+            zoom: zoom_speed
+        },
+            // completion callback function
+            function (err, stream, xml) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('move command sent ' + msg);
+                    // schedule a Stop command to run in the future 
+                    stop_timer = setTimeout(stop, 1000);
+                }
+            });
+    }
+    function stopRailCamera() {
+        // send a stop command, stopping Pan/Tilt and stopping zoom
+        console.log('sending stop command');
+        railCamera.stop({ panTilt: true, zoom: true },
+            function (err, stream, xml) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('stop command sent');
+                }
+            });
     }
     init();
 }

@@ -607,6 +607,78 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         connectYoctoWinder("169.254.58.33", serialWinder, winderYoctoModules);
         // connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
+
+        //http://192.168.100.100:8080/onvif/devices
+        var CAMERA_HOST = '192.168.100.100',
+            USERNAME = 'admin',
+            PASSWORD = '',
+            PORT = 8080;
+
+        var onvif = require('onvif');
+        onvif.Discovery.probe(function (err, cams) {
+            // function will be called only after timeout (5 sec by default)
+            if (err) { throw err; }
+            cams.forEach(function (cam) {
+                cam.username = 'admin';
+                cam.password = '';
+                console.log(cam);
+            });
+            new Cam({
+                hostname: CAMERA_HOST,
+                username: USERNAME,
+                password: PASSWORD,
+                port: PORT
+            }, function (err) {
+                if (err) {
+                    console.log('Connection Failed');
+                    return;
+                }
+                console.log('CONNECTED');
+                var cam_obj = this;
+                var stop_timer;
+                function move(x_speed, y_speed, zoom_speed, msg) {
+                    // Step 1 - Turn off the keyboard processing (so keypresses do not buffer up)
+                    // Step 2 - Clear any existing 'stop' timeouts. We will re-schedule a new 'stop' command in this function 
+                    // Step 3 - Send the Pan/Tilt/Zoom 'move' command.
+                    // Step 4 - In the callback from the PTZ 'move' command we schedule the ONVIF Stop command to be executed after a short delay and re-enable the keyboard
+
+                    // Clear any pending 'stop' commands
+                    if (stop_timer) clearTimeout(stop_timer);
+
+                    // Move the camera
+                    console.log('sending move command ' + msg);
+                    cam_obj.continuousMove({
+                        x: x_speed,
+                        y: y_speed,
+                        zoom: zoom_speed
+                    },
+                        // completion callback function
+                        function (err, stream, xml) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log('move command sent ' + msg);
+                                // schedule a Stop command to run in the future 
+                                stop_timer = setTimeout(stop, STOP_DELAY_MS);
+                            }
+                        });
+                }
+                move(0, 1, 0, 'up');
+                function stop() {
+                    // send a stop command, stopping Pan/Tilt and stopping zoom
+                    console.log('sending stop command');
+                    cam_obj.stop({ panTilt: true, zoom: true },
+                        function (err, stream, xml) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log('stop command sent');
+                            }
+                        });
+                }
+            });
+        });
+
         var writeToSerial = ['$V;', '$Ltech=01;'];
         var indexSerial = 0;
         var vaPotential, vaCurrent;
@@ -616,7 +688,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             serialPort.write(writeToSerial[indexSerial]);
             indexSerial++;
         });
-        //Callback function for DropsSens sensor 
+        //Callback function for DropsSens sensor
         serialPort.on('data', function (data) {
             //console.log('Data received: ', data.length);
             //console.log(new Uint16Array(data));
@@ -691,23 +763,23 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 serialPort.write('$R;');
             }
         });
-        // node-couchdb instance with default options 
+        // node-couchdb instance with default options
         couch = new NodeCouchDb();
 
-        // node-couchdb instance with Memcached 
+        // node-couchdb instance with Memcached
         /*const MemcacheNode = require('node-couchdb-plugin-memcached');
         const couchWithMemcache = new NodeCouchDb({
-            cache: new MemcacheNode
+                            cache: new MemcacheNode
         });*/
 
-        // node-couchdb instance talking to external service 
+        // node-couchdb instance talking to external service
         couchExternal = new NodeCouchDb({
             host: 'localhost',
             protocol: 'http',
             port: 5984
         });
 
-        // not admin party 
+        // not admin party
         couchAuth = new NodeCouchDb({
             auth: {
                 user: 'admin',
@@ -808,7 +880,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 $scope.$apply();
             }
         };
-        //Scroll winder control with keyboard shortcuts 
+        //Scroll winder control with keyboard shortcuts
         var winderScreen = document.getElementById('winderDisplay');
         winderScreen.addEventListener("wheel", function () {
             var clientRect = winderScreen.getBoundingClientRect();
@@ -1188,7 +1260,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.winderData.winderAlert1 = false;
                 }
                 //Compute winder length
-                if (!stopWinderOk) { 
+                if (!stopWinderOk) {
                     if (winderDirection1) $scope.winderData.winderLength1 = $scope.winderData.winderLength1 + (value - previousWinderPulse) / 100;
                     else $scope.winderData.winderLength1 = $scope.winderData.winderLength1 - (value - previousWinderPulse) / 100;
                     if ($scope.winderData.winderLength1 < 0) {
@@ -1424,14 +1496,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             // ...or err.code=EDOCCONFLICT if document with the same id already exists 
         });
     }
-
-    var HOSTNAME = '192.168.1.128',
-    PORT = 80,
-    USERNAME = '',
-    PASSWORD = '',
-    STOP_DELAY_MS = 50;
-
-    
     init();
 }
 ])

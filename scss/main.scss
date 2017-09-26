@@ -64,12 +64,12 @@ body {
      top: -16%;
      z-index: -10;
    }
-   .camera-winder1, .camera-winder2{
+   .camera-winder{
      width:100%;
-     height:133%;
+     height:100%;
      position: absolute; 
      left: 0; 
-     top: -16%;
+     top: 0;
      z-index: -10;
    }
    .btn-bubblot{
@@ -174,15 +174,15 @@ body {
         border: 5px solid $activeColor;
       }
    }
+   .camera-winder{
+    width:100%;
+    height:100%;
+    position: absolute; 
+    left: 0; 
+    top: 0;
+    z-index: -10;
+  }
    .camera-pump1, .camera-pump2{
-     width:100%;
-     height:133%;
-     position: absolute; 
-     left: 0; 
-     top: -16%;
-     z-index: -10;
-   }
-   .camera-winder1, .camera-winder2{
      width:100%;
      height:133%;
      position: absolute; 

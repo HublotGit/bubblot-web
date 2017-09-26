@@ -149,14 +149,14 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         winderLength3: 0,
         winderSpeed3: 0,
         pressure3: 0.95,
-        minPressure3: 0.7,
+        minPressure3: 0.6,
         pressureAlert3: false,
         winderAlert3: false,
         reset3: false,
         winderLength4: 0,
         winderSpeed4: 0,
         pressure4: 0.9,
-        minPressure4: 0.7,
+        minPressure4: 0.9,
         pressureAlert4: false,
         winderAlert4: false,
         reset4: false,
@@ -1188,7 +1188,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.winderData.winderAlert1 = false;
                 }
                 //Compute winder length
-                if (!stopWinderOk) {
+                if (!stopWinderOk) { 
                     if (winderDirection1) $scope.winderData.winderLength1 = $scope.winderData.winderLength1 + (value - previousWinderPulse) / 100;
                     else $scope.winderData.winderLength1 = $scope.winderData.winderLength1 - (value - previousWinderPulse) / 100;
                     if ($scope.winderData.winderLength1 < 0) {
@@ -1425,6 +1425,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
     }
 
+    var HOSTNAME = '192.168.1.128',
+    PORT = 80,
+    USERNAME = '',
+    PASSWORD = '',
+    STOP_DELAY_MS = 50;
+
+    
     init();
 }
 ])

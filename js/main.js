@@ -598,7 +598,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     };
     //Open serialport for DropSens sensor
     var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
-
+    var railCamera=null;
     var couch, couchExternal, couchAuth;
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     function init() {
@@ -615,7 +615,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             PORT = 8080;
 
         var onvif = require('onvif');
-        var railCamera=null;
+        
         onvif.Discovery.probe(function (err, cams) {
             // function will be called only after timeout (5 sec by default)
             if (err) { throw err; }
@@ -1480,7 +1480,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 } else {
                     console.log('move command sent ' + msg);
                     // schedule a Stop command to run in the future 
-                    stop_timer = setTimeout(stop, 1000);
+                    stop_timer = setTimeout(stopRailCamera, 1000);
                 }
             });
     }

@@ -602,11 +602,12 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     function init() {
         //Connect to Yocto module
-        //connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
-        connectYoctoWinder("169.254.58.33", serialWinder, winderYoctoModules);
-        // connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
+        connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
+        //connectYoctoWinder("169.254.58.33", serialWinder, winderYoctoModules);
+        //connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
 
+        //http://192.168.100.100:8080/onvif/devices
         //Connection to winder camera 
         var CAMERA_HOST = '192.168.100.100',
             USERNAME = 'admin',
@@ -616,12 +617,14 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         var onvif = require('onvif');
         onvif.Discovery.probe(function (err, cams) {
             // function will be called only after timeout (5 sec by default)
+            //Search for IP Camera
             if (err) { throw err; }
             cams.forEach(function (cam) {
                 cam.username = 'admin';
                 cam.password = '';
                 console.log(cam);
             });
+            //Create new camera
             winderCamera = new Cam({
                 hostname: CAMERA_HOST,
                 username: USERNAME,
@@ -629,10 +632,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 port: PORT
             }, function (err) {
                 if (err) {
-                    console.log('Connection Failed');
+                    console.log('Connection with winder IP Camera Failed');
                     return;
                 }
-                console.log('CONNECTED');
+                console.log('Winder IP Camera connected');
+                //Stream camera
+                this.getStreamUri({ protocol: 'RTSP' }, function (err, stream) {
+                    if (err) console.log(err);
+                    //console.log(stream.uri);
+                });
             });
         });
 
@@ -753,7 +761,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         transitionTimeout = $timeout(getValues, 500);
         setInterval(getEvent, 200);
         //Keyboard shortcuts
-        var isOne = false, isTwo = false, isThree = false, isFour = false;
+        var isOne = false, isTwo = false, isThree = false, isFour = false, isCtrl = false;
         document.onkeydown = function (e) {
             var keyCode = e.keyCode;
             //F1 is pressed
@@ -785,26 +793,27 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //Ctrl is pressed
             else if (keyCode == 17) {
                 $scope.rightDataPump.isCtrl = true;
+                isCtrl = true;
             }
             //Left arrow is pressed
             else if (keyCode == 37) {
                 //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) movewinderCamera(-1, 0, 0, 'left');
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(-1, 0, 0, 'left');
             }
             //Right arrow is pressed
             else if (keyCode == 39) {
                 //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) movewinderCamera(1, 0, 0, 'right');
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(1, 0, 0, 'right');
             }
             //Up arrow is pressed
             else if (keyCode == 38) {
                 //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) movewinderCamera(0, 1, 0, 'up');
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(0, 1, 0, 'up');
             }
             //Down arrow is pressed
             else if (keyCode == 40) {
                 //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) movewinderCamera(0, -1, 0, 'down');
+                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(0, -1, 0, 'down');
             }
         };
         document.onkeyup = function (e) {
@@ -838,6 +847,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //Ctrl is released
             else if (keyCode == 17) {
                 $scope.rightDataPump.isCtrl = false;
+                isCtrl = false;
             }
             //S is released
             else if (keyCode == 83 && $('#winderDisplay').is(':visible')) {
@@ -912,7 +922,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         $scope.$apply();
                     }
                 }
-                else {
+                else if (isCtrl && !ignore_keypress) {
+                    if (event.deltaY < 0) moveWinderCamera(0,0,1,"zoom in");
+                    else moveWinderCamera(0,0,-1,"zoom out");
+                }
+                else if(!isCtrl) {
                     if ($scope.winderData.mainControl <= 0.5 && $scope.winderData.mainControl >= -0.5) {
                         $scope.winderData.mainControl = $scope.winderData.mainControl - event.deltaY / 5000;
                         if ($scope.winderData.mainControl > 0.5) {
@@ -1176,6 +1190,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         VSP2Radius = $scope.rightData.engine2Radius;
         VSP3Radius = $scope.rightData.engine3Radius;
         VSP4Radius = $scope.rightData.engine4Radius;
+        $scope.$apply();
 
         VSP1AngleServo1 = -VSP1Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
             - 1.915 * Math.pow(10, -4) * Math.pow(VSP1Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP1Angle, 2) - 1.610 * Math.pow(10, -1) * VSP1Angle
@@ -1473,8 +1488,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             // ...or err.code=EDOCCONFLICT if document with the same id already exists 
         });
     }
-    var stop_timer, ignore_keypress = false, winderCamera=null;
-    function movewinderCamera(x_speed, y_speed, zoom_speed, msg) {
+    var stop_timer, ignore_keypress = false, winderCamera = null;
+    function moveWinderCamera(x_speed, y_speed, zoom_speed, msg) {
         // Step 1 - Turn off the keyboard processing (so keypresses do not buffer up)
         // Step 2 - Clear any existing 'stop' timeouts. We will re-schedule a new 'stop' command in this function 
         // Step 3 - Send the Pan/Tilt/Zoom 'move' command.
@@ -1487,7 +1502,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         ignore_keypress = true;
 
         // Move the camera
-        console.log('sending move command ' + msg);
         winderCamera.continuousMove({
             x: x_speed,
             y: y_speed,
@@ -1498,7 +1512,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('move command sent ' + msg);
                     // schedule a Stop command to run in the future 
                     stop_timer = setTimeout(stopwinderCamera, 500);
                     ignore_keypress = false;
@@ -1507,13 +1520,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
     function stopwinderCamera() {
         // send a stop command, stopping Pan/Tilt and stopping zoom
-        console.log('sending stop command');
         winderCamera.stop({ panTilt: true, zoom: true },
             function (err, stream, xml) {
                 if (err) {
                     console.log(err);
-                } else {
-                    console.log('stop command sent');
                 }
             });
     }

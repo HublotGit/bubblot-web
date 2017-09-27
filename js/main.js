@@ -640,6 +640,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 this.getStreamUri({ protocol: 'RTSP' }, function (err, stream) {
                     if (err) console.log(err);
                     //console.log(stream.uri);
+                    document.getElementById("vlc").target = stream.uri + "/user=admin&password=admin";
                 });
             });
         });

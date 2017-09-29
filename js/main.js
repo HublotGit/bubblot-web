@@ -640,7 +640,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 this.getStreamUri({ protocol: 'RTSP' }, function (err, stream) {
                     if (err) console.log(err);
                     //console.log(stream.uri);
-                    document.getElementById("vlc").target = stream.uri + "/user=admin&password=admin";
+                    //vlc.exe rtsp://192.168.0.53/ :network-caching=1000 :sout=#transcode{vcodec=theo,vb=1600,scale=1,acodec=none}:http{mux=ogg,dst=:8181/stream} :no-sout-rtp-sap :no-sout-standard-sap :sout-keep
                 });
             });
         });
@@ -1514,7 +1514,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     console.log(err);
                 } else {
                     // schedule a Stop command to run in the future 
-                    stop_timer = setTimeout(stopwinderCamera, 500);
+                    stop_timer = setTimeout(stopwinderCamera, 100);
                     ignore_keypress = false;
                 }
             });

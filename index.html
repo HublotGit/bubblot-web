@@ -36,26 +36,21 @@
             var NodeCouchDb = require('node-couchdb');
             var Cam = require('onvif').Cam;
             var onvif = require('onvif');
-            const spawn = require('child_process');
-            const bat = spawn('cmd.exe', ['/c', 'my.bat']);
+            const { spawn } = require('child_process');
+            const ls = spawn('chrome', ['www.nba.com'], ['C:\\Program Files (x86)\\Google\\Chrome\\Application']);
             
-            bat.stdout.on('data', (data) => {
+            ls.stdout.on('data', (data) => {
               console.log(data.toString());
             });
             
-            bat.stderr.on('data', (data) => {
+            ls.stderr.on('data', (data) => {
               console.log(data.toString());
             });
-            
         }
     </script>
 
     <script>
         function show(shown, hidden) {
-            if (shown == "winderDisplay") {
-                opn('rtsp:', { app: ['C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome',] });
-                //'--fullscreen', '--qt-start-minimized'
-            }
             document.getElementById(hidden).style.display = 'none';
             document.getElementById(shown).style.display = 'block';
             return false;

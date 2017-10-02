@@ -607,8 +607,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         //connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
 
-        //http://192.168.100.100:8080/onvif/devices
-        //Connection to winder camera 
+        //Connection to platform camera 
         var CAMERA_HOST = '192.168.100.100',
             USERNAME = 'admin',
             PASSWORD = '',
@@ -616,7 +615,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
 
         var onvif = require('onvif');
         onvif.Discovery.probe(function (err, cams) {
-            // function will be called only after timeout (5 sec by default)
             //Search for IP Camera
             if (err) { throw err; }
             cams.forEach(function (cam) {
@@ -632,19 +630,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 port: PORT
             }, function (err) {
                 if (err) {
-                    console.log('Connection with winder IP Camera Failed');
+                    console.log('Connection with Platform Camera (IP: '+CAMERA_HOST+') failed');
                     return;
                 }
-                console.log('Winder IP Camera connected');
-                //Stream camera
-                this.getStreamUri({ protocol: 'RTSP' }, function (err, stream) {
-                    if (err) console.log(err);
-                    //console.log(stream.uri);
-                    //vlc.exe rtsp://192.168.0.53/ :network-caching=1000 :sout=#transcode{vcodec=theo,vb=1600,scale=1,acodec=none}:http{mux=ogg,dst=:8181/stream} :no-sout-rtp-sap :no-sout-standard-sap :sout-keep
-                });
+                console.log('Platform Camera (IP: '+CAMERA_HOST+') connected');
             });
         });
-
+        //Open function for DropSens sensor
         var writeToSerial = ['$V;', '$Ltech=01;'];
         var indexSerial = 0;
         var vaPotential, vaCurrent;
@@ -654,7 +646,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             serialPort.write(writeToSerial[indexSerial]);
             indexSerial++;
         });
-        //Callback function for DropsSens sensor
+        //Data callback for DropsSens sensor 
         serialPort.on('data', function (data) {
             //console.log('Data received: ', data.length);
             //console.log(new Uint16Array(data));
@@ -721,7 +713,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
             }
         });
-
+        //Compute measurement for DropSens sensor
         $scope.$watch('leftData.computeVa', function (value) {
             if (value) {
                 vaPotential = 0;

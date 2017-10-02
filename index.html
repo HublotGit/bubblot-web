@@ -34,14 +34,17 @@
             var recordRTC = require('recordrtc');
             var SerialPort = require('serialport');
             var NodeCouchDb = require('node-couchdb');
-            var http = require('http');
             var Cam = require('onvif').Cam;
             var onvif = require('onvif');
+            var nrc = require('node-run-cmd');
         }
     </script>
 
     <script>
         function show(shown, hidden) {
+            if(show == "winderDisplay"){
+                nrc.run('vlc');
+            }
             document.getElementById(hidden).style.display = 'none';
             document.getElementById(shown).style.display = 'block';
             return false;
@@ -150,7 +153,7 @@
     <div id="winderDisplay" style="display:none;overflow:hidden">
         <div id="fond-marin" class="fond-marin">
             <!-- Camera view -->
-            <video class="camera-winder" src="http://localhost:8181/stream" type="video/ogg; codecs=theora" autoplay="autoplay"/></video>
+
             <!-- Background image for demo -->
  
             <!-- Cadrans cable winder -->

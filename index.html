@@ -36,15 +36,15 @@
             var NodeCouchDb = require('node-couchdb');
             var Cam = require('onvif').Cam;
             var onvif = require('onvif');
-            var nrc = require('node-run-cmd');
+            var opn = require('opn');
+            opn('C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome').then(() => {
+                // image viewer closed
+            });
         }
     </script>
 
     <script>
         function show(shown, hidden) {
-            if(show == "winderDisplay"){
-                nrc.run('vlc');
-            }
             document.getElementById(hidden).style.display = 'none';
             document.getElementById(shown).style.display = 'block';
             return false;
@@ -155,7 +155,7 @@
             <!-- Camera view -->
 
             <!-- Background image for demo -->
- 
+
             <!-- Cadrans cable winder -->
             <cable-winder data="winderData"></cable-winder>
             <!-- Notifications -->
@@ -172,7 +172,7 @@
 
         <div id="fond-marin2" class="fond-marin2">
             <!-- Camera view -->
-            
+
             <!-- Background image for demo -->
 
             <!-- Cadrans cable winder -->

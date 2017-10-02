@@ -37,9 +37,7 @@
             var Cam = require('onvif').Cam;
             var onvif = require('onvif');
             var opn = require('opn');
-            opn('C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome').then(() => {
-                // image viewer closed
-            });
+            opn('http://nba.com', {app: ['google chrome', '--fullscreen', '--qt-start-minimized']});
         }
     </script>
 

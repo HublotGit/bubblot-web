@@ -36,21 +36,22 @@
             var NodeCouchDb = require('node-couchdb');
             var Cam = require('onvif').Cam;
             var onvif = require('onvif');
-            const { spawn } = require('child_process');
-            const ls = spawn('chrome', ['www.nba.com'], ['C:\\Program Files (x86)\\Google\\Chrome\\Application']);
-            
-            ls.stdout.on('data', (data) => {
-              console.log(data.toString());
-            });
-            
-            ls.stderr.on('data', (data) => {
-              console.log(data.toString());
-            });
+            var exeq = require('exeq');
         }
     </script>
 
     <script>
+        var vlc=null;
         function show(shown, hidden) {
+            if (shown == "winderDisplay") {
+                vlc = exeq(
+                    'cd C:\\Program Files (x86)\\VideoLAN\\VLC',
+                    'vlc rtsp://192.168.100.100:554/11'
+                );
+            }
+            else{
+                if(vlc) vlc.q.kill();
+            }
             document.getElementById(hidden).style.display = 'none';
             document.getElementById(shown).style.display = 'block';
             return false;

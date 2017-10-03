@@ -608,6 +608,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         setInterval(computeWinderLength, 1000);
 
         //Connection to platform camera 
+        //rtsp://192.168.100.100:554/11
         var CAMERA_HOST = '192.168.100.100',
             USERNAME = 'admin',
             PASSWORD = '',

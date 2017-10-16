@@ -11,10 +11,10 @@
   "dependencies": {
     "angular": "^1.6.6",
     "browser-sync": "^2.12.10",
+    "exeq": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-sass": "^2.3.1",
     "node-couchdb": "^1.1.1",
-    "node-onvif": "^0.1.0",
     "onvif": "^0.5.3",
     "recordrtc": "^5.4.0",
     "serialport": "^4.0.7",

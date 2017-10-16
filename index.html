@@ -43,14 +43,11 @@
     <script>
         var vlc=null;
         function show(shown, hidden) {
-            if (shown == "winderDisplay") {
+            if (false) {
                 vlc = exeq(
                     'cd C:\\Program Files (x86)\\VideoLAN\\VLC',
                     'vlc rtsp://192.168.100.100:554/11'
                 );
-            }
-            else{
-                if(vlc) vlc.q.kill();
             }
             document.getElementById(hidden).style.display = 'none';
             document.getElementById(shown).style.display = 'block';
@@ -160,9 +157,9 @@
     <div id="winderDisplay" style="display:none;overflow:hidden">
         <div id="fond-marin" class="fond-marin">
             <!-- Camera view -->
-
+            
             <!-- Background image for demo -->
-
+            <img src="img/fondWinderDemo.jpg" style="width:100%;height:100%;z-index: -10"></img>
             <!-- Cadrans cable winder -->
             <cable-winder data="winderData"></cable-winder>
             <!-- Notifications -->
@@ -181,7 +178,7 @@
             <!-- Camera view -->
 
             <!-- Background image for demo -->
-
+            <img src="img/fondWinderDemo.jpg" style="width:100%;height:100%;z-index: -10"></img>
             <!-- Cadrans cable winder -->
             <cable-winder data="winderData"></cable-winder>
             <!-- Notifications -->

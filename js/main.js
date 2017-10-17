@@ -25,7 +25,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         spacerx = 50,
         spacery = 50,
         errmsg = new YErrorMsg(),
-        VSPRadiusMax = 400,
+        spwDataMax = 5000,
         VSP1Radius = 0,
         VSP1Angle = 0,
         VSP1AngleServo1 = 0,
@@ -245,15 +245,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yTilt_Pitch: null,
         yCompass: null,
         yServo1_Camera: null,
-        yServo1_VSPTopLeft_X: null,
-        yServo1_VSPTopLeft_Y: null,
-        yServo1_VSPTopRight_X: null,
-        yServo1_VSPTopRight_Y: null,
+        yServo1_VSPTopLeft_1: null,
+        yServo1_VSPTopLeft_2: null,
+        yServo1_VSPTopRight_1: null,
+        yServo1_VSPTopRight_2: null,
         yServo2_Thrust: null,
-        yServo2_VSPBottomLeft_X: null,
-        yServo2_VSPBottomLeft_Y: null,
-        yServo2_VSPBottomRight_X: null,
-        yServo2_VSPBottomRight_Y: null,
+        yServo2_VSPBottomLeft_1: null,
+        yServo2_VSPBottomLeft_2: null,
+        yServo2_VSPBottomRight_1: null,
+        yServo2_VSPBottomRight_2: null,
         yGps_Longitude: null,
         yGps_Latitude: null,
         yColorLedCluster_Turbidity: null,
@@ -283,8 +283,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yTilt_Roll: null,
         yTilt_Pitch: null,
         yCompass: null,
-        yServo1_VSPTopLeft_X: null,
-        yServo1_VSPTopLeft_Y: null,
+        yServo1_VSPTopLeft_1: null,
+        yServo1_VSPTopLeft_2: null,
         yServo1_VSPTopRight_X: null,
         yServo1_VSPTopRight_Y: null,
         yServo2_Thrust: null,
@@ -408,21 +408,21 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         console.log("Can't find module " + serials.yServo1 + ".servo1");
                     }
                 })
-                modules.yServo1_VSPTopLeft_X = YServo.FindServo(serials.yServo1 + ".servo3");
-                modules.yServo1_VSPTopLeft_X.isOnline().then((onLine) => {
+                modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo3");
+                modules.yServo1_VSPTopLeft_1.isOnline().then((onLine) => {
                     if (onLine) {
                         console.log("Using module " + serials.yServo1 + ".servo3");
-                        modules.yServo1_VSPTopLeft_X.set_position(0);
+                        modules.yServo1_VSPTopLeft_1.set_position(0);
                     }
                     else {
                         console.log("Can't find module " + serials.yServo1 + ".servo3");
                     }
                 })
-                modules.yServo1_VSPTopLeft_Y = YServo.FindServo(serials.yServo1 + ".servo2");
-                modules.yServo1_VSPTopLeft_Y.isOnline().then((onLine) => {
+                modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo2");
+                modules.yServo1_VSPTopLeft_2.isOnline().then((onLine) => {
                     if (onLine) {
                         console.log('Using module ' + serials.yServo1 + ".servo2");
-                        modules.yServo1_VSPTopLeft_Y.set_position(0);
+                        modules.yServo1_VSPTopLeft_2.set_position(0);
                     }
                     else {
                         console.log("Can't find module " + serials.yServo1 + ".servo2");
@@ -631,10 +631,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 port: PORT
             }, function (err) {
                 if (err) {
-                    console.log('Connection with Platform Camera (IP: '+CAMERA_HOST+') failed');
+                    console.log('Connection with Platform Camera (IP: ' + CAMERA_HOST + ') failed');
                     return;
                 }
-                console.log('Platform Camera (IP: '+CAMERA_HOST+') connected');
+                console.log('Platform Camera (IP: ' + CAMERA_HOST + ') connected');
             });
         });
         //Open function for DropSens sensor
@@ -917,10 +917,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                 }
                 else if (isCtrl && !ignore_keypress) {
-                    if (event.deltaY < 0) moveWinderCamera(0,0,1,"zoom in");
-                    else moveWinderCamera(0,0,-1,"zoom out");
+                    if (event.deltaY < 0) moveWinderCamera(0, 0, 1, "zoom in");
+                    else moveWinderCamera(0, 0, -1, "zoom out");
                 }
-                else if(!isCtrl) {
+                else if (!isCtrl) {
                     if ($scope.winderData.mainControl <= 0.5 && $scope.winderData.mainControl >= -0.5) {
                         $scope.winderData.mainControl = $scope.winderData.mainControl - event.deltaY / 5000;
                         if ($scope.winderData.mainControl > 0.5) {
@@ -1146,18 +1146,155 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 var spwData = JSON.parse(result);
                 //Calcul angle et rayon des vecteurs VSP en fonction du 3Dconnexion si drag pas activé
                 if ($scope.rightData.thrustDragOn == false && $('#bubblotDisplay').is(':visible')) {
-                    if (spwData.rx > VSPRadiusMax) {
-                        spwData.rx = VSPRadiusMax;
+                    if (spwData.tx > spwDataMax) {
+                        spwData.tx = spwDataMax;
                     }
-                    if (spwData.rx < -VSPRadiusMax) {
-                        spwData.rx = -VSPRadiusMax;
+                    if (spwData.tx < -spwDataMax) {
+                        spwData.tx = -spwDataMax;
                     }
-                    if (spwData.rz > VSPRadiusMax) {
-                        spwData.rz = VSPRadiusMax;
+                    if (spwData.ty > spwDataMax) {
+                        spwData.ty = spwDataMax;
                     }
-                    if (spwData.rz < -VSPRadiusMax) {
-                        spwData.rz = -VSPRadiusMax;
+                    if (spwData.ty < -spwDataMax) {
+                        spwData.ty = -spwDataMax;
                     }
+                    if (spwData.tz > spwDataMax) {
+                        spwData.tz = spwDataMax;
+                    }
+                    if (spwData.tz < -spwDataMax) {
+                        spwData.tz = -spwDataMax;
+                    }
+                    if (spwData.rx > spwDataMax) {
+                        spwData.rx = spwDataMax;
+                    }
+                    if (spwData.rx < -spwDataMax) {
+                        spwData.rx = -spwDataMax;
+                    }
+                    if (spwData.ry > spwDataMax) {
+                        spwData.ry = spwDataMax;
+                    }
+                    if (spwData.ry < -spwDataMax) {
+                        spwData.ry = -spwDataMax;
+                    }
+                    if (spwData.rz > spwDataMax) {
+                        spwData.rz = spwDataMax;
+                    }
+                    if (spwData.rz < -spwDataMax) {
+                        spwData.rz = -spwDataMax;
+                    }
+                    if (Math.abs(spwData.tx) >= Math.abs(spwData.ty) && Math.abs(spwData.tx) >= Math.abs(spwData.tz)
+                        && Math.abs(spwData.tx) >= Math.abs(spwData.rx) && Math.abs(spwData.tx) >= Math.abs(spwData.ry)
+                        && Math.abs(spwData.tx) >= Math.abs(spwData.rz)) {
+                        if (spwData.tx >= 0) {
+                            $scope.rightData.engine1Angle = 180;
+                            $scope.rightData.engine2Angle = 0;
+                            $scope.rightData.engine3Angle = 180;
+                            $scope.rightData.engine4Angle = 0;
+                        }
+                        else {
+                            $scope.rightData.engine1Angle = 0;
+                            $scope.rightData.engine2Angle = 180;
+                            $scope.rightData.engine3Angle = 0;
+                            $scope.rightData.engine4Angle = 180;
+                        }
+                        $scope.rightData.engine1Radius = (spwData.tx * spwData.tx) / (spwDataMax * spwDataMax) * 100;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    }
+                    else if (Math.abs(spwData.ty) >= Math.abs(spwData.tz) && Math.abs(spwData.ty) >= Math.abs(spwData.rx)
+                        && Math.abs(spwData.ty) >= Math.abs(spwData.ry) && Math.abs(spwData.ty) >= Math.abs(spwData.rz)) {
+                        if (spwData.ty >= 0) {
+                            $scope.rightData.engine1Angle = 180;
+                            $scope.rightData.engine2Angle = 180;
+                            $scope.rightData.engine3Angle = 0;
+                            $scope.rightData.engine4Angle = 0;
+                        }
+                        else {
+                            $scope.rightData.engine1Angle = 0;
+                            $scope.rightData.engine2Angle = 0;
+                            $scope.rightData.engine3Angle = 180;
+                            $scope.rightData.engine4Angle = 180;
+                        }
+                        $scope.rightData.engine1Radius = (spwData.ty * spwData.ty) / (spwDataMax * spwDataMax) * 100;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    }
+                    else if (Math.abs(spwData.tz) >= Math.abs(spwData.rx) && Math.abs(spwData.tz) >= Math.abs(spwData.ry)
+                        && Math.abs(spwData.tz) >= Math.abs(spwData.rz)) {
+                        if (spwData.tz >= 0) {
+                            $scope.rightData.engine1Angle = 90;
+                            $scope.rightData.engine2Angle = 270;
+                            $scope.rightData.engine3Angle = 270;
+                            $scope.rightData.engine4Angle = 90;
+                        }
+                        else {
+                            $scope.rightData.engine1Angle = 270;
+                            $scope.rightData.engine2Angle = 90;
+                            $scope.rightData.engine3Angle = 90;
+                            $scope.rightData.engine4Angle = 270;
+                        }
+                        $scope.rightData.engine1Radius = (spwData.tz * spwData.tz) / (spwDataMax * spwDataMax) * 100;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    }
+                    else if (Math.abs(spwData.rx) >= Math.abs(spwData.ry) && Math.abs(spwData.rx) >= Math.abs(spwData.rz)) {
+                        if (spwData.rx >= 0) {
+                            $scope.rightData.engine1Angle = 270;
+                            $scope.rightData.engine2Angle = 90;
+                            $scope.rightData.engine3Angle = 270;
+                            $scope.rightData.engine4Angle = 90;
+                        }
+                        else {
+                            $scope.rightData.engine1Angle = 90;
+                            $scope.rightData.engine2Angle = 270;
+                            $scope.rightData.engine3Angle = 90;
+                            $scope.rightData.engine4Angle = 270;
+                        }
+                        $scope.rightData.engine1Radius = (spwData.rx * spwData.rx) / (spwDataMax * spwDataMax) * 100;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    }
+                    else if (Math.abs(spwData.ry) >= Math.abs(spwData.rz)) {
+                        if (spwData.ry >= 0) {
+                            $scope.rightData.engine1Angle = 270;
+                            $scope.rightData.engine2Angle = 270;
+                            $scope.rightData.engine3Angle = 90;
+                            $scope.rightData.engine4Angle = 90;
+                        }
+                        else {
+                            $scope.rightData.engine1Angle = 90;
+                            $scope.rightData.engine2Angle = 90;
+                            $scope.rightData.engine3Angle = 270;
+                            $scope.rightData.engine4Angle = 270;
+                        }
+                        $scope.rightData.engine1Radius = (spwData.ry * spwData.ry) / (spwDataMax * spwDataMax) * 100;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    }
+                    else {
+                        if (spwData.rz >= 0) {
+                            $scope.rightData.engine1Angle = 180;
+                            $scope.rightData.engine2Angle = 0;
+                            $scope.rightData.engine3Angle = 0;
+                            $scope.rightData.engine4Angle = 180;
+                        }
+                        else {
+                            $scope.rightData.engine1Angle = 0;
+                            $scope.rightData.engine2Angle = 180;
+                            $scope.rightData.engine3Angle = 180;
+                            $scope.rightData.engine4Angle = 0;
+                        }
+                        $scope.rightData.engine1Radius = (spwData.rz * spwData.rz) / (spwDataMax * spwDataMax) * 100;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    }
+                    /*
                     if (spwData.rz == 0) {
                         if (-spwData.rx > 0) {
                             $scope.rightData.engine1Angle = 90;
@@ -1169,12 +1306,25 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     else if (spwData.rz < 0) $scope.rightData.engine1Angle = 180 / Math.PI * Math.atan(-spwData.rx / spwData.rz) + 180;
                     else if (-spwData.rx < 0) $scope.rightData.engine1Angle = 180 / Math.PI * Math.atan(-spwData.rx / spwData.rz) + 360;
                     else $scope.rightData.engine1Angle = 180 / Math.PI * Math.atan(-spwData.rx / spwData.rz);
-                    $scope.rightData.engine1Radius = (spwData.rz * spwData.rz + spwData.rx * spwData.rx) / (VSPRadiusMax * VSPRadiusMax) * 80;
+                    $scope.rightData.engine1Radius = (spwData.rz * spwData.rz + spwData.rx * spwData.rx) / (spwDataMax * spwDataMax) * 100;
+                    */
 
                 }
             }
+            else {
+                $scope.rightData.engine1Radius = 0;
+                $scope.rightData.engine2Radius = 0;
+                $scope.rightData.engine3Radius = 0;
+                $scope.rightData.engine4Radius = 0;
+            }
         }
-
+        else {
+            $scope.rightData.engine1Radius = 0;
+            $scope.rightData.engine2Radius = 0;
+            $scope.rightData.engine3Radius = 0;
+            $scope.rightData.engine4Radius = 0;
+        }
+        $scope.$apply();
         //Calcul angles des servos en fonction du rayon et de l'angle des vecteurs VSP
         VSP1Angle = $scope.rightData.engine1Angle;
         VSP2Angle = $scope.rightData.engine2Angle;
@@ -1184,7 +1334,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         VSP2Radius = $scope.rightData.engine2Radius;
         VSP3Radius = $scope.rightData.engine3Radius;
         VSP4Radius = $scope.rightData.engine4Radius;
-        $scope.$apply();
 
         VSP1AngleServo1 = -VSP1Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
             - 1.915 * Math.pow(10, -4) * Math.pow(VSP1Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP1Angle, 2) - 1.610 * Math.pow(10, -1) * VSP1Angle
@@ -1192,12 +1341,49 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         VSP1AngleServo2 = -VSP1Radius / 45 * 10 * (-5.415 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 4.225 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
             - 9.197 * Math.pow(10, -5) * Math.pow(VSP1Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP1Angle, 2) + 2.585 * Math.pow(10, -1) * VSP1Angle
             + 31.42);
-        if (bubblot1YoctoModules.yServo1_VSPTopLeft_X) {
-            bubblot1YoctoModules.yServo1_VSPTopLeft_X.set_position(VSP1AngleServo1);
+        VSP2AngleServo1 = -VSP2Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP2Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP2Angle, 4)
+            - 1.915 * Math.pow(10, -4) * Math.pow(VSP1Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP2Angle, 2) - 1.610 * Math.pow(10, -1) * VSP2Angle
+            - 22.44);
+        VSP2AngleServo2 = -VSP2Radius / 45 * 10 * (-5.415 * Math.pow(10, -10) * Math.pow(VSP2Angle, 5) + 4.225 * Math.pow(10, -7) * Math.pow(VSP2Angle, 4)
+            - 9.197 * Math.pow(10, -5) * Math.pow(VSP2Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP2Angle, 2) + 2.585 * Math.pow(10, -1) * VSP2Angle
+            + 31.42);
+        VSP3AngleServo1 = -VSP3Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP3Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP3Angle, 4)
+            - 1.915 * Math.pow(10, -4) * Math.pow(VSP3Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP3Angle, 2) - 1.610 * Math.pow(10, -1) * VSP3Angle
+            - 22.44);
+        VSP3AngleServo2 = -VSP3Radius / 45 * 10 * (-5.415 * Math.pow(10, -10) * Math.pow(VSP3Angle, 5) + 4.225 * Math.pow(10, -7) * Math.pow(VSP3Angle, 4)
+            - 9.197 * Math.pow(10, -5) * Math.pow(VSP3Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP3Angle, 2) + 2.585 * Math.pow(10, -1) * VSP3Angle
+            + 31.42);
+        VSP4AngleServo1 = -VSP4Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP4Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP4Angle, 4)
+            - 1.915 * Math.pow(10, -4) * Math.pow(VSP4Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP4Angle, 2) - 1.610 * Math.pow(10, -1) * VSP4Angle
+            - 22.44);
+        VSP4AngleServo2 = -VSP4Radius / 45 * 10 * (-5.415 * Math.pow(10, -10) * Math.pow(VSP4Angle, 5) + 4.225 * Math.pow(10, -7) * Math.pow(VSP4Angle, 4)
+            - 9.197 * Math.pow(10, -5) * Math.pow(VSP4Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP4Angle, 2) + 2.585 * Math.pow(10, -1) * VSP4Angle
+            + 31.42);
+        //Moving servo motor to orientate propellers
+        if (bubblot1YoctoModules.yServo1_VSPTopLeft_1) {
+            bubblot1YoctoModules.yServo1_VSPTopLeft_1.set_position(VSP1AngleServo1);
         }
-        if (bubblot1YoctoModules.yServo1_VSPTopLeft_Y) {
-            bubblot1YoctoModules.yServo1_VSPTopLeft_Y.set_position(VSP1AngleServo2);
+        if (bubblot1YoctoModules.yServo1_VSPTopLeft_2) {
+            bubblot1YoctoModules.yServo1_VSPTopLeft_2.set_position(VSP1AngleServo2);
         }
+        if (bubblot1YoctoModules.yServo1_VSPTopRight_1) {
+            bubblot1YoctoModules.yServo1_VSPTopRight_1.set_position(VSP2AngleServo1);
+        }
+        if (bubblot1YoctoModules.yServo1_VSPTopRight_2) {
+            bubblot1YoctoModules.yServo1_VSPTopRight_2.set_position(VSP2AngleServo2);
+        }
+        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_1) {
+            bubblot1YoctoModules.yServo2_VSPBottomLeft_1.set_position(VSP3AngleServo1);
+        }
+        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_2) {
+            bubblot1YoctoModules.yServo2_VSPBottomLeft_2.set_position(VSP3AngleServo2);
+        }
+        if (bubblot1YoctoModules.yServo2_VSPBottomRight_1) {
+            bubblot1YoctoModules.yServo2_VSPBottomRight_1.set_position(VSP4AngleServo1);
+        }
+        if (bubblot1YoctoModules.yServo2_VSPBottomRight_2) {
+            bubblot1YoctoModules.yServo2_VSPBottomRight_2.set_position(VSP4AngleServo2);
+        }     
     }
 
     //Computer the length of the winder

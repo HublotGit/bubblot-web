@@ -1290,7 +1290,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                             $scope.rightData.engine3Angle = 180 + 135;
                             $scope.rightData.engine4Angle = 0 + 135;
                         }
-                        $scope.rightData.engine1Radius = (spwData.rz * spwData.rz) / (spwDataMax * spwDataMax) * 100;
+                        $scope.rightData.engine1Radius = (spwData.rz * spwData.rz) / (spwDataMax * spwDataMax) * 60;
                         $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
                         $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
                         $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;

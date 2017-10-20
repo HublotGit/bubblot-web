@@ -1187,16 +1187,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         && Math.abs(spwData.tx) >= Math.abs(spwData.rx) && Math.abs(spwData.tx) >= Math.abs(spwData.ry)
                         && Math.abs(spwData.tx) >= Math.abs(spwData.rz)) {
                         if (spwData.tx >= 0) {
-                            $scope.rightData.engine1Angle = 180;
-                            $scope.rightData.engine2Angle = 0;
-                            $scope.rightData.engine3Angle = 180;
-                            $scope.rightData.engine4Angle = 0;
+                            $scope.rightData.engine1Angle = 180 + 135;
+                            $scope.rightData.engine2Angle = 0 + 135;
+                            $scope.rightData.engine3Angle = 180 + 135;
+                            $scope.rightData.engine4Angle = 0 + 135;
                         }
                         else {
-                            $scope.rightData.engine1Angle = 0;
-                            $scope.rightData.engine2Angle = 180;
-                            $scope.rightData.engine3Angle = 0;
-                            $scope.rightData.engine4Angle = 180;
+                            $scope.rightData.engine1Angle = 0 + 135;
+                            $scope.rightData.engine2Angle = 180 + 135;
+                            $scope.rightData.engine3Angle = 0 + 135;
+                            $scope.rightData.engine4Angle = 180 + 135;
                         }
                         $scope.rightData.engine1Radius = (spwData.tx * spwData.tx) / (spwDataMax * spwDataMax) * 100;
                         $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
@@ -1206,16 +1206,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     else if (Math.abs(spwData.ty) >= Math.abs(spwData.tz) && Math.abs(spwData.ty) >= Math.abs(spwData.rx)
                         && Math.abs(spwData.ty) >= Math.abs(spwData.ry) && Math.abs(spwData.ty) >= Math.abs(spwData.rz)) {
                         if (spwData.ty >= 0) {
-                            $scope.rightData.engine1Angle = 180;
-                            $scope.rightData.engine2Angle = 180;
-                            $scope.rightData.engine3Angle = 0;
-                            $scope.rightData.engine4Angle = 0;
+                            $scope.rightData.engine1Angle = 180 + 135;
+                            $scope.rightData.engine2Angle = 180 + 135;
+                            $scope.rightData.engine3Angle = 0 + 135;
+                            $scope.rightData.engine4Angle = 0 + 135;
                         }
                         else {
-                            $scope.rightData.engine1Angle = 0;
-                            $scope.rightData.engine2Angle = 0;
-                            $scope.rightData.engine3Angle = 180;
-                            $scope.rightData.engine4Angle = 180;
+                            $scope.rightData.engine1Angle = 0 + 135;
+                            $scope.rightData.engine2Angle = 0 + 135;
+                            $scope.rightData.engine3Angle = 180 + 135;
+                            $scope.rightData.engine4Angle = 180 + 135;
                         }
                         $scope.rightData.engine1Radius = (spwData.ty * spwData.ty) / (spwDataMax * spwDataMax) * 100;
                         $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
@@ -1225,16 +1225,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     else if (Math.abs(spwData.tz) >= Math.abs(spwData.rx) && Math.abs(spwData.tz) >= Math.abs(spwData.ry)
                         && Math.abs(spwData.tz) >= Math.abs(spwData.rz)) {
                         if (spwData.tz >= 0) {
-                            $scope.rightData.engine1Angle = 90;
-                            $scope.rightData.engine2Angle = 270;
-                            $scope.rightData.engine3Angle = 270;
-                            $scope.rightData.engine4Angle = 90;
+                            $scope.rightData.engine1Angle = 90 + 135;
+                            $scope.rightData.engine2Angle = 270 + 135 - 360;
+                            $scope.rightData.engine3Angle = 270 + 135 - 360;
+                            $scope.rightData.engine4Angle = 90 + 135;
                         }
                         else {
-                            $scope.rightData.engine1Angle = 270;
-                            $scope.rightData.engine2Angle = 90;
-                            $scope.rightData.engine3Angle = 90;
-                            $scope.rightData.engine4Angle = 270;
+                            $scope.rightData.engine1Angle = 270 + 135 - 360;
+                            $scope.rightData.engine2Angle = 90 + 135;
+                            $scope.rightData.engine3Angle = 90 + 135;
+                            $scope.rightData.engine4Angle = 270 + 135 - 360;
                         }
                         $scope.rightData.engine1Radius = (spwData.tz * spwData.tz) / (spwDataMax * spwDataMax) * 100;
                         $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
@@ -1243,16 +1243,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else if (Math.abs(spwData.rx) >= Math.abs(spwData.ry) && Math.abs(spwData.rx) >= Math.abs(spwData.rz)) {
                         if (spwData.rx >= 0) {
-                            $scope.rightData.engine1Angle = 270;
-                            $scope.rightData.engine2Angle = 90;
-                            $scope.rightData.engine3Angle = 270;
-                            $scope.rightData.engine4Angle = 90;
+                            $scope.rightData.engine1Angle = 270 + 135 - 360;
+                            $scope.rightData.engine2Angle = 90 + 135;
+                            $scope.rightData.engine3Angle = 270 + 135 - 360;
+                            $scope.rightData.engine4Angle = 90 + 135;
                         }
                         else {
-                            $scope.rightData.engine1Angle = 90;
-                            $scope.rightData.engine2Angle = 270;
-                            $scope.rightData.engine3Angle = 90;
-                            $scope.rightData.engine4Angle = 270;
+                            $scope.rightData.engine1Angle = 90 + 135;
+                            $scope.rightData.engine2Angle = 270 + 135 - 360;
+                            $scope.rightData.engine3Angle = 90 + 135;
+                            $scope.rightData.engine4Angle = 270 + 135 - 360;
                         }
                         $scope.rightData.engine1Radius = (spwData.rx * spwData.rx) / (spwDataMax * spwDataMax) * 100;
                         $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
@@ -1261,16 +1261,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else if (Math.abs(spwData.ry) >= Math.abs(spwData.rz)) {
                         if (spwData.ry >= 0) {
-                            $scope.rightData.engine1Angle = 270;
-                            $scope.rightData.engine2Angle = 270;
-                            $scope.rightData.engine3Angle = 90;
-                            $scope.rightData.engine4Angle = 90;
+                            $scope.rightData.engine1Angle = 270 + 135 - 360;
+                            $scope.rightData.engine2Angle = 270 + 135 - 360;
+                            $scope.rightData.engine3Angle = 90 + 135;
+                            $scope.rightData.engine4Angle = 90 + 135;
                         }
                         else {
-                            $scope.rightData.engine1Angle = 90;
-                            $scope.rightData.engine2Angle = 90;
-                            $scope.rightData.engine3Angle = 270;
-                            $scope.rightData.engine4Angle = 270;
+                            $scope.rightData.engine1Angle = 90 + 135;
+                            $scope.rightData.engine2Angle = 90 + 135;
+                            $scope.rightData.engine3Angle = 270 + 135 - 360;
+                            $scope.rightData.engine4Angle = 270 + 135 - 360;
                         }
                         $scope.rightData.engine1Radius = (spwData.ry * spwData.ry) / (spwDataMax * spwDataMax) * 100;
                         $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
@@ -1279,16 +1279,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else {
                         if (spwData.rz >= 0) {
-                            $scope.rightData.engine1Angle = 180;
-                            $scope.rightData.engine2Angle = 0;
-                            $scope.rightData.engine3Angle = 0;
-                            $scope.rightData.engine4Angle = 180;
+                            $scope.rightData.engine1Angle = 180 + 135;
+                            $scope.rightData.engine2Angle = 0 + 135
+                            $scope.rightData.engine3Angle = 0 + 135;
+                            $scope.rightData.engine4Angle = 180 + 135;
                         }
                         else {
-                            $scope.rightData.engine1Angle = 0;
-                            $scope.rightData.engine2Angle = 180;
-                            $scope.rightData.engine3Angle = 180;
-                            $scope.rightData.engine4Angle = 0;
+                            $scope.rightData.engine1Angle = 0 + 135;
+                            $scope.rightData.engine2Angle = 180 + 135;
+                            $scope.rightData.engine3Angle = 180 + 135;
+                            $scope.rightData.engine4Angle = 0 + 135;
                         }
                         $scope.rightData.engine1Radius = (spwData.rz * spwData.rz) / (spwDataMax * spwDataMax) * 100;
                         $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;

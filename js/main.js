@@ -244,6 +244,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yTilt_Roll: null,
         yTilt_Pitch: null,
         yCompass: null,
+        yQt_gx: null,
+        yQt_gy: null,
+        yQt_gz: null,
         yServo1_Camera: null,
         yServo1_VSPTopLeft_1: null,
         yServo1_VSPTopLeft_2: null,
@@ -266,8 +269,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yPwmOutput2: 'PWM2_12345',
         yGenericSensor: 'RX010V_12345',
         yDigitalIO: 'MAXIO_12345',
-        yTilt: 'Y3DMK001-68844',
-        yCompass: 'Y3DMK001-68844',
+        y3d: 'Y3DMK002-A6AB2',
         yGps: 'GPS_12345',
         yServo1: 'SERVORC1-510C2',
         //yServo2: 'SERVORC1-510C2',
@@ -332,35 +334,35 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             ).then(() => {
                 // by default use any connected module suitable for the demo
                 //Connexion to tilt module
-                modules.yTilt_Roll = YTilt.FindTilt(serials.yTilt + ".tilt1");
+                modules.yTilt_Roll = YTilt.FindTilt(serials.y3d + ".tilt1");
                 modules.yTilt_Roll.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yTilt + ".tilt1");
+                        console.log('Using module ' + serials.y3d + ".tilt1");
                         modules.yTilt_Roll.registerValueCallback(computeRoll);
                     }
                     else {
-                        console.log("Can't find module " + serials.yTilt + ".tilt1");
+                        console.log("Can't find module " + serials.y3d + ".tilt1");
                     }
                 })
-                modules.yTilt_Pitch = YTilt.FindTilt(serials.yTilt + ".tilt2");
+                modules.yTilt_Pitch = YTilt.FindTilt(serials.y3d + ".tilt2");
                 modules.yTilt_Pitch.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yTilt + ".tilt2");
+                        console.log('Using module ' + serials.y3d + ".tilt2");
                         modules.yTilt_Pitch.registerValueCallback(computePitch);
                     }
                     else {
-                        console.log("Can't find module " + serials.yTilt + ".tilt2");
+                        console.log("Can't find module " + serials.y3d + ".tilt2");
                     }
                 })
                 //Connexion to compass module
-                modules.yCompass = YCompass.FindCompass(serials.yCompass + ".compass");
+                modules.yCompass = YCompass.FindCompass(serials.y3d + ".compass");
                 modules.yCompass.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yCompass + ".compass");
+                        console.log('Using module ' + serials.y3d + ".compass");
                         modules.yCompass.registerValueCallback(computeCompass);
                     }
                     else {
-                        console.log("Can't find module " + serials.yCompass + ".compass");
+                        console.log("Can't find module " + serials.y3d + ".compass");
                     }
                 })
             }
@@ -479,6 +481,51 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else {
                         console.log("Can't find module " + serials.yAnButton + ".anButton1");
+                    }
+                })
+            }
+            ).then(() => {
+                // by default use any connected module suitable for the demo
+                //Connexion to gyro x module
+                modules.yQt_gx = YQt.FindQt(serials.y3d + ".w");
+                modules.yQt_gx.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using device ' + serials.y3d + ".w");
+                        modules.yQt_gx.set_logicalName("gx").then(() => {
+                            modules.yQt_gx.registerValueCallback(computeGyroX);
+                            console.log('Device ' + serials.y3d + ".w renamed " + serials.y3d + ".gx");
+                        })
+                    }
+                    else {
+                        console.log("Can't find module " + serials.y3d + ".w");
+                    }
+                })
+                //Connexion to gyro y module
+                modules.yQt_gy = YQt.FindQt(serials.y3d + ".x");
+                modules.yQt_gy.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using device ' + serials.y3d + ".x");
+                        modules.yQt_gy.set_logicalName("gy").then(() => {
+                            modules.yQt_gy.registerValueCallback(computeGyroY);
+                            console.log('Device ' + serials.y3d + ".x renamed " + serials.y3d + ".gy");
+                        })
+                    }
+                    else {
+                        console.log("Can't find module " + serials.y3d + ".x");
+                    }
+                })
+                //Connexion to gyro z module
+                modules.yQt_gz = YQt.FindQt(serials.y3d + ".y");
+                modules.yQt_gz.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using device ' + serials.y3d + ".y");
+                        modules.yQt_gz.set_logicalName("gz").then(() => {
+                            modules.yQt_gz.registerValueCallback(computeGyroZ);
+                            console.log('Device ' + serials.y3d + ".y renamed " + serials.y3d + ".gz");
+                        })
+                    }
+                    else {
+                        console.log("Can't find module " + serials.y3d + ".y");
                     }
                 })
             }
@@ -1343,7 +1390,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             - 9.197 * Math.pow(10, -5) * Math.pow(VSP1Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP1Angle, 2) + 2.585 * Math.pow(10, -1) * VSP1Angle
             + 31.42);
         VSP2AngleServo1 = -VSP2Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP2Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP2Angle, 4)
-            - 1.915 * Math.pow(10, -4) * Math.pow(VSP1Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP2Angle, 2) - 1.610 * Math.pow(10, -1) * VSP2Angle
+            - 1.915 * Math.pow(10, -4) * Math.pow(VSP2Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP2Angle, 2) - 1.610 * Math.pow(10, -1) * VSP2Angle
             - 22.44);
         VSP2AngleServo2 = -VSP2Radius / 45 * 10 * (-5.415 * Math.pow(10, -10) * Math.pow(VSP2Angle, 5) + 4.225 * Math.pow(10, -7) * Math.pow(VSP2Angle, 4)
             - 9.197 * Math.pow(10, -5) * Math.pow(VSP2Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP2Angle, 2) + 2.585 * Math.pow(10, -1) * VSP2Angle
@@ -1384,7 +1431,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         }
         if (bubblot1YoctoModules.yServo2_VSPBottomRight_2) {
             bubblot1YoctoModules.yServo2_VSPBottomRight_2.set_position(VSP4AngleServo2);
-        }     
+        }
     }
 
     //Computer the length of the winder
@@ -1475,6 +1522,18 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 getValues();
             }
         }
+    }
+    var gyroX=0,gyroY=0,gyroZ=0;
+    var gyroXOk=false, gyroYOk=false, gyroZOk=false;
+    function computeGyroX(object, value) {
+        gyroX=value;
+    }
+    function computeGyroY(object, value) {
+        gyroY=value;
+    }
+    function computeGyroZ(object, value) {
+        gyroZ=value;
+        console.log(value);
     }
     function computeCompass(object, value) {
         $scope.leftDataPump.gpsCompass = value;

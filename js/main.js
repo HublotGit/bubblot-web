@@ -472,20 +472,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
             ).then(() => {
                 // by default use any connected module suitable for the demo
-                //Connexion to anbutton module
-                modules.yAnButton_Turbidity = YAnButton.FindAnButton(serials.yAnButton + ".anButton2");
-                modules.yAnButton_Turbidity.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using device ' + serials.yAnButton + ".anButton1");
-                        modules.yAnButton_Turbidity.registerValueCallback(computeTurbidity);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yAnButton + ".anButton1");
-                    }
-                })
-            }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
                 //Connexion to gyro x module
                 modules.yQt_gx = YQt.FindQt(serials.y3d + ".w");
                 modules.yQt_gx.isOnline().then((onLine) => {
@@ -526,19 +512,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else {
                         console.log("Can't find module " + serials.y3d + ".y");
-                    }
-                })
-            }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to led module
-                modules.yColorLedCluster_Turbidity = YColorLedCluster.FindColorLedCluster(serials.yColorLedCluster);
-                modules.yColorLedCluster_Turbidity.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yColorLedCluster);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yColorLedCluster);
                     }
                 })
             }
@@ -1234,13 +1207,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         && Math.abs(spwData.tx) >= Math.abs(spwData.rx) && Math.abs(spwData.tx) >= Math.abs(spwData.ry)
                         && Math.abs(spwData.tx) >= Math.abs(spwData.rz)) {
                         if (spwData.tx >= 0) {
-                            $scope.rightData.engine1Angle = 180 + 135;
+                            //$scope.rightData.engine1Angle = 180 + 135;
+                            $scope.rightData.engine1Angle = 0 + 135;
                             $scope.rightData.engine2Angle = 0 + 135;
                             $scope.rightData.engine3Angle = 180 + 135;
                             $scope.rightData.engine4Angle = 0 + 135;
                         }
                         else {
-                            $scope.rightData.engine1Angle = 0 + 135;
+                            //$scope.rightData.engine1Angle = 0 + 135;
+                            $scope.rightData.engine1Angle = 180 + 135;
                             $scope.rightData.engine2Angle = 180 + 135;
                             $scope.rightData.engine3Angle = 0 + 135;
                             $scope.rightData.engine4Angle = 180 + 135;
@@ -1272,12 +1247,14 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     else if (Math.abs(spwData.tz) >= Math.abs(spwData.rx) && Math.abs(spwData.tz) >= Math.abs(spwData.ry)
                         && Math.abs(spwData.tz) >= Math.abs(spwData.rz)) {
                         if (spwData.tz >= 0) {
+                            //$scope.rightData.engine1Angle = 90 + 135;
                             $scope.rightData.engine1Angle = 90 + 135;
                             $scope.rightData.engine2Angle = 270 + 135 - 360;
                             $scope.rightData.engine3Angle = 270 + 135 - 360;
                             $scope.rightData.engine4Angle = 90 + 135;
                         }
                         else {
+                            //$scope.rightData.engine1Angle = 270 + 135 - 360;
                             $scope.rightData.engine1Angle = 270 + 135 - 360;
                             $scope.rightData.engine2Angle = 90 + 135;
                             $scope.rightData.engine3Angle = 90 + 135;
@@ -1523,17 +1500,17 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
         }
     }
-    var gyroX=0,gyroY=0,gyroZ=0;
-    var gyroXOk=false, gyroYOk=false, gyroZOk=false;
+    var gyroX = 0, gyroY = 0, gyroZ = 0;
+    var gyroXOk = false, gyroYOk = false, gyroZOk = false;
     function computeGyroX(object, value) {
-        gyroX=value;
+        gyroX = value;
+        console.log(value);
     }
     function computeGyroY(object, value) {
-        gyroY=value;
+        gyroY = value;
     }
     function computeGyroZ(object, value) {
-        gyroZ=value;
-        console.log(value);
+        gyroZ = value;
     }
     function computeCompass(object, value) {
         $scope.leftDataPump.gpsCompass = value;

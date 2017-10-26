@@ -25,7 +25,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         spacerx = 50,
         spacery = 50,
         errmsg = new YErrorMsg(),
-        spwDataMax = 5000,
+        spwDataMax = 500,
         VSP1Radius = 0,
         VSP1Angle = 0,
         VSP1AngleServo1 = 0,
@@ -265,17 +265,17 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
 
     var serialBubblot1 = {
-        yPwmOutput1: 'PWM1_12345',
-        yPwmOutput2: 'PWM2_12345',
+        yPwmOutput1: 'Yocto-Pwm-Out1',
+        yPwmOutput2: 'Yocto-Pwm-Out2',
         yGenericSensor: 'RX010V_12345',
-        yDigitalIO: 'MAXIO_12345',
-        y3d: 'Y3DMK002-A6AB2',
-        yGps: 'GPS_12345',
-        yServo1: 'SERVORC1-510C2',
-        //yServo2: 'SERVORC1-510C2',
+        yDigitalIO: 'Yocto-DigitalIO',
+        y3d: 'Yocto-3d',
+        yGps: 'Yocto-Gps',
+        yServo1: 'Yocto-Servo1',
+        yServo2: 'Yocto-Servo2',
         yColorLedCluster: 'YRGBLED2-7F244',
-        yTemperature: 'TMPSENS1-68156',
-        yAnButton: 'YBUTTON1-80841',
+        yTemperature: 'Yocto-Temperature',
+        yAnButton: 'Yocto-AnButton',
     }
 
     var pumpYoctoModules = {
@@ -300,7 +300,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
 
     var serialPump = {
-        yPwmOutput: 'YPWMTX01-4FFB9',
+        yPwmOutput: 'Yocto-Pwm-Out',
     }
 
     var winderYoctoModules = {
@@ -311,9 +311,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
 
     var serialWinder = {
-        yRelay1: 'RELAYLO1-79765',
-        yPwmOutput1: 'YPWMTX01-4FFB9',
-        yPwmInput1: 'YPWMRX01-79FB9'
+        yRelay1: 'Yocto-Relay1',
+        yPwmOutput1: 'Yocto-Pwm-Out1',
+        yPwmInput1: 'Yocto-Pwm-In1'
     }
 
     function connectYoctoBubblot(ipaddress, serials, modules) {
@@ -623,7 +623,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     function init() {
         //Connect to Yocto module
-        connectYoctoBubblot("169.254.58.33", serialBubblot1, bubblot1YoctoModules);
+        connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
         //connectYoctoWinder("169.254.58.33", serialWinder, winderYoctoModules);
         //connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);

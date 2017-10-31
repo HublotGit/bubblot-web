@@ -1604,8 +1604,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         minutes = date.getMinutes();
         seconds = date.getSeconds();
 
-        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 40 * Math.random() - 10;
-        $scope.rightData.distanceyToPump = $scope.rightData.distanceyToPump + 40 * Math.random() - 10;
+        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 30 * Math.random() - 10;
+        $scope.rightData.distanceyToPump = $scope.rightData.distanceyToPump + 30 * Math.random() - 10;
 
         var fe = false, pb = false, cu = false, sn = false, isVa = false, isMovie = false;
         counter1++;

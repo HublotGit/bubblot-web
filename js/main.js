@@ -179,11 +179,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         bubblots: [],
         bubblotCursor: 1,
         dates: [],
-        dateCursor: [],
-        latitudeCursor: [],
-        longitudeCursor: [],
-        depthCursor: [],
-        tempCursor: [],
+        dateCursor: [2017,2,17,17,20],
+        latitudeCursor: null,
+        longitudeCursor: null,
+        depthCursor: 0,
+        tempCursor: 0,
         dataxPump: [],
         datayPump: [],
         datax: new Array(3),
@@ -213,7 +213,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         turbiCursor: false,
         magnCursor: false,
         movieCursor: false,
-        updatePanel: false
+        updatePanel: false,
+        graphName: "",
     };
     $scope.notifData = {
         bubblotSecurity: false,
@@ -624,8 +625,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     function init() {
         //Connect to Yocto module
         connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
-        //connectYoctoWinder("169.254.58.33", serialWinder, winderYoctoModules);
-        //connectYoctoPump("169.254.58.33", serialPump, pumpYoctoModules);
+        //connectYoctoWinder1("192.168.5.1", serialWinder, winderYoctoModules);
+        //connectYoctoWinder2("192.168.5.2", serialWinder, winderYoctoModules);
+        //connectYoctoWinder3("192.168.5.3", serialWinder, winderYoctoModules);
+        //connectYoctoWinder4("192.168.5.4", serialWinder, winderYoctoModules);
+        //connectYoctoPump("192.168.4.2", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
 
         //Connection to platform camera 
@@ -1600,8 +1604,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         minutes = date.getMinutes();
         seconds = date.getSeconds();
 
-        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 20 * Math.random() - 10;
-        $scope.rightData.distanceyToPump = $scope.rightData.distanceyToPump + 20 * Math.random() - 10;
+        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 40 * Math.random() - 10;
+        $scope.rightData.distanceyToPump = $scope.rightData.distanceyToPump + 40 * Math.random() - 10;
 
         var fe = false, pb = false, cu = false, sn = false, isVa = false, isMovie = false;
         counter1++;
@@ -1629,8 +1633,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 fe = true;
                 isVa = true;
             }
-            for (var i = 0; i <= 30; i++) {
-                dataVa.push(1 * Math.random());
+            for (var i = 0; i <= 15; i++) {
+                var obj = { x: 2 * i, y: 20 * Math.random() };
+                dataVa.push(obj);
             }
             counter1 = 0;
         }
@@ -1661,7 +1666,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         }
 
         couch.insert("bubblot", {
-            "data_key": [year, month, day, hours, minutes, seconds, 1],
+            "data_key": [year, 2, 17, hours, minutes, seconds, 1],
             "data": {
                 pumpLatitude: $scope.leftDataPump.localLat,
                 pumpLongitude: $scope.leftDataPump.localLong,

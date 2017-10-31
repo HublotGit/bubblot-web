@@ -4,8 +4,9 @@
         .module('bubblot')
         .controller('mapPanelCtrl', mapPanelCtrl);
 
-    function mapPanelCtrl($scope) {
+    function mapPanelCtrl($scope, $element) {
         var vm = this;
+        $scope.graphName="V-A";
         //Initialiazing variables
         $scope.datax[0] = [], $scope.datay[0] = [], $scope.datax[1] = [], $scope.datay[1] = [], $scope.datax[2] = [], $scope.datay[2] = [];
         $scope.avgMagnetism[0] = [], $scope.avgMagnetism[1] = [], $scope.avgMagnetism[2] = [];
@@ -52,7 +53,7 @@
             stopTime[0].value = stopTime[1].value;
         }
 
-        //Extract data from the database into the program memory
+        //Extract data from the database into the program memory when clicking submit
         $scope.extractData = function (element) {
             //Get time slot 
             var dataStartYear = parseInt(startDay[0].value[0] + startDay[0].value[1] + startDay[0].value[2] + startDay[0].value[3]);
@@ -85,7 +86,7 @@
                 endkey: [dataEndYear, dataEndMonth, dataEndDay, 0, 0, 0, 3]
             };
             //Searching in the database
-            couch.get("bubblot", viewUrl, queryOptions).then(({data, headers, status}) => {
+            couch.get("bubblot", viewUrl, queryOptions).then(({ data, headers, status }) => {
                 //Loop for running through each data received
                 for (var i = 0; i < data.rows.length; i++) {
                     //Get from which bubblot comes the data
@@ -141,84 +142,160 @@
                 // ...or err.code=EUNKNOWN if statusCode is unexpected 
             });
         }
-
-        //Update the information panel after clicking on the map
-        var graphInfo;
-        if (graphInfo != null) {
-            graphInfo.destroy();
-        }
-        $scope.updateInfoPanel = function (element) {
-            var bubblot = document.getElementsByClassName("bubblot-info");
-            var day = document.getElementsByClassName("date-info");
-            var time = document.getElementsByClassName("time-info");
-            var latitude = document.getElementsByClassName("lat-info");
-            var longitude = document.getElementsByClassName("long-info");
-            var depth = document.getElementsByClassName("depth-info");
-            var temp = document.getElementsByClassName("temp-info");
-
-            //Display the information values
-            if (!$scope.vaCursor && !$scope.turbiCursor && !$scope.movieCursor && !$scope.magnCursor) {
-                for (var j = 0; j < bubblot.length; j++) {
-                    bubblot[j].innerHTML = "";
-                    day[j].innerHTML = "";
-                    time[j].innerHTML = "";
-                    latitude[j].innerHTML = "";
-                    longitude[j].innerHTML = "";
-                    depth[j].innerHTML = "";
-                    temp[j].innerHTML = "";
-                }
-            }
-            else {
-                for (var j = 0; j < bubblot.length; j++) {
-                    bubblot[j].innerHTML = $scope.bubblotCursor;
-                    day[j].innerHTML = $scope.dateCursor[2] + "/" + $scope.dateCursor[1] + "/" + $scope.dateCursor[0];
-                    time[j].innerHTML = $scope.dateCursor[3] + ":" + $scope.dateCursor[4];
-                    latitude[j].innerHTML = ($scope.latitudeCursor / 30).toFixed(6) + "°";
-                    longitude[j].innerHTML = ($scope.longitudeCursor / 30).toFixed(6) + "°";
-                    depth[j].innerHTML = $scope.depthCursor + " [m]";
-                    temp[j].innerHTML = $scope.tempCursor + " [°C]";
-                }
-            }
-
-            //Draw the information graph if there is one
-            var panelContainer = document.getElementsByClassName("panel-graph-container");
-            if (graphInfo != null) {
-                graphInfo.destroy();
-            }
-            var context = element.getContext("2d");
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-            if ($scope.vaCursor) {
-                drawGraphVa(context);
-                for (var j = 0; j < panelContainer.length; j++) {
-                    panelContainer[j].innerHTML = "V-A";
-                }
-            }
-            else if ($scope.turbiCursor) {
-                drawGraphTurbi(context);
-                for (var j = 0; j < panelContainer.length; j++) {
-                    panelContainer[j].innerHTML = "Turbidity";
-                }
-            }
-            else if ($scope.magnCursor) {
-                drawGraphMagnetism(context);
-                for (var j = 0; j < panelContainer.length; j++) {
-                    panelContainer[j].innerHTML = "Magnetism";
-                }
-            }
-            else if ($scope.movieCursor) {
-                for (var j = 0; j < panelContainer.length; j++) {
-                    panelContainer[j].innerHTML = "Video";
-                }
-            }
-            else {
-                for (var j = 0; j < panelContainer.length; j++) {
-                    panelContainer[j].innerHTML = "";
-                }
-            }
+        //Init datasets for graph
+        var initData = {
+            datasets: [{
+                borderColor: 'white',
+                pointBackgroundColor: 'white',
+                borderWidth: 2,
+                pointRadius: 1,
+                data: 0,
+            }]
         };
-
+        //Init graph in information panel 
+        var graphInfoData;
+        var context = $element.find("canvas")[0].getContext("2d");
+        var graphInfo = new Chart(context, {
+            type: 'line',
+            data: initData,
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: false,
+                },
+                tooltips: {
+                    enabled: false,
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom',
+                        scaleLabel: {
+                            display: true,
+                            fontColor: "white",
+                            fontSize: 20,
+                            labelString: 'V',
+                        },
+                        ticks: {
+                            min: 0,
+                            max: 5,
+                            stepSize: 1,
+                            fontColor: "white"
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "white",
+                        }
+                    }],
+                    yAxes: [{
+                        type: 'linear',
+                        position: 'left',
+                        scaleLabel: {
+                            display: true,
+                            fontColor: "white",
+                            fontSize: 20,
+                            labelString: 'mA',
+                        },
+                        ticks: {
+                            min: 0,
+                            max: 1,
+                            stepSize: 0.2,
+                            fontColor: "white"
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "white",
+                        }
+                    }]
+                }
+            }
+        });
+        //Update the information graph when clicking on map
+        $scope.updateInfoPanel = function (element) {
+            //If cursor is on VA spot, plot V-A graph
+            if ($scope.vaCursor) {
+                while(graphInfo.data.datasets.length>0){
+                    graphInfo.data.datasets.pop();
+                };
+                graphInfo.data.datasets.push({
+                    borderColor: 'white',
+                    pointBackgroundColor: 'white',
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    data: $scope.infoVa,
+                });
+                graphInfo.options.scales.xAxes[0].ticks.max = 30;
+                graphInfo.options.scales.xAxes[0].ticks.stepSize = 5;
+                graphInfo.options.scales.xAxes[0].scaleLabel.labelString = "V";
+                graphInfo.options.scales.yAxes[0].ticks.max = 20;
+                graphInfo.options.scales.yAxes[0].ticks.stepSize = 5;
+                graphInfo.options.scales.yAxes[0].scaleLabel.labelString = "mA";
+                $scope.graphName = "V-A";
+            }
+            //If cursor click on turbidity spot, plot turbi graph
+            else if ($scope.turbiCursor) {
+                while(graphInfo.data.datasets.length>0){
+                    graphInfo.data.datasets.pop();
+                };
+                graphInfo.data.datasets.push({
+                    borderColor: 'red',
+                    pointBackgroundColor: 'red',
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    data: $scope.infoTurbiRed,
+                });
+                graphInfo.data.datasets.push({
+                    borderColor: 'green',
+                    pointBackgroundColor: 'green',
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    data: $scope.infoTurbiGreen,
+                });
+                graphInfo.data.datasets.push({
+                    borderColor: 'DodgerBlue',
+                    pointBackgroundColor: 'DodgerBlue',
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    data: $scope.infoTurbiBlue,
+                });
+                graphInfo.options.scales.xAxes[0].ticks.max = 30;
+                graphInfo.options.scales.xAxes[0].ticks.stepSize = 5;
+                graphInfo.options.scales.xAxes[0].scaleLabel.labelString = "s";
+                graphInfo.options.scales.yAxes[0].ticks.max = 100;
+                graphInfo.options.scales.yAxes[0].ticks.stepSize = 20;
+                graphInfo.options.scales.yAxes[0].scaleLabel.labelString = "%";
+                $scope.graphName = "Turbidity";
+            }
+            //If cursor click on magnetic spot, plot magn graph
+            else if ($scope.magnCursor) {
+                while(graphInfo.data.datasets.length>0){
+                    graphInfo.data.datasets.pop();
+                };
+                graphInfo.data.datasets.push({
+                    borderColor: 'white',
+                    pointBackgroundColor: 'white',
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    data: $scope.infoMagnetism,
+                });
+                graphInfo.data.datasets[0].data = $scope.infoMagnetism;
+                graphInfo.options.scales.xAxes[0].ticks.max = 30;
+                graphInfo.options.scales.xAxes[0].ticks.stepSize = 5;
+                graphInfo.options.scales.xAxes[0].scaleLabel.labelString = "s";
+                graphInfo.options.scales.yAxes[0].ticks.max = 5;
+                graphInfo.options.scales.yAxes[0].ticks.stepSize = 1;
+                graphInfo.options.scales.yAxes[0].scaleLabel.labelString = "T";
+                $scope.graphName = "Magnetism";
+            }
+            //If cursor click on movie spot, plot movie
+            else if ($scope.movieCursor) {
+                $scope.graphName = "Video";
+            }
+            graphInfo.update();
+        };
         function drawGraphVa(context) {
             var dataBar = [], dataX = [];
+
             for (var i = 0; i < 30; i++) {
                 dataX.push("");
                 if (i == 7 || i == 12 || i == 19 || i == 22) {
@@ -234,20 +311,16 @@
                     type: 'bar',
                     data: dataBar,
                     fill: true,
-                    pointHoverBackgroundColor: '#000',
-                    pointHoverBorderColor: '#000',
                     backgroundColor: 'red',
                     borderColor: 'red',
                 },
                 {
                     type: 'line',
+                    data: $scope.infoVa,
                     borderColor: 'white',
                     pointBackgroundColor: 'white',
-                    pointHoverBackgroundColor: '#000',
-                    pointHoverBorderColor: '#000',
                     borderWidth: 2,
                     pointRadius: 1,
-                    data: $scope.infoVa
                 }]
             };
             graphInfo = new Chart(context, {
@@ -303,7 +376,6 @@
                 }
             });
         }
-
         function drawGraphMagnetism(context) {
             var magnetismData = {
                 datasets: [{
@@ -371,7 +443,6 @@
                 }
             });
         }
-
         function drawGraphTurbi(context) {
             var turbiData = {
                 datasets: [{
@@ -459,4 +530,4 @@
         }
     }
 
-} ());
+}());

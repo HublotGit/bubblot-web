@@ -16,9 +16,8 @@
                     dates: '=', dateCursor:'=', latitudeCursor: '=', longitudeCursor:'=', depthCursor:'=', tempCursor:'=', infoTurbiRed: '=', infoTurbiGreen: '=', infoTurbiBlue: '=', xlast:'=', ylast:'=', bubblotCursor: '=', bubblots: '='},
             link: function(scope, element, attr) {
                 scope.$watch('updatePanel', function () {
-                    scope.updateInfoPanel(element.find('canvas')[0]);
+                    scope.updateInfoPanel();
                 });
-
             }
         } 
     }

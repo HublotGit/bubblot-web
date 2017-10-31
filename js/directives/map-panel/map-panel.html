@@ -32,7 +32,7 @@
             <fieldset>
                 <legend>Informations</legend>
                 <fieldset style="position:absolute;top:65%;right:3%;height:29%;width:45%">
-                    <legend class="panel-graph-container"></legend>
+                    <legend>{{graphName}}</legend>
                     <div style="height: 80%; width: 93%;position:absolute;left:2%;top:15%;">
                         <canvas style="height:100;width:110;"></canvas>
                         <div class="metal-vi fe" ng-class="{on:vaCursor}">Fe</div>
@@ -41,13 +41,13 @@
                         <div class="metal-vi sn" ng-class="{on:vaCursor}">Sn</div>
                     </div>
                 </fieldset>
-                Bubblot: <span class="bubblot-info"></span><br><br>
-                Day: <span class="date-info"></span><br><br>
-                Time: <span class="time-info"></span><br><br>
-                Lat: <span class="lat-info"></span><br><br>
-                Long: <span class="long-info"></span><br><br>
-                Depth: <span class="depth-info"></span><br><br>
-                Temp: <span class="temp-info"></span><br>
+                Bubblot: {{bubblotCursor}}<br><br>
+                Day: {{dateCursor[2]}}/{{dateCursor[1]}}/{{dateCursor[0]}}<br><br>
+                Time: {{dateCursor[3]}}:{{dateCursor[4]}}<br><br>
+                Lat: {{(latitudeCursor/30).toFixed(3)}}°<br><br>
+                Long: {{(longitudeCursor/30).toFixed(3)}}°<br><br>
+                Depth: {{depthCursor}} m<br><br>
+                Temp: {{tempCursor}} °C<br>
             </fieldset>
         </form>
 </div>

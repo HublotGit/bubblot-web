@@ -62,14 +62,14 @@
                 }
             });
             if (shown == "winderDisplay") {
-                couchBubblot1.get("winder", "c72a484d9fe827919be35539020016fe").then(({ data, headers, status }) => {
+                couchBubblot1.get("winder", "203dcd7303db8df08d50a660c8008ee7").then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
                     couchBubblot1.update("winder", {
-                        _id: "c72a484d9fe827919be35539020016fe",
+                        _id: data._id,
                         _rev: data._rev,
-                        user: "1",
+                        user: "2",
                     }).then(({ data, headers, status }) => {
                         // data is json response 
                         // headers is an object with all response headers 
@@ -87,12 +87,12 @@
                 });
             }
             else if (hidden == "winderDisplay") {
-                couchBubblot1.get("winder", "c72a484d9fe827919be35539020016fe").then(({ data, headers, status }) => {
+                couchBubblot1.get("winder", "203dcd7303db8df08d50a660c8008ee7").then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
                     couchBubblot1.update("winder", {
-                        _id: "c72a484d9fe827919be35539020016fe",
+                        _id: data._id,
                         _rev: data._rev,
                         user: "0",
                     }).then(({ data, headers, status }) => {

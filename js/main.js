@@ -88,7 +88,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         angleB3: 90,
         angleStorage: 30,
         angleNorth: 180,
-        distancexToPump: 20,
+        distancexToPump: 20, //change for each bubblot
         distanceyToPump: 20,
         spotlightIntensity: 75,
         foglightIntensity: 75,
@@ -521,7 +521,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
 
     function connectYoctoPump(ipaddress, serials, modules) {
         var YAPI = _yocto_api.YAPI;
-        console.log(ipaddress, serials, modules);
         YAPI.LogUnhandledPromiseRejections().then(() => {
             return YAPI.DisableExceptions();
         }
@@ -623,7 +622,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     function init() {
         //Connect to Yocto module
-        connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
+        connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules); //change for each bubblot
         //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
@@ -772,6 +771,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //1 is pressed
             else if (keyCode == 49) {
                 isOne = true;
+                console.log(winderUser);
             }
             //2 is pressed
             else if (keyCode == 50) {
@@ -1571,7 +1571,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var counter1 = 0, counter2 = 0, counter3 = 0;
     //CouchDb instance of bubblot 1
     const couchBubblot1 = new NodeCouchDb({
-        host: '192.168.1.1', //IP adress bubblot 1
+        host: 'localhost', //IP adress bubblot 1, change for each bubblot
         protocol: 'http',
         port: 5984,
         auth: {
@@ -1589,7 +1589,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         minutes = date.getMinutes();
         seconds = date.getSeconds();
 
-        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 30 * Math.random() - 10;
+        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 30 * Math.random() - 10; //Change for each bubblot
         $scope.rightData.distanceyToPump = $scope.rightData.distanceyToPump + 30 * Math.random() - 10;
 
         var fe = false, pb = false, cu = false, sn = false, isVa = false, isMovie = false;
@@ -1651,7 +1651,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         }
 
         couchBubblot1.insert("bubblot", {
-            "data_key": [year, 2, 17, hours, minutes, seconds, 1],
+            "data_key": [year, 2, 17, hours, minutes, seconds, 1], //change for each bubblot
             "data": {
                 pumpLatitude: $scope.leftDataPump.localLat,
                 pumpLongitude: $scope.leftDataPump.localLong,

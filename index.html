@@ -43,6 +43,45 @@
 
     <script>
         var vlc = null;
+        var winderUser;
+        //CouchDB instance of bubblot 1
+        const couchBubblot1 = new NodeCouchDb({
+            host: 'localhost', //IP adress bubblot 1
+            protocol: 'http',
+            port: 5984,
+            auth: {
+                user: 'admin',
+                pass: 'admin'
+            }
+        });
+        //Init winder user in the dataBase 
+        couchBubblot1.get("winder", "0f14989011256516380f22bc5f003f2c").then(({ data, headers, status }) => {
+            // data is json response 
+            // headers is an object with all response headers 
+            // status is statusCode number 
+            if(data.user=="1"){ //change for each bubblot
+                couchBubblot1.update("winder", {
+                    _id: data._id,
+                    _rev: data._rev,
+                    user: "0",
+                }).then(({ data, headers, status }) => {
+                    winderUser="0";
+                    // data is json response 
+                    // headers is an object with all response headers 
+                    // status is statusCode number 
+                }, err => {
+                    // either request error occured 
+                    // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
+                    console.log(err.code);
+                });
+            }
+            else winderUser=data.user;
+        }, err => {
+            // either request error occured 
+            // ...or err.code=EDOCMISSING if document is missing 
+            // ...or err.code=EUNKNOWN if statusCode is unexpected 
+            console.log(err.code);
+        });
         function show(shown, hidden) {
             if (false) {
                 vlc = exeq(
@@ -50,35 +89,33 @@
                     'vlc rtsp://192.168.100.100:554/11'
                 );
             }
+            //Update display
             document.getElementById(hidden).style.display = 'none';
             document.getElementById(shown).style.display = 'block';
-            const couchBubblot1 = new NodeCouchDb({
-                host: '192.168.1.1', //IP adress bubblot 1
-                protocol: 'http',
-                port: 5984,
-                auth: {
-                    user: 'admin',
-                    pass: 'admin'
-                }
-            });
+            //Update the winder user in the dataBase 
             if (shown == "winderDisplay") {
-                couchBubblot1.get("winder", "203dcd7303db8df08d50a660c8008ee7").then(({ data, headers, status }) => {
+                couchBubblot1.get("winder", "0f14989011256516380f22bc5f003f2c").then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
-                    // status is statusCode number 
-                    couchBubblot1.update("winder", {
-                        _id: data._id,
-                        _rev: data._rev,
-                        user: "2",
-                    }).then(({ data, headers, status }) => {
-                        // data is json response 
-                        // headers is an object with all response headers 
-                        // status is statusCode number 
-                    }, err => {
-                        // either request error occured 
-                        // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
-                        console.log(err.code);
-                    });
+                    // status is statusCode number
+                    //Change user if no user already
+                    if(data.user=="0"){
+                        couchBubblot1.update("winder", {
+                            _id: data._id,
+                            _rev: data._rev,
+                            user: "1", //change for each bubblot
+                        }).then(({ data, headers, status }) => {
+                            winderUser="1"; //change for each bubblot
+                            // data is json response 
+                            // headers is an object with all response headers 
+                            // status is statusCode number 
+                        }, err => {
+                            // either request error occured 
+                            // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
+                            console.log(err.code);
+                        });
+                    }
+                    else winderUser=data.user;
                 }, err => {
                     // either request error occured 
                     // ...or err.code=EDOCMISSING if document is missing 
@@ -86,24 +123,29 @@
                     console.log(err.code);
                 });
             }
+            //Clear the winder user in the dataBase
             else if (hidden == "winderDisplay") {
-                couchBubblot1.get("winder", "203dcd7303db8df08d50a660c8008ee7").then(({ data, headers, status }) => {
+                couchBubblot1.get("winder", "0f14989011256516380f22bc5f003f2c").then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
-                    couchBubblot1.update("winder", {
-                        _id: data._id,
-                        _rev: data._rev,
-                        user: "0",
-                    }).then(({ data, headers, status }) => {
-                        // data is json response 
-                        // headers is an object with all response headers 
-                        // status is statusCode number 
-                    }, err => {
-                        // either request error occured 
-                        // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
-                        console.log(err.code);
-                    });
+                    //Clear user only if user it is me
+                    if(data.user == "1"){ //change for each bubblot
+                        couchBubblot1.update("winder", {
+                            _id: data._id,
+                            _rev: data._rev,
+                            user: "0",
+                        }).then(({ data, headers, status }) => {
+                            winderUser="0";
+                            // data is json response 
+                            // headers is an object with all response headers 
+                            // status is statusCode number 
+                        }, err => {
+                            // either request error occured 
+                            // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
+                            console.log(err.code);
+                        });
+                    }
                 }, err => {
                     // either request error occured 
                     // ...or err.code=EDOCMISSING if document is missing 

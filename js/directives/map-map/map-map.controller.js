@@ -81,7 +81,7 @@
                         else if ($scope.displayMagn) $scope.magnCursor = true;
                         //CouchDb instance of bubblot 1
                         const couchBubblot1 = new NodeCouchDb({
-                            host: '192.168.1.1', //IP adress bubblot 1
+                            host: 'localhost', //IP adress bubblot 1, change for each bubblot
                             protocol: 'http',
                             port: 5984,
                             auth: {

@@ -42,7 +42,7 @@
     </script>
 
     <script>
-        var vlc=null;
+        var vlc = null;
         function show(shown, hidden) {
             if (false) {
                 vlc = exeq(
@@ -52,6 +52,65 @@
             }
             document.getElementById(hidden).style.display = 'none';
             document.getElementById(shown).style.display = 'block';
+            const couchBubblot1 = new NodeCouchDb({
+                host: '192.168.1.1', //IP adress bubblot 1
+                protocol: 'http',
+                port: 5984,
+                auth: {
+                    user: 'admin',
+                    pass: 'admin'
+                }
+            });
+            if (shown == "winderDisplay") {
+                couchBubblot1.get("winder", "c72a484d9fe827919be35539020016fe").then(({ data, headers, status }) => {
+                    // data is json response 
+                    // headers is an object with all response headers 
+                    // status is statusCode number 
+                    couchBubblot1.update("winder", {
+                        _id: "c72a484d9fe827919be35539020016fe",
+                        _rev: data._rev,
+                        user: "1",
+                    }).then(({ data, headers, status }) => {
+                        // data is json response 
+                        // headers is an object with all response headers 
+                        // status is statusCode number 
+                    }, err => {
+                        // either request error occured 
+                        // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
+                        console.log(err.code);
+                    });
+                }, err => {
+                    // either request error occured 
+                    // ...or err.code=EDOCMISSING if document is missing 
+                    // ...or err.code=EUNKNOWN if statusCode is unexpected 
+                    console.log(err.code);
+                });
+            }
+            else if (hidden == "winderDisplay") {
+                couchBubblot1.get("winder", "c72a484d9fe827919be35539020016fe").then(({ data, headers, status }) => {
+                    // data is json response 
+                    // headers is an object with all response headers 
+                    // status is statusCode number 
+                    couchBubblot1.update("winder", {
+                        _id: "c72a484d9fe827919be35539020016fe",
+                        _rev: data._rev,
+                        user: "0",
+                    }).then(({ data, headers, status }) => {
+                        // data is json response 
+                        // headers is an object with all response headers 
+                        // status is statusCode number 
+                    }, err => {
+                        // either request error occured 
+                        // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
+                        console.log(err.code);
+                    });
+                }, err => {
+                    // either request error occured 
+                    // ...or err.code=EDOCMISSING if document is missing 
+                    // ...or err.code=EUNKNOWN if statusCode is unexpected 
+                    console.log(err.code);
+                });
+            }
             return false;
         }
     </script>
@@ -158,7 +217,7 @@
     <div id="winderDisplay" style="display:none;overflow:hidden">
         <div id="fond-marin" class="fond-marin">
             <!-- Camera view -->
-            
+
             <!-- Background image for demo -->
             <img src="img/fondWinderDemo.jpg" style="width:100%;height:100%;z-index: -10"></img>
             <!-- Cadrans cable winder -->

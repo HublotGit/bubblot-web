@@ -66,7 +66,7 @@
             else var infoY = $scope.yimage + ((1 * (event.screenY - clientRect.top) - $scope.ylast) / $scope.zoom);
             //Find if there is a data point at the cursor position
             //Loop for running through each bubblot 
-            var dataFound=false;
+            var dataFound = false;
             for (var j = 0; j < $scope.datax.length; j++) {
                 //Loop for running through each coordinates
                 for (var i = 0; i < $scope.datax[j].length; i++) {
@@ -74,18 +74,27 @@
                     if (infoX < $scope.datax[j][i] + 10 / $scope.zoom && infoX > $scope.datax[j][i] - 10 / $scope.zoom &&
                         infoY < $scope.datay[j][i] + 10 / $scope.zoom && infoY > $scope.datay[j][i] - 10 / $scope.zoom &&
                         ($scope.displayVa && $scope.isVa[j][i] || $scope.displayTurbi && $scope.isTurbi[j][i] || $scope.displayMagn)) {
-                        dataFound=true;
+                        dataFound = true;
                         if ($scope.isVa[j][i] && $scope.displayVa) $scope.vaCursor = true;
                         else if ($scope.isTurbi[j][i] && $scope.displayTurbi) $scope.turbiCursor = true;
                         else if ($scope.isMovie[j][i] && $scope.displayMovie) $scope.movieCursor = true;
                         else if ($scope.displayMagn) $scope.magnCursor = true;
-                        const couch = new NodeCouchDb();
+                        //CouchDb instance of bubblot 1
+                        const couchBubblot1 = new NodeCouchDb({
+                            host: '192.168.1.1', //IP adress bubblot 1
+                            protocol: 'http',
+                            port: 5984,
+                            auth: {
+                                user: 'admin',
+                                pass: 'admin'
+                            }
+                        });
                         const viewUrl = "_design/by_date/_view/allData";
                         //Key to find the corresponding document in the database
                         const queryOptions = {
                             key: [$scope.dates[j][i][0], $scope.dates[j][i][1], $scope.dates[j][i][2], $scope.dates[j][i][3], $scope.dates[j][i][4], $scope.dates[j][i][5], j + 1]
                         };
-                        couch.get("bubblot", viewUrl, queryOptions).then(({ data, headers, status }) => {
+                        couchBubblot1.get("bubblot", viewUrl, queryOptions).then(({ data, headers, status }) => {
                             //Extracting data corresponding to the cursor position
                             $scope.bubblotCursor = data.rows[0].key[6];
                             $scope.dateCursor = [data.rows[0].key[0], data.rows[0].key[1], data.rows[0].key[2], data.rows[0].key[3], data.rows[0].key[4], data.rows[0].key[5]];
@@ -113,7 +122,7 @@
                 }
                 if (dataFound == true) break;
             }
-            if(!dataFound) $scope.updatePanel = !$scope.updatePanel;
+            if (!dataFound) $scope.updatePanel = !$scope.updatePanel;
         }
 
         //Draw the data 

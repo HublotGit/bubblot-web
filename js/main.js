@@ -620,15 +620,14 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     };
     //Open serialport for DropSens sensor
     var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
-    var couch, couchExternal, couchAuth;
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     function init() {
         //Connect to Yocto module
         connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
-        //connectYoctoWinder1("192.168.5.1", serialWinder, winderYoctoModules);
-        //connectYoctoWinder2("192.168.5.2", serialWinder, winderYoctoModules);
-        //connectYoctoWinder3("192.168.5.3", serialWinder, winderYoctoModules);
-        //connectYoctoWinder4("192.168.5.4", serialWinder, winderYoctoModules);
+        //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
+        //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
+        //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
+        //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);
         //connectYoctoPump("192.168.4.2", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
 
@@ -745,29 +744,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 vaPotential = 0;
                 console.log('serialPort writing $R;');
                 serialPort.write('$R;');
-            }
-        });
-        // node-couchdb instance with default options
-        couch = new NodeCouchDb();
-
-        // node-couchdb instance with Memcached
-        /*const MemcacheNode = require('node-couchdb-plugin-memcached');
-        const couchWithMemcache = new NodeCouchDb({
-                            cache: new MemcacheNode
-        });*/
-
-        // node-couchdb instance talking to external service
-        couchExternal = new NodeCouchDb({
-            host: 'localhost',
-            protocol: 'http',
-            port: 5984
-        });
-
-        // not admin party
-        couchAuth = new NodeCouchDb({
-            auth: {
-                user: 'admin',
-                pass: 'admin'
             }
         });
 
@@ -1593,7 +1569,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
 
     var counter1 = 0, counter2 = 0, counter3 = 0;
-
+    //CouchDb instance of bubblot 1
+    const couchBubblot1 = new NodeCouchDb({
+        host: '192.168.1.1', //IP adress bubblot 1
+        protocol: 'http',
+        port: 5984,
+        auth: {
+            user: 'admin',
+            pass: 'admin'
+        }
+    });
     //Save the data in the database
     function saveData() {
         var date = new Date(), year, month, day, hours, minutes, seconds;
@@ -1665,7 +1650,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             dataMagn.push(obj);
         }
 
-        couch.insert("bubblot", {
+        couchBubblot1.insert("bubblot", {
             "data_key": [year, 2, 17, hours, minutes, seconds, 1],
             "data": {
                 pumpLatitude: $scope.leftDataPump.localLat,
@@ -1735,12 +1720,12 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     console.log(err);
                 } else {
                     // schedule a Stop command to run in the future 
-                    stop_timer = setTimeout(stopwinderCamera, 100);
+                    stop_timer = setTimeout(stopWinderCamera, 100);
                     ignore_keypress = false;
                 }
             });
     }
-    function stopwinderCamera() {
+    function stopWinderCamera() {
         // send a stop command, stopping Pan/Tilt and stopping zoom
         winderCamera.stop({ panTilt: true, zoom: true },
             function (err, stream, xml) {

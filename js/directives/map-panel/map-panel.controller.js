@@ -77,7 +77,16 @@
             $scope.isMovie[0] = [], $scope.isMovie[1] = [], $scope.isMovie[2] = [];
             $scope.dates[0] = [], $scope.dates[1] = [], $scope.dates[2] = [];
 
-            const couch = new NodeCouchDb();
+            //CouchDb instance of bubblot 1
+            const couchBubblot1 = new NodeCouchDb({
+                host: '192.168.1.1', //IP adress bubblot 1
+                protocol: 'http',
+                port: 5984,
+                auth: {
+                    user: 'admin',
+                    pass: 'admin'
+                }
+            });
             const viewUrl = "_design/by_date/_view/allData";
 
             //Database key
@@ -86,7 +95,7 @@
                 endkey: [dataEndYear, dataEndMonth, dataEndDay, 0, 0, 0, 3]
             };
             //Searching in the database
-            couch.get("bubblot", viewUrl, queryOptions).then(({ data, headers, status }) => {
+            couchBubblot1.get("bubblot", viewUrl, queryOptions).then(({ data, headers, status }) => {
                 //Loop for running through each data received
                 for (var i = 0; i < data.rows.length; i++) {
                     //Get from which bubblot comes the data

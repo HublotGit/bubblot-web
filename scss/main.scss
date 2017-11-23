@@ -302,7 +302,29 @@ body {
         font-family: arial black;
         pointer-events: none;
         animation: alertOn 2s infinite;
+        background-color: white;
     }
+.alert-user{
+      position: absolute;
+      top:80px;
+      right: 38.5%;
+      width: 7%;
+      text-align: center;
+      padding: 0.5% 1%;
+      line-height: 100%;
+      color: red;
+      text-transform: uppercase;
+      border: 5px solid red;
+      z-index: 20;
+      cursor: pointer;
+      @include border(18px);
+      font-size: 22px;
+      font-family: arial black;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s linear;
+      background-color: white;
+  }
     .alert-security-bubblot{
         position: absolute;
         top:80px;

@@ -745,7 +745,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 serialPort.write('$R;');
             }
         });
-
+        
         //Terminal command for starting HotSpot: netsh wlan start hostednetwork
         //require('nw.gui').Window.get().showDevTools(); alert('pause'); debugger;
 
@@ -771,7 +771,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //1 is pressed
             else if (keyCode == 49) {
                 isOne = true;
-                console.log(winderUser);
             }
             //2 is pressed
             else if (keyCode == 50) {

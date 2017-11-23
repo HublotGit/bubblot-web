@@ -2,9 +2,9 @@
     'use strict';
     angular
         .module('bubblot')
-        .controller('winderAlertCtrl', ['$timeout', '$scope', winderAlertCtrl]);
+        .controller('winderAlertCtrl', winderAlertCtrl);
 
-    function winderAlertCtrl($timeout,$scope) {
+    function winderAlertCtrl($scope,$element) {
         var vm = this;
         var is1=false, is2=false, is3=false, is4=false;
         $scope.alert  = function(){

@@ -59,13 +59,13 @@
             // data is json response 
             // headers is an object with all response headers 
             // status is statusCode number 
-            if(data.user=="1"){ //change for each bubblot
+            if (data.user == "1") { //change for each bubblot
                 couchBubblot1.update("winder", {
                     _id: data._id,
                     _rev: data._rev,
                     user: "0",
                 }).then(({ data, headers, status }) => {
-                    winderUser="0";
+                    winderUser = "0";
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
@@ -75,7 +75,7 @@
                     console.log(err.code);
                 });
             }
-            else winderUser=data.user;
+            else winderUser = data.user;
         }, err => {
             // either request error occured 
             // ...or err.code=EDOCMISSING if document is missing 
@@ -89,9 +89,6 @@
                     'vlc rtsp://192.168.100.100:554/11'
                 );
             }
-            //Update display
-            document.getElementById(hidden).style.display = 'none';
-            document.getElementById(shown).style.display = 'block';
             //Update the winder user in the dataBase 
             if (shown == "winderDisplay") {
                 couchBubblot1.get("winder", "0f14989011256516380f22bc5f003f2c").then(({ data, headers, status }) => {
@@ -99,13 +96,13 @@
                     // headers is an object with all response headers 
                     // status is statusCode number
                     //Change user if no user already
-                    if(data.user=="0"){
+                    if (data.user == "0") {
                         couchBubblot1.update("winder", {
                             _id: data._id,
                             _rev: data._rev,
                             user: "1", //change for each bubblot
                         }).then(({ data, headers, status }) => {
-                            winderUser="1"; //change for each bubblot
+                            winderUser = "1"; //change for each bubblot
                             // data is json response 
                             // headers is an object with all response headers 
                             // status is statusCode number 
@@ -114,8 +111,59 @@
                             // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
                             console.log(err.code);
                         });
+                        //Update display
+                        document.getElementById(hidden).style.display = 'none';
+                        document.getElementById(shown).style.display = 'block';
                     }
-                    else winderUser=data.user;
+                    else {
+                        //Display alert message
+                        winderUser = data.user;
+                        var objAlertUser = document.getElementsByClassName("alert-user");
+                        for (var i = 0; objAlertUser.length; i++) {
+                            objAlertUser[i].innerHTML = "User " + winderUser;
+                            objAlertUser[i].style.opacity = 1;
+                            if (i == 0) {
+                                setTimeout(function () {
+                                    objAlertUser[0].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 1) {
+                                setTimeout(function () {
+                                    objAlertUser[1].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 2) {
+                                setTimeout(function () {
+                                    objAlertUser[2].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 3) {
+                                setTimeout(function () {
+                                    objAlertUser[3].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 4) {
+                                setTimeout(function () {
+                                    objAlertUser[4].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 5) {
+                                setTimeout(function () {
+                                    objAlertUser[5].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 6) {
+                                setTimeout(function () {
+                                    objAlertUser[6].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 7) {
+                                setTimeout(function () {
+                                    objAlertUser[7].style.opacity = 0;
+                                }, 3000);
+                            }
+                        }
+                    }
                 }, err => {
                     // either request error occured 
                     // ...or err.code=EDOCMISSING if document is missing 
@@ -130,13 +178,13 @@
                     // headers is an object with all response headers 
                     // status is statusCode number 
                     //Clear user only if user it is me
-                    if(data.user == "1"){ //change for each bubblot
+                    if (data.user == "1") { //change for each bubblot
                         couchBubblot1.update("winder", {
                             _id: data._id,
                             _rev: data._rev,
                             user: "0",
                         }).then(({ data, headers, status }) => {
-                            winderUser="0";
+                            winderUser = "0";
                             // data is json response 
                             // headers is an object with all response headers 
                             // status is statusCode number 
@@ -152,6 +200,14 @@
                     // ...or err.code=EUNKNOWN if statusCode is unexpected 
                     console.log(err.code);
                 });
+                //Update display
+                document.getElementById(hidden).style.display = 'none';
+                document.getElementById(shown).style.display = 'block';
+            }
+            else {
+                //Update display
+                document.getElementById(hidden).style.display = 'none';
+                document.getElementById(shown).style.display = 'block';
             }
             return false;
         }

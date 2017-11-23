@@ -745,7 +745,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 serialPort.write('$R;');
             }
         });
-        
+
         //Terminal command for starting HotSpot: netsh wlan start hostednetwork
         //require('nw.gui').Window.get().showDevTools(); alert('pause'); debugger;
 
@@ -1570,7 +1570,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var counter1 = 0, counter2 = 0, counter3 = 0;
     //CouchDb instance of bubblot 1
     const couchBubblot1 = new NodeCouchDb({
-        host: 'localhost', //IP adress bubblot 1, change for each bubblot
+        host: '192.168.1.1', //IP adress bubblot 1, change for each bubblot
         protocol: 'http',
         port: 5984,
         auth: {

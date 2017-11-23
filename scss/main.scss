@@ -304,7 +304,7 @@ body {
         animation: alertOn 2s infinite;
         background-color: white;
     }
-.alert-user{
+.alert-winder-user{
       position: absolute;
       top:80px;
       right: 38.5%;
@@ -364,7 +364,6 @@ body {
         animation: alertOn 2s infinite;
     }
     .alert-pump{
-        @include centerItemX(50%);
         top:80px;
         left: 38.5%;
         width: 7%;
@@ -381,7 +380,29 @@ body {
         font-family: arial black;
         pointer-events: none;
         animation: alertOn 2s infinite;
+        background-color: white;
     }
+    .alert-pump-user{
+      position: absolute;
+      top:80px;
+      left: 38.5%;
+      width: 7%;
+      text-align: center;
+      padding: 0.5% 1%;
+      line-height: 100%;
+      color: red;
+      text-transform: uppercase;
+      border: 5px solid red;
+      z-index: 20;
+      cursor: pointer;
+      @include border(18px);
+      font-size: 22px;
+      font-family: arial black;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s linear;
+      background-color: white;
+  }
   // ANIMATION
 @keyframes alertOn {
   0% {

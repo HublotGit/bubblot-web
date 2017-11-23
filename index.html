@@ -42,8 +42,6 @@
     </script>
 
     <script>
-        var vlc = null;
-        var winderUser;
         //CouchDB instance of bubblot 1
         const couchBubblot1 = new NodeCouchDb({
             host: 'localhost', //IP adress bubblot 1
@@ -65,7 +63,6 @@
                     _rev: data._rev,
                     user: "0",
                 }).then(({ data, headers, status }) => {
-                    winderUser = "0";
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
@@ -75,7 +72,6 @@
                     console.log(err.code);
                 });
             }
-            else winderUser = data.user;
         }, err => {
             // either request error occured 
             // ...or err.code=EDOCMISSING if document is missing 
@@ -83,12 +79,6 @@
             console.log(err.code);
         });
         function show(shown, hidden) {
-            if (false) {
-                vlc = exeq(
-                    'cd C:\\Program Files (x86)\\VideoLAN\\VLC',
-                    'vlc rtsp://192.168.100.100:554/11'
-                );
-            }
             //Update the winder user in the dataBase 
             if (shown == "winderDisplay") {
                 couchBubblot1.get("winder", "0f14989011256516380f22bc5f003f2c").then(({ data, headers, status }) => {
@@ -102,7 +92,6 @@
                             _rev: data._rev,
                             user: "1", //change for each bubblot
                         }).then(({ data, headers, status }) => {
-                            winderUser = "1"; //change for each bubblot
                             // data is json response 
                             // headers is an object with all response headers 
                             // status is statusCode number 
@@ -117,52 +106,52 @@
                     }
                     else {
                         //Display alert message
-                        winderUser = data.user;
-                        var objAlertUser = document.getElementsByClassName("alert-user");
-                        for (var i = 0; objAlertUser.length; i++) {
-                            objAlertUser[i].innerHTML = "User " + winderUser;
-                            objAlertUser[i].style.opacity = 1;
+                        var objWinderUser = document.getElementsByClassName("alert-winder-user");
+                        for (var i = 0; objWinderUser.length; i++) {
+                            objWinderUser[i].innerHTML = "User " + data.user;
+                            objWinderUser[i].style.opacity = 1;
                             if (i == 0) {
                                 setTimeout(function () {
-                                    objAlertUser[0].style.opacity = 0;
+                                    objWinderUser[0].style.opacity = 0;
                                 }, 3000);
                             }
                             else if (i == 1) {
                                 setTimeout(function () {
-                                    objAlertUser[1].style.opacity = 0;
+                                    objWinderUser[1].style.opacity = 0;
                                 }, 3000);
                             }
                             else if (i == 2) {
                                 setTimeout(function () {
-                                    objAlertUser[2].style.opacity = 0;
+                                    objWinderUser[2].style.opacity = 0;
                                 }, 3000);
                             }
                             else if (i == 3) {
                                 setTimeout(function () {
-                                    objAlertUser[3].style.opacity = 0;
+                                    objWinderUser[3].style.opacity = 0;
                                 }, 3000);
                             }
                             else if (i == 4) {
                                 setTimeout(function () {
-                                    objAlertUser[4].style.opacity = 0;
+                                    objWinderUser[4].style.opacity = 0;
                                 }, 3000);
                             }
                             else if (i == 5) {
                                 setTimeout(function () {
-                                    objAlertUser[5].style.opacity = 0;
+                                    objWinderUser[5].style.opacity = 0;
                                 }, 3000);
                             }
                             else if (i == 6) {
                                 setTimeout(function () {
-                                    objAlertUser[6].style.opacity = 0;
+                                    objWinderUser[6].style.opacity = 0;
                                 }, 3000);
                             }
                             else if (i == 7) {
                                 setTimeout(function () {
-                                    objAlertUser[7].style.opacity = 0;
+                                    objWinderUser[7].style.opacity = 0;
                                 }, 3000);
                             }
                         }
+                        return false;
                     }
                 }, err => {
                     // either request error occured 
@@ -171,20 +160,104 @@
                     console.log(err.code);
                 });
             }
+            else if (shown == "pumpDisplay") {
+                couchBubblot1.get("pump", "56ba23e46550745a92abf78d220043a5").then(({ data, headers, status }) => {
+                    // data is json response 
+                    // headers is an object with all response headers 
+                    // status is statusCode number
+                    //Change user if no user already
+                    if (data.user == "0") {
+                        couchBubblot1.update("pump", {
+                            _id: data._id,
+                            _rev: data._rev,
+                            user: "1", //change for each bubblot
+                        }).then(({ data, headers, status }) => {
+                            // data is json response 
+                            // headers is an object with all response headers 
+                            // status is statusCode number 
+                        }, err => {
+                            // either request error occured 
+                            // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
+                            console.log(err.code);
+                        });
+                        //Update display
+                        document.getElementById(hidden).style.display = 'none';
+                        document.getElementById(shown).style.display = 'block';
+                    }
+                    else {
+                        //Display alert message
+                        var objPumpUser = document.getElementsByClassName("alert-pump-user");
+                        for (var i = 0; objPumpUser.length; i++) {
+                            objPumpUser[i].innerHTML = "User " + data.user;
+                            objPumpUser[i].style.opacity = 1;
+                            if (i == 0) {
+                                setTimeout(function () {
+                                    objPumpUser[0].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 1) {
+                                setTimeout(function () {
+                                    objPumpUser[1].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 2) {
+                                setTimeout(function () {
+                                    objPumpUser[2].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 3) {
+                                setTimeout(function () {
+                                    objPumpUser[3].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 4) {
+                                setTimeout(function () {
+                                    objPumpUser[4].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 5) {
+                                setTimeout(function () {
+                                    objPumpUser[5].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 6) {
+                                setTimeout(function () {
+                                    objPumpUser[6].style.opacity = 0;
+                                }, 3000);
+                            }
+                            else if (i == 7) {
+                                setTimeout(function () {
+                                    objPumpUser[7].style.opacity = 0;
+                                }, 3000);
+                            }
+                        }
+                        return false;
+                    }
+                }, err => {
+                    // either request error occured 
+                    // ...or err.code=EDOCMISSING if document is missing 
+                    // ...or err.code=EUNKNOWN if statusCode is unexpected 
+                    console.log(err.code);
+                });
+            }
+            else {
+                //Update display
+                document.getElementById(hidden).style.display = 'none';
+                document.getElementById(shown).style.display = 'block';
+            }
             //Clear the winder user in the dataBase
-            else if (hidden == "winderDisplay") {
+            if (hidden == "winderDisplay") {
                 couchBubblot1.get("winder", "0f14989011256516380f22bc5f003f2c").then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
-                    //Clear user only if user it is me
+                    //Clear user only if it is me
                     if (data.user == "1") { //change for each bubblot
                         couchBubblot1.update("winder", {
                             _id: data._id,
                             _rev: data._rev,
                             user: "0",
                         }).then(({ data, headers, status }) => {
-                            winderUser = "0";
                             // data is json response 
                             // headers is an object with all response headers 
                             // status is statusCode number 
@@ -200,14 +273,35 @@
                     // ...or err.code=EUNKNOWN if statusCode is unexpected 
                     console.log(err.code);
                 });
-                //Update display
-                document.getElementById(hidden).style.display = 'none';
-                document.getElementById(shown).style.display = 'block';
             }
-            else {
-                //Update display
-                document.getElementById(hidden).style.display = 'none';
-                document.getElementById(shown).style.display = 'block';
+            //Clear the pump user in the dataBase
+            else if (hidden == "pumpDisplay") {
+                couchBubblot1.get("pump", "56ba23e46550745a92abf78d220043a5").then(({ data, headers, status }) => {
+                    // data is json response 
+                    // headers is an object with all response headers 
+                    // status is statusCode number 
+                    //Clear user only if it is me
+                    if (data.user == "1") { //change for each bubblot
+                        couchBubblot1.update("pump", {
+                            _id: data._id,
+                            _rev: data._rev,
+                            user: "0",
+                        }).then(({ data, headers, status }) => {
+                            // data is json response 
+                            // headers is an object with all response headers 
+                            // status is statusCode number 
+                        }, err => {
+                            // either request error occured 
+                            // ...or err.code=EFIELDMISSING if either _id or _rev fields are missing 
+                            console.log(err.code);
+                        });
+                    }
+                }, err => {
+                    // either request error occured 
+                    // ...or err.code=EDOCMISSING if document is missing 
+                    // ...or err.code=EUNKNOWN if statusCode is unexpected 
+                    console.log(err.code);
+                });
             }
             return false;
         }

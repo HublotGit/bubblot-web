@@ -44,7 +44,7 @@
     <script>
         //CouchDB instance of bubblot 1
         const couchBubblot1 = new NodeCouchDb({
-            host: '192.168.1.1', //IP adress bubblot 1
+            host: 'localhost', //IP adress bubblot 1 192.168.1.1
             protocol: 'http',
             port: 5984,
             auth: {
@@ -53,13 +53,18 @@
             }
         });
         //Init winder user in the dataBase
-        //Ref winder:203dcd7303db8df08d50a660c8008ee7
-        //Ref pump:203dcd7303db8df08d50a660c804f8a5
-        couchBubblot1.get("winder", "203dcd7303db8df08d50a660c8008ee7").then(({ data, headers, status }) => {
+        var idWinder = "0f14989011256516380f22bc5f003f2c";
+        //idPerso: 0f14989011256516380f22bc5f003f2c
+        //idZotac: 203dcd7303db8df08d50a660c8008ee7
+        var idPump = "56ba23e46550745a92abf78d220043a5";
+        //idPerso: 56ba23e46550745a92abf78d220043a5
+        //idZotac: 203dcd7303db8df08d50a660c804f8a5
+        var idBubblot = "1";
+        couchBubblot1.get("winder", idWinder).then(({ data, headers, status }) => {
             // data is json response 
             // headers is an object with all response headers 
             // status is statusCode number 
-            if (data.user == "2") { //change for each bubblot
+            if (data.user == idBubblot) { //change for each bubblot
                 couchBubblot1.update("winder", {
                     _id: data._id,
                     _rev: data._rev,
@@ -81,11 +86,11 @@
             console.log(err.code);
         });
         //Init winder user in the dataBase 
-        couchBubblot1.get("pump", "203dcd7303db8df08d50a660c804f8a5").then(({ data, headers, status }) => {
+        couchBubblot1.get("pump", idPump).then(({ data, headers, status }) => {
             // data is json response 
             // headers is an object with all response headers 
             // status is statusCode number 
-            if (data.user == "2") { //change for each bubblot
+            if (data.user == idBubblot) { //change for each bubblot
                 couchBubblot1.update("pump", {
                     _id: data._id,
                     _rev: data._rev,
@@ -109,7 +114,7 @@
         function show(shown, hidden) {
             //Update the winder user in the dataBase 
             if (shown == "winderDisplay") {
-                couchBubblot1.get("winder", "203dcd7303db8df08d50a660c8008ee7").then(({ data, headers, status }) => {
+                couchBubblot1.get("winder", idWinder).then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number
@@ -118,7 +123,7 @@
                         couchBubblot1.update("winder", {
                             _id: data._id,
                             _rev: data._rev,
-                            user: "2", //change for each bubblot
+                            user: idBubblot, //change for each bubblot
                         }).then(({ data, headers, status }) => {
                             // data is json response 
                             // headers is an object with all response headers 
@@ -189,7 +194,7 @@
                 });
             }
             else if (shown == "pumpDisplay") {
-                couchBubblot1.get("pump", "203dcd7303db8df08d50a660c804f8a5").then(({ data, headers, status }) => {
+                couchBubblot1.get("pump", idPump).then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number
@@ -198,7 +203,7 @@
                         couchBubblot1.update("pump", {
                             _id: data._id,
                             _rev: data._rev,
-                            user: "2", //change for each bubblot
+                            user: idBubblot, //change for each bubblot
                         }).then(({ data, headers, status }) => {
                             // data is json response 
                             // headers is an object with all response headers 
@@ -275,12 +280,12 @@
             }
             //Clear the winder user in the dataBase
             if (hidden == "winderDisplay") {
-                couchBubblot1.get("winder", "203dcd7303db8df08d50a660c8008ee7").then(({ data, headers, status }) => {
+                couchBubblot1.get("winder", idWinder).then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
                     //Clear user only if it is me
-                    if (data.user == "2") { //change for each bubblot
+                    if (data.user == idBubblot) { //change for each bubblot
                         couchBubblot1.update("winder", {
                             _id: data._id,
                             _rev: data._rev,
@@ -304,12 +309,12 @@
             }
             //Clear the pump user in the dataBase
             else if (hidden == "pumpDisplay") {
-                couchBubblot1.get("pump", "203dcd7303db8df08d50a660c804f8a5").then(({ data, headers, status }) => {
+                couchBubblot1.get("pump", idPump).then(({ data, headers, status }) => {
                     // data is json response 
                     // headers is an object with all response headers 
                     // status is statusCode number 
                     //Clear user only if it is me
-                    if (data.user == "2") { //change for each bubblot
+                    if (data.user == idBubblot) { //change for each bubblot
                         couchBubblot1.update("pump", {
                             _id: data._id,
                             _rev: data._rev,

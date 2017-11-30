@@ -89,7 +89,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         angleStorage: 30,
         angleNorth: 180,
         distancexToPump: 20, //change for each bubblot
-        distanceyToPump: 20,
+        distanceyToPump: -20,
         spotlightIntensity: 75,
         foglightIntensity: 75,
         spotlightSwitchOn: true,
@@ -215,6 +215,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         movieCursor: false,
         updatePanel: false,
         graphName: "",
+        playData: false
     };
     $scope.notifData = {
         bubblotSecurity: false,
@@ -1568,16 +1569,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
 
     var counter1 = 0, counter2 = 0, counter3 = 0;
-    //CouchDb instance of bubblot 1
-    const couchBubblot1 = new NodeCouchDb({
-        host: '192.168.1.1', //IP adress bubblot 1, change for each bubblot
-        protocol: 'http',
-        port: 5984,
-        auth: {
-            user: 'admin',
-            pass: 'admin'
-        }
-    });
     //Save the data in the database
     function saveData() {
         var date = new Date(), year, month, day, hours, minutes, seconds;
@@ -1588,8 +1579,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         minutes = date.getMinutes();
         seconds = date.getSeconds();
 
-        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 30 * Math.random() - 10; //Change for each bubblot
-        $scope.rightData.distanceyToPump = $scope.rightData.distanceyToPump + 30 * Math.random() - 10;
+        $scope.rightData.distancexToPump = $scope.rightData.distancexToPump + 25 * Math.random() - 10; //Change for each bubblot
+        $scope.rightData.distanceyToPump = $scope.rightData.distanceyToPump - 25 * Math.random() + 10;
 
         var fe = false, pb = false, cu = false, sn = false, isVa = false, isMovie = false;
         counter1++;
@@ -1650,7 +1641,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         }
 
         couchBubblot1.insert("bubblot", {
-            "data_key": [year, 2, 17, hours, minutes, seconds, 1], //change for each bubblot
+            "data_key": [year, 2, 17, hours, minutes, seconds, 2], //change for each bubblot
             "data": {
                 pumpLatitude: $scope.leftDataPump.localLat,
                 pumpLongitude: $scope.leftDataPump.localLong,

@@ -52,7 +52,6 @@
             stopDay[0].value = stopDay[1].value;
             stopTime[0].value = stopTime[1].value;
         }
-
         //Extract data from the database into the program memory when clicking submit
         $scope.extractData = function (element) {
             //Get time slot 
@@ -77,16 +76,6 @@
             $scope.isMovie[0] = [], $scope.isMovie[1] = [], $scope.isMovie[2] = [];
             $scope.dates[0] = [], $scope.dates[1] = [], $scope.dates[2] = [];
 
-            //CouchDb instance of bubblot 1
-            const couchBubblot1 = new NodeCouchDb({
-                host: '192.168.1.1', //IP adress bubblot 1, change for each bubblot
-                protocol: 'http',
-                port: 5984,
-                auth: {
-                    user: 'admin',
-                    pass: 'admin'
-                }
-            });
             const viewUrl = "_design/by_date/_view/allData";
 
             //Database key

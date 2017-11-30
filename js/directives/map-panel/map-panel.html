@@ -5,17 +5,18 @@
                 <legend>Time slot</legend>
                 From: Day <input type="date" value="2017-02-17" name="dataStartDay" class="start-day"> Time <input type="time" name="dataStartTime" class="start-time"><br>
                 <br>
-                To: Day <input type="date" value="2017-02-18" name="dataStopDay" class="stop-day"> Time <input type="time" name="dataStopTime" class="stop-time"><br><br>
-                <input type="submit" value="Submit" class="submit-time" ng-click="extractData()">
-                <br>
+                To: Day <input type="date" value="2017-02-18" name="dataStopDay" class="stop-day"> Time <input type="time" name="dataStopTime" class="stop-time"><br>
+                <div class="btn-play" ng-class="{on:playData}" ng-click="playData=!playData">Play</div>
+                <div class="btn-load" style="left:40%" ng-click="extractData()">Load</div>
+                <br><br>
             </fieldset>
             <br>
             <fieldset>
                 <legend>Data to display</legend>
                 General:<br>
-                <div class="btn-path" ng-click="displayPath=!displayPath" ng-class="{on:displayPath}">PATH</div>
-                <div class="btn-vi" ng-click="displayVa=!displayVa" ng-class="{on:displayVa}" style="left: 26%">V-A</div>
-                <div class="btn-rec" ng-click="displayMovie=!displayMovie" ng-class="{on:displayMovie}"style="left: 42%">MOVIE</div>
+                <div class="btn-path" ng-click="displayPath=!displayPath" ng-class="{on:displayPath}">Path</div>
+                <div class="btn-vi" ng-click="displayVa=!displayVa" ng-class="{on:displayVa}" style="left: 23%">V-A</div>
+                <div class="btn-rec" ng-click="displayMovie=!displayMovie" ng-class="{on:displayMovie}"style="left:39%">Movie</div>
                 <br><br><br>
                 V-A data:<br>
                 <div class="btn-fe" ng-click="displayFe=!displayFe" ng-class="{on:displayFe}">Fe</div>
@@ -25,7 +26,7 @@
                 <br><br><br>
                 Nose data:<br>
                 <div class="btn-magnetism" ng-click="displayMagn=!displayMagn" ng-class="{on:displayMagn}">Magnetism</div>
-                <div class="btn-turbidity" style="left: 50%" ng-click="displayTurbi=!displayTurbi" ng-class="{on:displayTurbi}">Turbidity</div>
+                <div class="btn-turbidity" style="left: 41%" ng-click="displayTurbi=!displayTurbi" ng-class="{on:displayTurbi}">Turbidity</div>
                 <br><br><br>
             </fieldset>
             <br>

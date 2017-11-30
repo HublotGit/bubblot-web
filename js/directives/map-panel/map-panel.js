@@ -13,7 +13,8 @@
             scope: {extractingData: '=', displayPath: '=', displayVa: '=', displayTurbi: '=', displayMovie: '=',displayFe: '=', displayPb: '=', displayCu: '=', displaySn: '=', isVa: '=', isFe: '=', isPb: '=', 
                     infoVa: '=', isCu: '=', isSn: '=', avgMagnetism: '=', infoMagnetism: '=', dataxPump:'=', datayPump: '=', datax:'=', datay: '=' ,  displayMagn: '=', 
                     isTurbi: '=', isMovie: '=', zoom: '=', ximage: '=', yimage: '=', xnew: '=', ynew: '=', vaCursor: '=', turbiCursor: '=', magnCursor: '=', movieCursor: '=', avgTurbi: '=', updatePanel:'=',
-                    dates: '=', dateCursor:'=', latitudeCursor: '=', longitudeCursor:'=', depthCursor:'=', tempCursor:'=', infoTurbiRed: '=', infoTurbiGreen: '=', infoTurbiBlue: '=', xlast:'=', ylast:'=', bubblotCursor: '=', bubblots: '='},
+                    dates: '=', dateCursor:'=', latitudeCursor: '=', longitudeCursor:'=', depthCursor:'=', tempCursor:'=', infoTurbiRed: '=', infoTurbiGreen: '=', infoTurbiBlue: '=', xlast:'=', ylast:'=', 
+                    bubblotCursor: '=', bubblots: '=', playData: '='},
             link: function(scope, element, attr) {
                 scope.$watch('updatePanel', function () {
                     scope.updateInfoPanel();

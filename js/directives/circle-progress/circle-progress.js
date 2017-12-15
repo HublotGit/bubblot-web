@@ -27,7 +27,7 @@
                 createCircle();
                 var oldValue = scope.value;
                 scope.$watch('value', function (value) {
-                    if (value && value != oldValue) {
+                    if (value != oldValue) {
                         $(element).circleProgress('value', scope.value*scope.circleRatio);
                         oldValue = value;
                     }

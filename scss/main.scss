@@ -36,6 +36,10 @@ body {
    transform: scale3d(1,0.5, 1) translate3d(0, -50%, 0);
    overflow: hidden;
    display: block;
+   -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+   -moz-user-select: none; /* mozilla browsers */
+   -khtml-user-select: none; /* webkit (konqueror) browsers */
+   -ms-user-select: none; 
    // background: url('../img/fondmarin.jpg') no-repeat 100% 100%;
    a{
       position: absolute;
@@ -153,6 +157,10 @@ body {
    transform: scale3d(1,0.5, 1) translate3d(0, +50%, 0);
    overflow: hidden;
    display: block;
+   -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+   -moz-user-select: none; /* mozilla browsers */
+   -khtml-user-select: none; /* webkit (konqueror) browsers */
+   -ms-user-select: none; 
    //background: url('../img/fondmarin.jpg') no-repeat 100% 100%;
    a{
       position: absolute;

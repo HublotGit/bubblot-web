@@ -64,7 +64,7 @@
             // data is json response 
             // headers is an object with all response headers 
             // status is statusCode number 
-            if (data.user == idBubblot) { //change for each bubblot
+            if (data.user == idBubblot) {
                 couchBubblot1.update("winder", {
                     _id: data._id,
                     _rev: data._rev,
@@ -90,7 +90,7 @@
             // data is json response 
             // headers is an object with all response headers 
             // status is statusCode number 
-            if (data.user == idBubblot) { //change for each bubblot
+            if (data.user == idBubblot) { 
                 couchBubblot1.update("pump", {
                     _id: data._id,
                     _rev: data._rev,
@@ -123,7 +123,7 @@
                         couchBubblot1.update("winder", {
                             _id: data._id,
                             _rev: data._rev,
-                            user: idBubblot, //change for each bubblot
+                            user: idBubblot, 
                         }).then(({ data, headers, status }) => {
                             // data is json response 
                             // headers is an object with all response headers 
@@ -191,6 +191,9 @@
                     // ...or err.code=EDOCMISSING if document is missing 
                     // ...or err.code=EUNKNOWN if statusCode is unexpected 
                     console.log(err.code);
+                    //Update display
+                    document.getElementById(hidden).style.display = 'none';
+                    document.getElementById(shown).style.display = 'block';
                 });
             }
             else if (shown == "pumpDisplay") {
@@ -271,6 +274,9 @@
                     // ...or err.code=EDOCMISSING if document is missing 
                     // ...or err.code=EUNKNOWN if statusCode is unexpected 
                     console.log(err.code);
+                    //Update display
+                    document.getElementById(hidden).style.display = 'none';
+                    document.getElementById(shown).style.display = 'block';
                 });
             }
             else {
@@ -342,7 +348,7 @@
 
 </head>
 
-<body ng-controller="mainController as vm" style="background-color:rgba(0,0,0,0);">
+<body ng-controller="mainController as vm" style="background-color:rgba(0,0,0,0);"> 
 
     <!-- Audio winder ALERT -->
     <audio src="img/audioAlert.wav" id="audio-alert-winder" loop></audio>

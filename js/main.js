@@ -1000,7 +1000,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         $scope.$watch('rightData.thrust', function (value) {
             if (bubblot1YoctoModules.yServo2_Thrust) {
-                bubblot1YoctoModules.yServo2_Thrust.set_position((value - 1) * 1000);
+                bubblot1YoctoModules.yServo2_Thrust.set_position((value*2000 - 1000));
             }
         });
         $scope.$watch('winderData.railMode', function (value) {

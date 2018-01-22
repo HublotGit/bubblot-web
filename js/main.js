@@ -60,7 +60,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         computeVa: false,
         vaData: [],
         pumpOn: false,
-        pumpPower: 0.5,
+        pumpPower: 0,
         filledOk: false,
         help: false
     };
@@ -264,12 +264,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yGps_Latitude: null,
         yColorLedCluster_Turbidity: null,
         yTemperature: null,
-        yAnButton_turbidity: null
+        yAnButton_turbidity: null,
+        yMotorDC_pump: null,
     }
 
     var serialBubblot1 = {
-        yPwmOutput1: 'Yocto-Pwm-Out1',
-        yPwmOutput2: 'Yocto-Pwm-Out2',
+        yPwmOutput1: 'Yocto-PWM-Out1',
+        yPwmOutput2: 'Yocto-PWM-Out2',
         yGenericSensor: 'RX010V_12345',
         yDigitalIO: 'Yocto-DigitalIO',
         y3d: 'Yocto-3D',
@@ -279,6 +280,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yColorLedCluster: 'YRGBLED2-7F244',
         yTemperature: 'Yocto-Temperature',
         yAnButton: 'Yocto-AnButton',
+        yMotorDC: 'Yocto-Motor-DC'
     }
 
     var pumpYoctoModules = {
@@ -384,7 +386,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 })
             }
             ).then(() => {
-                // by default use any connected module suitable for the demo
                 //Connextion to Digital-IO module
                 modules.yDigitalIO = YDigitalIO.FindDigitalIO(serials.yDigitalIO + ".digitalIO");
                 modules.yDigitalIO.isOnline().then((onLine) => {
@@ -398,6 +399,19 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else {
                         console.log("Can't find module " + serials.yDigitalIO + ".digitalIO");
+                    }
+                })
+            }
+            ).then(() => {
+                //Connextion to motor DC module
+                modules.yMotorDC_pump = YMotor.FindMotor(serials.yMotorDC + ".motor");
+                modules.yDigitalIO.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using module ' + serials.yMotorDC + ".motor");
+                        modules.yMotorDC_pump.set_drivingForce(0);
+                    }
+                    else {
+                        console.log("Can't find module " + serials.yMotorDC + ".motor");
                     }
                 })
             }
@@ -974,6 +988,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             */
             if (value) $scope.leftData.turbidityData = [];
         });
+        $scope.$watch('leftData.pumpPower', function (value) {
+            if(bubblot1YoctoModules.yMotorDC_pump){
+                bubblot1YoctoModules.yMotorDC_pump.set_drivingForce(value*100);
+            }
+        });
         $scope.$watch('rightData.spotlightSwitchOn', function (value) {
             if (digitalio) {
                 if (value) {
@@ -1001,7 +1020,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         $scope.$watch('rightData.thrust', function (value) {
             if (bubblot1YoctoModules.yServo2_Thrust) {
-                bubblot1YoctoModules.yServo2_Thrust.set_position((value*2000 - 1000));
+                bubblot1YoctoModules.yServo2_Thrust.set_position((value * 2000 - 1000));
             }
         });
         $scope.$watch('winderData.railMode', function (value) {
@@ -1159,7 +1178,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             if (gamepad[gamepadIndex]) {
                 var gp = gamepad[gamepadIndex];
                 if (Math.abs(gp.axes[0]) >= Math.abs(gp.axes[1]) && Math.abs(gp.axes[0]) >= Math.abs(gp.axes[5])) {
-                    if(!gp.buttons[1].pressed){   
+                    if (!gp.buttons[1].pressed) {
                         //Move right
                         if (gp.axes[0] >= 0) {
                             $scope.rightData.engine1Angle = 180 + 135;
@@ -1175,7 +1194,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                             $scope.rightData.engine4Angle = 180 + 135;
                         }
                     }
-                    else{
+                    else {
                         //Rotate Ry
                         if (gp.axes[0] >= 0) {
                             $scope.rightData.engine1Angle = 180 + 135;
@@ -1197,7 +1216,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                 }
                 else if (Math.abs(gp.axes[1]) >= Math.abs(gp.axes[5])) {
-                    if(!gp.buttons[1].pressed){ 
+                    if (!gp.buttons[1].pressed) {
                         //Move forward
                         if (gp.axes[1] <= 0) {
                             $scope.rightData.engine1Angle = 90 + 135;
@@ -1213,7 +1232,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                             $scope.rightData.engine4Angle = 270 + 135 - 360;
                         }
                     }
-                    else{
+                    else {
                         //Rotate Rx
                         if (gp.axes[1] <= 0) {
                             $scope.rightData.engine1Angle = 90 + 135;
@@ -1235,7 +1254,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                 }
                 else {
-                    if(!gp.buttons[1].pressed){  
+                    if (!gp.buttons[1].pressed) {
                         //Move up
                         if (gp.axes[5] <= 0) {
                             $scope.rightData.engine1Angle = 180 + 135;
@@ -1251,7 +1270,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                             $scope.rightData.engine4Angle = 180 + 135;
                         }
                     }
-                    else{
+                    else {
                         //Rotate Rz
                         if (gp.axes[5] <= 0) {
                             $scope.rightData.engine1Angle = 270 + 135 - 360;

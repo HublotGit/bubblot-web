@@ -60,6 +60,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         computeVa: false,
         vaData: [],
         pumpOn: false,
+        pumpPower: 0.5,
         filledOk: false,
         help: false
     };
@@ -250,11 +251,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yQt_gy: null,
         yQt_gz: null,
         yServo1_Camera: null,
+        yServo2_Thrust: null,
         yServo1_VSPTopLeft_1: null,
         yServo1_VSPTopLeft_2: null,
         yServo1_VSPTopRight_1: null,
         yServo1_VSPTopRight_2: null,
-        yServo2_Thrust: null,
         yServo2_VSPBottomLeft_1: null,
         yServo2_VSPBottomLeft_2: null,
         yServo2_VSPBottomRight_1: null,
@@ -271,7 +272,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yPwmOutput2: 'Yocto-Pwm-Out2',
         yGenericSensor: 'RX010V_12345',
         yDigitalIO: 'Yocto-DigitalIO',
-        y3d: 'Yocto-3d',
+        y3d: 'Yocto-3D',
         yGps: 'Yocto-Gps',
         yServo1: 'Yocto-Servo1',
         yServo2: 'Yocto-Servo2',
@@ -289,13 +290,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yCompass: null,
         yServo1_VSPTopLeft_1: null,
         yServo1_VSPTopLeft_2: null,
-        yServo1_VSPTopRight_X: null,
-        yServo1_VSPTopRight_Y: null,
+        yServo1_VSPTopRight_1: null,
+        yServo1_VSPTopRight_2: null,
         yServo2_Thrust: null,
-        yServo2_VSPBottomLeft_X: null,
-        yServo2_VSPBottomLeft_Y: null,
-        yServo2_VSPBottomRight_X: null,
-        yServo2_VSPBottomRight_Y: null,
+        yServo2_VSPBottomLeft_1: null,
+        yServo2_VSPBottomLeft_2: null,
+        yServo2_VSPBottomRight_1: null,
+        yServo2_VSPBottomRight_2: null,
         yGps_Longitude: null,
         yGps_Latitude: null,
         yPwmOutput_pump: null,
@@ -412,34 +413,34 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         console.log("Can't find module " + serials.yServo1 + ".servo1");
                     }
                 })
-                modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo2");
+                modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo3");
                 modules.yServo1_VSPTopLeft_1.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log("Using module " + serials.yServo1 + ".servo2");
+                        console.log("Using module " + serials.yServo1 + ".servo3");
                         modules.yServo1_VSPTopLeft_1.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo2");
-                    }
-                })
-                modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo3");
-                modules.yServo1_VSPTopLeft_2.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo1 + ".servo3");
-                        modules.yServo1_VSPTopLeft_2.set_position(0);
                     }
                     else {
                         console.log("Can't find module " + serials.yServo1 + ".servo3");
                     }
                 })
-                modules.yServo2_Thrust = YServo.FindServo(serials.yServo1 + ".servo4");
-                modules.yServo2_Thrust.isOnline().then((onLine) => {
+                modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo4");
+                modules.yServo1_VSPTopLeft_2.isOnline().then((onLine) => {
                     if (onLine) {
                         console.log('Using module ' + serials.yServo1 + ".servo4");
-                        modules.yServo2_Thrust.set_position(-1000);
+                        modules.yServo1_VSPTopLeft_2.set_position(0);
                     }
                     else {
                         console.log("Can't find module " + serials.yServo1 + ".servo4");
+                    }
+                })
+                modules.yServo2_Thrust = YServo.FindServo(serials.yServo1 + ".servo2");
+                modules.yServo2_Thrust.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using module ' + serials.yServo1 + ".servo2");
+                        modules.yServo2_Thrust.set_position(-1000);
+                    }
+                    else {
+                        console.log("Can't find module " + serials.yServo1 + ".servo2");
                     }
                 })
             }

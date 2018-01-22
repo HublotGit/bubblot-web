@@ -1,8 +1,8 @@
 <div id="storage" class="cadrans-container storage ">
-    <div class="cadran"></div>
+    <div class="cadran" drag-circle angle-min="225" range="270" position="pumpPower"></div>
     <div class="cleaner-container">
-        <div class="btn-cleaner injection"  ng-class="{on:pumpOn}" ng-click="initTimer()">PUMP</div>
-        <div class="btn-cleaner clogging">AIR</div>
+        <div class="btn-cleaner injection"  ng-class="{on:pumpOn}" ng-click="initTimer()" style="left:4%">PUMP</div>
+        <div class="btn-cleaner clogging" style="left:9%">AIR</div>
     </div>
     <div class="storage-container">
         <div class="progress-bar-container">
@@ -24,4 +24,6 @@
             <div class="storage-evolution"  ng-class="{cinq:(pumpOn && !filledOk)}"></div>
         </div>
     </div>
+    <div class="progress-pie"></div>
+    <circle-progress value="pumpPower" circle-size="circleSize" circle-thickness="circleThickness" circle-ratio="0.75" circle-color=0/>
 </div>

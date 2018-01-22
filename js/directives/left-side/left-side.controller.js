@@ -10,6 +10,8 @@
 
         $scope.nozeSize = 145;
         $scope.nozeThickness = 25;
+        $scope.storageSize = 145;
+        $scope.storageThickness = 25;
 
         $scope.focusLeft = function (index, completeHandler) {
             if ($scope.leftData.focusLeftIndex == index) return;
@@ -38,6 +40,16 @@
             } else {
                 $scope.nozeSize = 145;
                 $scope.nozeThickness = 25;
+            }
+            $scope.$apply();
+        };
+        $scope.setStorageSize = function (focus) {
+            if (focus) {
+                $scope.storageSize = 280;
+                $scope.storageThickness = 30;
+            } else {
+                $scope.storageSize = 145;
+                $scope.storageThickness = 25;
             }
             $scope.$apply();
         };

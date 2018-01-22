@@ -11,7 +11,7 @@
             replace: true,
             controller: 'storageCtrl',
             controllerAs: 'vm',
-            scope: {pumpOn: '=', filledOk: '=' }
+            scope: {pumpOn: '=', pumpPower:'=', filledOk: '=', circleSize: '=', circleThickness: '=',focusIndex: '=' }
         }
     }
 

@@ -251,11 +251,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yQt_gy: null,
         yQt_gz: null,
         yServo1_Camera: null,
-        yServo2_Thrust: null,
         yServo1_VSPTopLeft_1: null,
         yServo1_VSPTopLeft_2: null,
         yServo1_VSPTopRight_1: null,
         yServo1_VSPTopRight_2: null,
+        yServo2_Thrust: null,
         yServo2_VSPBottomLeft_1: null,
         yServo2_VSPBottomLeft_2: null,
         yServo2_VSPBottomRight_1: null,
@@ -405,7 +405,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             ).then(() => {
                 //Connextion to motor DC module
                 modules.yMotorDC_pump = YMotor.FindMotor(serials.yMotorDC + ".motor");
-                modules.yDigitalIO.isOnline().then((onLine) => {
+                modules.yMotorDC_pump.isOnline().then((onLine) => {
                     if (onLine) {
                         console.log('Using module ' + serials.yMotorDC + ".motor");
                         modules.yMotorDC_pump.set_drivingForce(0);
@@ -427,34 +427,34 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         console.log("Can't find module " + serials.yServo1 + ".servo1");
                     }
                 })
-                modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo3");
+                modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo2");
                 modules.yServo1_VSPTopLeft_1.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log("Using module " + serials.yServo1 + ".servo3");
+                        console.log("Using module " + serials.yServo1 + ".servo2");
                         modules.yServo1_VSPTopLeft_1.set_position(0);
+                    }
+                    else {
+                        console.log("Can't find module " + serials.yServo1 + ".servo2");
+                    }
+                })
+                modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo3");
+                modules.yServo1_VSPTopLeft_2.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using module ' + serials.yServo1 + ".servo3");
+                        modules.yServo1_VSPTopLeft_2.set_position(0);
                     }
                     else {
                         console.log("Can't find module " + serials.yServo1 + ".servo3");
                     }
                 })
-                modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo4");
-                modules.yServo1_VSPTopLeft_2.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo1 + ".servo4");
-                        modules.yServo1_VSPTopLeft_2.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo4");
-                    }
-                })
-                modules.yServo2_Thrust = YServo.FindServo(serials.yServo1 + ".servo2");
+                modules.yServo2_Thrust = YServo.FindServo(serials.yServo2 + ".servo1");
                 modules.yServo2_Thrust.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yServo1 + ".servo2");
+                        console.log('Using module ' + serials.yServo2 + ".servo1");
                         modules.yServo2_Thrust.set_position(-1000);
                     }
                     else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo2");
+                        console.log("Can't find module " + serials.yServo2 + ".servo1");
                     }
                 })
             }
@@ -636,7 +636,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     //Open serialport for DropSens sensor
     var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
-    var gamepadIndex;
+    var gamepadIndex=-1;
     function init() {
         //Connection to gampepad
         window.addEventListener("gamepadconnected", function (e) {
@@ -646,7 +646,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 gp.buttons.length, gp.axes.length);
             if (gp.id == "PC Game Controller        (Vendor: 11ff Product: 3331)") {
                 gamepadIndex = gp.index;
-                setInterval(gamepadLoop, 200);
+                setInterval(gamepadLoop, 150);
             }
         });
         //Connect to Yocto module
@@ -965,31 +965,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         var j = 0;
         $scope.$watch('leftData.pumpOn', function (value) {
-            /*
-            if (bubblot1YoctoModules.yColorLedCluster_Turbidity) {
-                if (value){
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.resetBlinkSeq(0);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.addRgbMoveToBlinkSeq(0, 0xFF0000, 0);
-                        setInterval(computeAverageTurbidity, 500);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.addRgbMoveToBlinkSeq(0, 0xFF0000, 500);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.addRgbMoveToBlinkSeq(0, 0x00FF00, 0);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.addRgbMoveToBlinkSeq(0, 0x00FF00, 500);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.addRgbMoveToBlinkSeq(0, 0x0000FF, 0);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.addRgbMoveToBlinkSeq(0, 0x0000FF, 500);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.linkLedToBlinkSeq(0, 2, 0, 0);
-                        bubblot1YoctoModules.yColorLedCluster_Turbidity.startBlinkSeq(0);
-                } 
-                else{
-                    bubblot1YoctoModules.yColorLedCluster_Turbidity.stopBlinkSeq(0);
-                    bubblot1YoctoModules.yColorLedCluster_Turbidity.resetBlinkSeq(0);
-                    bubblot1YoctoModules.yColorLedCluster_Turbidity.rgb_move(0, 2, 0x000000, 0);
-                } 
+            if(value && bubblot1YoctoModules.yMotorDC_pump){
+                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove($scope.leftData.pumpPower, $scope.leftData.pumpPower*1000);
             }
-            */
-            if (value) $scope.leftData.turbidityData = [];
+            else if(!value && bubblot1YoctoModules.yMotorDC_pump){
+                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove(0, $scope.leftData.pumpPower*1000);
+            }
         });
         $scope.$watch('leftData.pumpPower', function (value) {
-            if(bubblot1YoctoModules.yMotorDC_pump){
+            if($scope.leftData.pumpOn && bubblot1YoctoModules.yMotorDC_pump){
                 bubblot1YoctoModules.yMotorDC_pump.set_drivingForce(value*100);
             }
         });
@@ -1172,11 +1156,14 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             else clearInterval(intervalDataSave);
         });
     }
+    var button11Pressed=false, button4Pressed=false, button2Pressed=false, button5Pressed=false, button3Pressed=false;
+    //Loop function to get joystick values
     function gamepadLoop() {
         var gamepad = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
         if (gamepad) {
             if (gamepad[gamepadIndex]) {
                 var gp = gamepad[gamepadIndex];
+                //Get joystick position
                 if (Math.abs(gp.axes[0]) >= Math.abs(gp.axes[1]) && Math.abs(gp.axes[0]) >= Math.abs(gp.axes[5])) {
                     if (!gp.buttons[1].pressed) {
                         //Move right
@@ -1291,6 +1278,42 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
                     $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                 }
+                //Button 3 pressed => reduce pump power
+                if(gp.buttons[2].pressed && !button2Pressed){
+                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower - 0.1)<0?0:$scope.leftData.pumpPower - 0.1);
+                    button2Pressed = true;
+                }
+                //Button 3 released
+                else if(!gp.buttons[2].pressed) button2Pressed = false;
+                //Button 5 pressed => increase pump power
+                if(gp.buttons[4].pressed && !button4Pressed){
+                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower + 0.1)>1?1:$scope.leftData.pumpPower + 0.1);
+                    button4Pressed = true;
+                }
+                //Button 5 released
+                else if(!gp.buttons[4].pressed) button4Pressed = false;
+                //Button 4 pressed => reduce thrust power
+                if(gp.buttons[3].pressed && !button3Pressed){
+                    $scope.rightData.thrust = (($scope.rightData.thrust - 0.1)<0?0:$scope.rightData.thrust - 0.1);
+                    button3Pressed = true;
+                }
+                //Button 4 released
+                else if(!gp.buttons[3].pressed) button3Pressed = false;
+                //Button 6 pressed => increase thrust power
+                if(gp.buttons[5].pressed && !button5Pressed){
+                    $scope.rightData.thrust = (($scope.rightData.thrust + 0.1)>1?1:$scope.rightData.thrust + 0.1);
+                    button5Pressed = true;
+                }
+                //Button 6 released
+                else if(!gp.buttons[5].pressed) button5Pressed = false;
+                //Button 1 pressed => switch on/off pump
+                if(gp.buttons[11].pressed && !button11Pressed){
+                    if($scope.leftData.pumpOn) $scope.leftData.pumpOn = false;
+                    else $scope.leftData.pumpOn = true;
+                    button11Pressed = true;
+                }
+                //Button 1 released
+                else if(!gp.buttons[11].pressed) button11Pressed = false;
             }
             else {
                 $scope.rightData.engine1Radius = 0;

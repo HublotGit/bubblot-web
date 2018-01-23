@@ -966,10 +966,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         var j = 0;
         $scope.$watch('leftData.pumpOn', function (value) {
             if(value && bubblot1YoctoModules.yMotorDC_pump){
-                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove($scope.leftData.pumpPower, $scope.leftData.pumpPower*1000);
+                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove($scope.leftData.pumpPower*100, $scope.leftData.pumpPower*500);
             }
             else if(!value && bubblot1YoctoModules.yMotorDC_pump){
-                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove(0, $scope.leftData.pumpPower*1000);
+                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove(0, $scope.leftData.pumpPower*500);
             }
         });
         $scope.$watch('leftData.pumpPower', function (value) {
@@ -1280,40 +1280,36 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
                 //Button 3 pressed => reduce pump power
                 if(gp.buttons[2].pressed && !button2Pressed){
-                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower - 0.1)<0?0:$scope.leftData.pumpPower - 0.1);
+                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower - 0.0834)<0?0:$scope.leftData.pumpPower - 0.0834);
                     button2Pressed = true;
                 }
                 //Button 3 released
                 else if(!gp.buttons[2].pressed) button2Pressed = false;
                 //Button 5 pressed => increase pump power
                 if(gp.buttons[4].pressed && !button4Pressed){
-                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower + 0.1)>1?1:$scope.leftData.pumpPower + 0.1);
+                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower + 0.0834)>1?1:$scope.leftData.pumpPower + 0.0834);
                     button4Pressed = true;
                 }
                 //Button 5 released
                 else if(!gp.buttons[4].pressed) button4Pressed = false;
                 //Button 4 pressed => reduce thrust power
                 if(gp.buttons[3].pressed && !button3Pressed){
-                    $scope.rightData.thrust = (($scope.rightData.thrust - 0.1)<0?0:$scope.rightData.thrust - 0.1);
+                    $scope.rightData.thrust = (($scope.rightData.thrust - 0.0834)<0?0:$scope.rightData.thrust - 0.0834);
                     button3Pressed = true;
                 }
                 //Button 4 released
                 else if(!gp.buttons[3].pressed) button3Pressed = false;
                 //Button 6 pressed => increase thrust power
                 if(gp.buttons[5].pressed && !button5Pressed){
-                    $scope.rightData.thrust = (($scope.rightData.thrust + 0.1)>1?1:$scope.rightData.thrust + 0.1);
+                    $scope.rightData.thrust = (($scope.rightData.thrust + 0.0834)>1?1:$scope.rightData.thrust + 0.0834);
                     button5Pressed = true;
                 }
                 //Button 6 released
                 else if(!gp.buttons[5].pressed) button5Pressed = false;
-                //Button 1 pressed => switch on/off pump
-                if(gp.buttons[11].pressed && !button11Pressed){
-                    if($scope.leftData.pumpOn) $scope.leftData.pumpOn = false;
-                    else $scope.leftData.pumpOn = true;
-                    button11Pressed = true;
-                }
-                //Button 1 released
-                else if(!gp.buttons[11].pressed) button11Pressed = false;
+                //Button 1 pressed => switch on pump
+                if(gp.buttons[11].pressed) $scope.leftData.pumpOn = true;
+                //Button 1 released => switch off pump
+                else if(!gp.buttons[11].pressed) $scope.leftData.pumpOn = false;
             }
             else {
                 $scope.rightData.engine1Radius = 0;

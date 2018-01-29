@@ -73,15 +73,15 @@
 </g>
 <g id="indicateurs">
 	<g id="indicateurs_1_">
-		<text transform="matrix(1 0 0 1 464.8722 254.2503)" class="st9 st10 st11">DEEP</text>
+		<text transform="matrix(1 0 0 1 456.8722 254.2503)" class="st9 st10 st11">DEPTH</text>
 		<text transform="matrix(1 0 0 1 471.8719 272.6429)" class="st9 st10 st11">[ M ]</text>
-		<text transform="matrix(1 0 0 1 364.0609 133.1751)" class="st10 st12">40</text>
-		<text transform="matrix(1 0 0 1 587.757 133.1755)" class="st10 st12">200</text>
-		<text transform="matrix(1 0 0 1 398.1425 47.9723)" class="st10 st12">80</text>
-		<text transform="matrix(1 0 0 1 553.5921 47.9725)" class="st10 st12">160</text>
-		<text transform="matrix(1 0 0 1 553.5917 215.072)" class="st10 st12">240</text>
+		<text transform="matrix(1 0 0 1 364.0609 133.1751)" class="st10 st12">20</text>
+		<text transform="matrix(1 0 0 1 587.757 133.1755)" class="st10 st12">100</text>
+		<text transform="matrix(1 0 0 1 398.1425 47.9723)" class="st10 st12">40</text>
+		<text transform="matrix(1 0 0 1 561.5921 47.9725)" class="st10 st12">80</text>
+		<text transform="matrix(1 0 0 1 553.5917 215.072)" class="st10 st12">120</text>
 		<text transform="matrix(1 0 0 1 399.1425 215.0722)" class="st10 st12">0</text>
-		<text transform="matrix(1 0 0 1 476.2106 12.3224)" class="st10 st12">120</text>
+		<text transform="matrix(1 0 0 1 482.2106 12.3224)" class="st10 st12">60</text>
 	</g>
 </g>
 <g id="Calque_13">

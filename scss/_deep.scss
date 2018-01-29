@@ -74,7 +74,7 @@ $progressBarColor: $secondColor;
          width: 100%;
          height: 9.3%;
          opacity: 1;
-         //transition: top 0.4s, background 0.4s;
+         transition: top 0.5s;
          @include centerItemY($centerValue);
       }
    }
@@ -167,7 +167,7 @@ $progressBarColor: $secondColor;
 
       .ballast-progressbar{
         .indicateur{
-          transition: top 1.5s;
+          transition: top 0.5s;
         }
       }
 

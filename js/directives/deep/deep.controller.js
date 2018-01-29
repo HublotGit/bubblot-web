@@ -6,8 +6,8 @@
 
     function deepCtrl($scope) {
         var vm = this;
-        var allScreen=document.getElementById('bubblotDisplay');
-        allScreen.addEventListener("wheel", scrollBallast, false);
+        //var allScreen=document.getElementById('bubblotDisplay');
+        //allScreen.addEventListener("wheel", scrollBallast, false);
         function scrollBallast(event) {
             var clientRect = allScreen.getBoundingClientRect();
             var minX = clientRect.left + (clientRect.width/5);

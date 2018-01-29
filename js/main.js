@@ -71,7 +71,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         depth: 0.3,
         security: 60,
         securityAlert: false,
-        ballastFill: 30,
+        ballastFill: 50,
         thrust: 0,
         thrustTopSwitchOn: true,
         thrustBottomSwitchOn: true,
@@ -122,7 +122,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         depth: 0.7,
         security: 40,
         securityAlert: false,
-        ballastFill: 70,
+        ballastFill: 50,
         thrust: 0.2,
         isCtrl: false,
         help: false
@@ -238,18 +238,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         help: false
     };
     var bubblot1YoctoModules = {
-        yPwmOutput1_LedTop: null,
-        yPwmOutput1_LedBottom: null,
-        yPwmOutput2_Jabsco: null,
-        yGenericSensor_Security: null,
-        yGenericSensor_Depth: null,
         yDigitalIO: null,
         yTilt_Roll: null,
         yTilt_Pitch: null,
         yCompass: null,
-        yQt_gx: null,
-        yQt_gy: null,
-        yQt_gz: null,
         yServo1_Camera: null,
         yServo1_VSPTopLeft_1: null,
         yServo1_VSPTopLeft_2: null,
@@ -260,27 +252,20 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yServo2_VSPBottomLeft_2: null,
         yServo2_VSPBottomRight_1: null,
         yServo2_VSPBottomRight_2: null,
-        yGps_Longitude: null,
-        yGps_Latitude: null,
-        yColorLedCluster_Turbidity: null,
-        yTemperature: null,
-        yAnButton_turbidity: null,
         yMotorDC_pump: null,
+        yColor: null,
+        yRelay: null
     }
 
     var serialBubblot1 = {
-        yPwmOutput1: 'Yocto-PWM-Out1',
-        yPwmOutput2: 'Yocto-PWM-Out2',
-        yGenericSensor: 'RX010V_12345',
-        yDigitalIO: 'Yocto-DigitalIO',
+        yDigitalIO: 'Yocto-Maxi-IO',
         y3d: 'Yocto-3D',
         yGps: 'Yocto-Gps',
         yServo1: 'Yocto-Servo1',
         yServo2: 'Yocto-Servo2',
-        yColorLedCluster: 'YRGBLED2-7F244',
-        yTemperature: 'Yocto-Temperature',
-        yAnButton: 'Yocto-AnButton',
-        yMotorDC: 'Yocto-Motor-DC'
+        yRelay: 'Yocto-Relay',
+        yMotorDC: 'Yocto-Motor-DC',
+        yColor: 'Yocto-Color'
     }
 
     var pumpYoctoModules = {
@@ -336,8 +321,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     return;
                 }
             }
+            //Connexion to 3D module
             ).then(() => {
-                // by default use any connected module suitable for the demo
                 //Connexion to tilt module
                 modules.yTilt_Roll = YTilt.FindTilt(serials.y3d + ".tilt1");
                 modules.yTilt_Roll.isOnline().then((onLine) => {
@@ -349,6 +334,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         console.log("Can't find module " + serials.y3d + ".tilt1");
                     }
                 })
+                //Connextion to pitch module
                 modules.yTilt_Pitch = YTilt.FindTilt(serials.y3d + ".tilt2");
                 modules.yTilt_Pitch.isOnline().then((onLine) => {
                     if (onLine) {
@@ -371,39 +357,24 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                 })
             }
+            //Connexion to Digital-IO module
             ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to GPS module
-                modules.yGps_Latitude = YGps.FindGps(serials.yGps + ".latitude");
-                modules.yGps_Latitude.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yGps + ".latitude");
-                        modules.yGps_Latitude.registerValueCallback(computeLatitude);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yGps + ".latitude");
-                    }
-                })
-            }
-            ).then(() => {
-                //Connextion to Digital-IO module
                 modules.yDigitalIO = YDigitalIO.FindDigitalIO(serials.yDigitalIO + ".digitalIO");
                 modules.yDigitalIO.isOnline().then((onLine) => {
                     if (onLine) {
                         console.log('Using module ' + serials.yDigitalIO + ".digitalIO");
-                        modules.yDigitalIO.set_portDirection(252);
-                        modules.yDigitalIO.set_portPolarity(0); // polarity set to regular
-                        modules.yDigitalIO.set_portOpenDrain(3);
-                        modules.yDigitalIO.get_portState().then((value) => {
-                        });
+                        modules.yDigitalIO.set_portDirection(0xF0); //Set 4 inputs (0,1,2,3) and 4 outputs (4,5,6,7)
+                        modules.yDigitalIO.set_portOpenDrain(0x0F); //Set 4 open drain (0,1,2,3) and 4 no open drain (4,5,6,7)
+                        modules.yDigitalIO.set_portPolarity(0x00);
+                        modules.yDigitalIO.registerValueCallback(computeIO);
                     }
                     else {
                         console.log("Can't find module " + serials.yDigitalIO + ".digitalIO");
                     }
                 })
             }
+            //Connexion to motor DC module
             ).then(() => {
-                //Connextion to motor DC module
                 modules.yMotorDC_pump = YMotor.FindMotor(serials.yMotorDC + ".motor");
                 modules.yMotorDC_pump.isOnline().then((onLine) => {
                     if (onLine) {
@@ -415,9 +386,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                 })
             }
+            //Connexion to servo 1 module 
             ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to servo 1 module 
+                //Servo motor for camera
                 modules.yServo1_Camera = YServo.FindServo(serials.yServo1 + ".servo1");
                 modules.yServo1_Camera.isOnline().then((onLine) => {
                     if (onLine) {
@@ -427,6 +398,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         console.log("Can't find module " + serials.yServo1 + ".servo1");
                     }
                 })
+                //Servo motor 1 for top left propeller
                 modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo2");
                 modules.yServo1_VSPTopLeft_1.isOnline().then((onLine) => {
                     if (onLine) {
@@ -437,6 +409,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         console.log("Can't find module " + serials.yServo1 + ".servo2");
                     }
                 })
+                //Servo motor 2 for top left propeller
                 modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo3");
                 modules.yServo1_VSPTopLeft_2.isOnline().then((onLine) => {
                     if (onLine) {
@@ -447,88 +420,83 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         console.log("Can't find module " + serials.yServo1 + ".servo3");
                     }
                 })
+                //Servo motor 1 for top right propeller
+                modules.yServo1_VSPTopRight_1 = YServo.FindServo(serials.yServo1 + ".servo4");
+                modules.yServo1_VSPTopRight_1.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using module ' + serials.yServo1 + ".servo4");
+                        modules.yServo1_VSPTopRight_1.set_position(0);
+                    }
+                    else {
+                        console.log("Can't find module " + serials.yServo1 + ".servo4");
+                    }
+                })
+                //Servo motor 2 for top right propeller
+                modules.yServo1_VSPTopRight_2 = YServo.FindServo(serials.yServo1 + ".servo5");
+                modules.yServo1_VSPTopRight_2.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using module ' + serials.yServo1 + ".servo5");
+                        modules.yServo1_VSPTopRight_2.set_position(0);
+                    }
+                    else {
+                        console.log("Can't find module " + serials.yServo1 + ".servo5");
+                    }
+                })
+            }
+            //Connexion to servo 2 module 
+            ).then(() => {
+                //Servo motor for thrust
                 modules.yServo2_Thrust = YServo.FindServo(serials.yServo2 + ".servo1");
                 modules.yServo2_Thrust.isOnline().then((onLine) => {
                     if (onLine) {
                         console.log('Using module ' + serials.yServo2 + ".servo1");
-                        modules.yServo2_Thrust.set_position(-1000);
                     }
                     else {
                         console.log("Can't find module " + serials.yServo2 + ".servo1");
                     }
                 })
-            }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to temperature module
-                modules.yTemperature = YTemperature.FindTemperature(serials.yTemperature + ".temperature");
-                modules.yTemperature.isOnline().then((onLine) => {
+                //Servo motor 1 for bottom left propeller
+                modules.yServo2_VSPBottomLeft_1 = YServo.FindServo(serials.yServo2 + ".servo2");
+                modules.yServo2_VSPBottomLeft_1.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device ' + serials.yTemperature + ".temperature");
-                        modules.yTemperature.registerValueCallback(computeTemp);
+                        console.log("Using module " + serials.yServo1 + ".servo2");
+                        modules.yServo2_VSPBottomLeft_1.set_position(0);
                     }
                     else {
-                        console.log("Can't find module " + serials.yTemperature + ".temperature");
+                        console.log("Can't find module " + serials.yServo2 + ".servo2");
                     }
                 })
-            }
-            );
-        var YAPI2 = _yocto_api.YAPI;
-        YAPI2.LogUnhandledPromiseRejections().then(() => {
-            return YAPI2.DisableExceptions();
-        }
-        ).then(() => {
-            // Setup the API to use the VirtualHub on local machine
-            return YAPI2.RegisterHub('http://' + 'localhost' + ':4444', errmsg);
-        }
-            ).then((res) => {
-                if (res != YAPI2.SUCCESS) {
-                    console.log('Cannot contact VirtualHub on ' + 'localhost' + ':4444' + errmsg.msg);
-                    return;
-                }
-            }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to gyro x module
-                modules.yQt_gx = YQt.FindQt(serials.y3d + ".w");
-                modules.yQt_gx.isOnline().then((onLine) => {
+                //Servo motor 2 for bottom left propeller
+                modules.yServo2_VSPBottomLeft_2 = YServo.FindServo(serials.yServo2 + ".servo3");
+                modules.yServo2_VSPBottomLeft_2.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device ' + serials.y3d + ".w");
-                        modules.yQt_gx.set_logicalName("gx").then(() => {
-                            modules.yQt_gx.registerValueCallback(computeGyroX);
-                            console.log('Device ' + serials.y3d + ".w renamed " + serials.y3d + ".gx");
-                        })
+                        console.log('Using module ' + serials.yServo2 + ".servo3");
+                        modules.yServo2_VSPBottomLeft_2.set_position(0);
                     }
                     else {
-                        console.log("Can't find module " + serials.y3d + ".w");
+                        console.log("Can't find module " + serials.yServo2 + ".servo3");
                     }
                 })
-                //Connexion to gyro y module
-                modules.yQt_gy = YQt.FindQt(serials.y3d + ".x");
-                modules.yQt_gy.isOnline().then((onLine) => {
+                //Servo motor 1 for bottom right propeller
+                modules.yServo2_VSPBottomRight_1 = YServo.FindServo(serials.yServo2 + ".servo4");
+                modules.yServo2_VSPBottomRight_1.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device ' + serials.y3d + ".x");
-                        modules.yQt_gy.set_logicalName("gy").then(() => {
-                            modules.yQt_gy.registerValueCallback(computeGyroY);
-                            console.log('Device ' + serials.y3d + ".x renamed " + serials.y3d + ".gy");
-                        })
+                        console.log('Using module ' + serials.yServo2 + ".servo4");
+                        modules.yServo2_VSPBottomRight_1.set_position(0);
                     }
                     else {
-                        console.log("Can't find module " + serials.y3d + ".x");
+                        console.log("Can't find module " + serials.yServo1 + ".servo4");
                     }
                 })
-                //Connexion to gyro z module
-                modules.yQt_gz = YQt.FindQt(serials.y3d + ".y");
-                modules.yQt_gz.isOnline().then((onLine) => {
+                //Servo motor 2 for bottom right propeller
+                modules.yServo2_VSPBottomRight_2 = YServo.FindServo(serials.yServo2 + ".servo5");
+                modules.yServo2_VSPBottomRight_2.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using device ' + serials.y3d + ".y");
-                        modules.yQt_gz.set_logicalName("gz").then(() => {
-                            modules.yQt_gz.registerValueCallback(computeGyroZ);
-                            console.log('Device ' + serials.y3d + ".y renamed " + serials.y3d + ".gz");
-                        })
+                        console.log('Using module ' + serials.yServo2 + ".servo5");
+                        modules.yServo2_VSPBottomRight_2.set_position(0);
                     }
                     else {
-                        console.log("Can't find module " + serials.y3d + ".y");
+                        console.log("Can't find module " + serials.yServo2 + ".servo5");
                     }
                 })
             }
@@ -636,7 +604,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     //Open serialport for DropSens sensor
     var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
-    var gamepadIndex=-1;
+    var gamepadIndex = -1;
     function init() {
         //Connection to gampepad
         window.addEventListener("gamepadconnected", function (e) {
@@ -650,7 +618,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
         });
         //Connect to Yocto module
-        connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules); //change for each bubblot
+        connectYoctoBubblot("localhost", serialBubblot1, bubblot1YoctoModules);
         //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
@@ -965,16 +933,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         var j = 0;
         $scope.$watch('leftData.pumpOn', function (value) {
-            if(value && bubblot1YoctoModules.yMotorDC_pump){
-                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove($scope.leftData.pumpPower*100, $scope.leftData.pumpPower*500);
+            if (value && bubblot1YoctoModules.yMotorDC_pump) {
+                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove($scope.leftData.pumpPower * 100, $scope.leftData.pumpPower * 500);
             }
-            else if(!value && bubblot1YoctoModules.yMotorDC_pump){
-                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove(0, $scope.leftData.pumpPower*500);
+            else if (!value && bubblot1YoctoModules.yMotorDC_pump) {
+                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove(0, $scope.leftData.pumpPower * 500);
             }
         });
         $scope.$watch('leftData.pumpPower', function (value) {
-            if($scope.leftData.pumpOn && bubblot1YoctoModules.yMotorDC_pump){
-                bubblot1YoctoModules.yMotorDC_pump.set_drivingForce(value*100);
+            if ($scope.leftData.pumpOn && bubblot1YoctoModules.yMotorDC_pump) {
+                bubblot1YoctoModules.yMotorDC_pump.set_drivingForce(value * 100);
             }
         });
         $scope.$watch('rightData.spotlightSwitchOn', function (value) {
@@ -1156,7 +1124,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             else clearInterval(intervalDataSave);
         });
     }
-    var button11Pressed=false, button4Pressed=false, button2Pressed=false, button5Pressed=false, button3Pressed=false;
+    var button11Pressed = false, button4Pressed = false, button2Pressed = false, button5Pressed = false, button3Pressed = false;
     //Loop function to get joystick values
     function gamepadLoop() {
         var gamepad = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
@@ -1279,37 +1247,37 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                 }
                 //Button 3 pressed => reduce pump power
-                if(gp.buttons[2].pressed && !button2Pressed){
-                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower - 0.0834)<0?0:$scope.leftData.pumpPower - 0.0834);
+                if (gp.buttons[2].pressed && !button2Pressed) {
+                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower - 0.0834) < 0 ? 0 : $scope.leftData.pumpPower - 0.0834);
                     button2Pressed = true;
                 }
                 //Button 3 released
-                else if(!gp.buttons[2].pressed) button2Pressed = false;
+                else if (!gp.buttons[2].pressed) button2Pressed = false;
                 //Button 5 pressed => increase pump power
-                if(gp.buttons[4].pressed && !button4Pressed){
-                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower + 0.0834)>1?1:$scope.leftData.pumpPower + 0.0834);
+                if (gp.buttons[4].pressed && !button4Pressed) {
+                    $scope.leftData.pumpPower = (($scope.leftData.pumpPower + 0.0834) > 1 ? 1 : $scope.leftData.pumpPower + 0.0834);
                     button4Pressed = true;
                 }
                 //Button 5 released
-                else if(!gp.buttons[4].pressed) button4Pressed = false;
+                else if (!gp.buttons[4].pressed) button4Pressed = false;
                 //Button 4 pressed => reduce thrust power
-                if(gp.buttons[3].pressed && !button3Pressed){
-                    $scope.rightData.thrust = (($scope.rightData.thrust - 0.0834)<0?0:$scope.rightData.thrust - 0.0834);
+                if (gp.buttons[3].pressed && !button3Pressed) {
+                    $scope.rightData.thrust = (($scope.rightData.thrust - 0.0834) < 0 ? 0 : $scope.rightData.thrust - 0.0834);
                     button3Pressed = true;
                 }
                 //Button 4 released
-                else if(!gp.buttons[3].pressed) button3Pressed = false;
+                else if (!gp.buttons[3].pressed) button3Pressed = false;
                 //Button 6 pressed => increase thrust power
-                if(gp.buttons[5].pressed && !button5Pressed){
-                    $scope.rightData.thrust = (($scope.rightData.thrust + 0.0834)>1?1:$scope.rightData.thrust + 0.0834);
+                if (gp.buttons[5].pressed && !button5Pressed) {
+                    $scope.rightData.thrust = (($scope.rightData.thrust + 0.0834) > 1 ? 1 : $scope.rightData.thrust + 0.0834);
                     button5Pressed = true;
                 }
                 //Button 6 released
-                else if(!gp.buttons[5].pressed) button5Pressed = false;
+                else if (!gp.buttons[5].pressed) button5Pressed = false;
                 //Button 1 pressed => switch on pump
-                if(gp.buttons[11].pressed) $scope.leftData.pumpOn = true;
+                if (gp.buttons[11].pressed) $scope.leftData.pumpOn = true;
                 //Button 1 released => switch off pump
-                else if(!gp.buttons[11].pressed) $scope.leftData.pumpOn = false;
+                else if (!gp.buttons[11].pressed) $scope.leftData.pumpOn = false;
             }
             else {
                 $scope.rightData.engine1Radius = 0;
@@ -1695,6 +1663,34 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 $scope.$apply();
             });
         }
+    }
+    //Functions to convert hex to binary to get IO states
+    var ConvertBase = function (num) {
+        return {
+            from : function (baseFrom) {
+                return {
+                    to : function (baseTo) {
+                        return parseInt(num, baseFrom).toString(baseTo);
+                    }
+                };
+            }
+        };
+    };
+    ConvertBase.hex2bin = function (num) {
+        return ConvertBase(num).from(16).to(2);
+    };
+    function computeIO(object, value) {
+        valueBin = ConvertBase.hex2bin(value[1]);
+        if((valueBin & 0b0001) == 1){
+            $scope.rightData.ballastFill = 0;
+        } 
+        else if((valueBin & 0b0010) == 2){
+            $scope.rightData.ballastFill = 100;
+        } 
+        else{
+            $scope.rightData.ballastFill = 50;
+        }
+        $scope.$apply();
     }
     function getValues() {
         if (receivedPitch && receivedRoll) {

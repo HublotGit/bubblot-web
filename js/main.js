@@ -71,7 +71,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         depth: 0.3,
         security: 60,
         securityAlert: false,
-        ballastFill: 50,
+        ballastState: 50,
+        ballastFill: false,
+        ballastEmpty: false,
         thrust: 0,
         thrustTopSwitchOn: true,
         thrustBottomSwitchOn: true,
@@ -122,7 +124,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         depth: 0.7,
         security: 40,
         securityAlert: false,
-        ballastFill: 50,
+        ballastState: 50,
         thrust: 0.2,
         isCtrl: false,
         help: false
@@ -254,7 +256,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yServo2_VSPBottomRight_2: null,
         yMotorDC_pump: null,
         yColor: null,
-        yRelay: null
+        yRelay_elecMagnet: null
     }
 
     var serialBubblot1 = {
@@ -294,16 +296,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
 
     var winderYoctoModules = {
-        yRelay1_Winder1Direction: null,
-        yRelay1_Winder1Brake: null,
-        yPwmOutput1_Winder1Speed: null,
-        yPwmInput1_Winder1Length: null
+        yRelay_WinderDirection: null,
+        yRelay_WinderBrake: null,
+        yPwmOutput_WinderSpeed: null,
+        yPwmInput_WinderLength: null
     }
 
     var serialWinder = {
-        yRelay1: 'Yocto-Relay1',
-        yPwmOutput1: 'Yocto-Pwm-Out1',
-        yPwmInput1: 'Yocto-Pwm-In1'
+        yRelay: 'Yocto-Relay',
+        yPwmOutput: 'Yocto-PWM-Tx',
+        yPwmInput: 'Yocto-PWM-Rx'
     }
 
     function connectYoctoBubblot(ipaddress, serials, modules) {
@@ -383,6 +385,19 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     }
                     else {
                         console.log("Can't find module " + serials.yMotorDC + ".motor");
+                    }
+                })
+            }
+            //Connexion to relay module
+            ).then(() => {
+                modules.yRelay_elecMagnet = YRelay.FindRelay(serials.yRelay + ".relay1");
+                modules.yRelay_elecMagnet.isOnline().then((onLine) => {
+                    if (onLine) {
+                        console.log('Using module ' + serials.yRelay + ".relay1");
+                        modules.yRelay_elecMagnet.set_state(true);
+                    }
+                    else {
+                        console.log("Can't find module " + serials.yRelay + ".relay1");
                     }
                 })
             }
@@ -543,53 +558,53 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             ).then(() => {
                 // by default use any connected module suitable for the demo
                 //Connexion to relay module
-                modules.yRelay1_Winder1Direction = YRelay.FindRelay(serials.yRelay1 + ".relay1");
-                modules.yRelay1_Winder1Direction.isOnline().then((onLine) => {
+                modules.yRelay_WinderDirection = YRelay.FindRelay(serials.yRelay + ".relay1");
+                modules.yRelay_WinderDirection.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yRelay1 + ".relay1");
+                        console.log('Using module ' + serials.yRelay + ".relay1");
                     }
                     else {
-                        console.log("Can't find module " + serials.yRelay1 + ".relay1");
+                        console.log("Can't find module " + serials.yRelay + ".relay1");
                     }
                 })
-                modules.yRelay1_Winder1Brake = YRelay.FindRelay(serials.yRelay1 + ".relay2");
-                modules.yRelay1_Winder1Brake.isOnline().then((onLine) => {
+                modules.yRelay_WinderBrake = YRelay.FindRelay(serials.yRelay + ".relay2");
+                modules.yRelay_WinderBrake.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yRelay1 + ".relay2");
-                        modules.yRelay1_Winder1Brake.set_state(true);
+                        console.log('Using module ' + serials.yRelay + ".relay2");
+                        modules.yRelay_WinderBrake.set_state(true);
                     }
                     else {
-                        console.log("Can't find module " + serials.yRelay1 + ".relay2");
+                        console.log("Can't find module " + serials.yRelay + ".relay2");
                     }
                 })
             }
             ).then(() => {
                 // by default use any connected module suitable for the demo
                 //Connexion to PWM output module
-                modules.yPwmOutput1_Winder1Speed = YPwmOutput.FindPwmOutput(serials.yPwmOutput1 + ".pwmOutput1");
-                modules.yPwmOutput1_Winder1Speed.isOnline().then((onLine) => {
+                modules.yPwmOutput_WinderSpeed = YPwmOutput.FindPwmOutput(serials.yPwmOutput + ".pwmOutput1");
+                modules.yPwmOutput_WinderSpeed.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yPwmOutput1 + ".pwmOutput1");
-                        modules.yPwmOutput1_Winder1Speed.set_frequency(5000);
-                        modules.yPwmOutput1_Winder1Speed.set_enabled(Y_ENABLED_TRUE);
-                        modules.yPwmOutput1_Winder1Speed.set_dutyCycle(0);
+                        console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
+                        modules.yPwmOutput_WinderSpeed.set_frequency(5000);
+                        modules.yPwmOutput_WinderSpeed.set_enabled(Y_ENABLED_TRUE);
+                        modules.yPwmOutput_WinderSpeed.set_dutyCycle(0);
                     }
                     else {
-                        console.log("Can't find module " + serials.yPwmOutput1 + ".pwmOutput1");
+                        console.log("Can't find module " + serials.yPwmOutput + ".pwmOutput1");
                     }
                 })
             }
             ).then(() => {
                 // by default use any connected module suitable for the demo
                 //Connexion to PWM input module
-                modules.yPwmInput1_Winder1Length = YPwmInput.FindPwmInput(serials.yPwmInput1 + ".pwmInput1");
-                modules.yPwmInput1_Winder1Length.isOnline().then((onLine) => {
+                modules.yPwmInput_WinderLength = YPwmInput.FindPwmInput(serials.yPwmInput + ".pwmInput1");
+                modules.yPwmInput_WinderLength.isOnline().then((onLine) => {
                     if (onLine) {
-                        console.log('Using module ' + serials.yPwmInput1 + ".pwmInput1");
-                        modules.yPwmInput1_Winder1Length.resetCounter();
+                        console.log('Using module ' + serials.yPwmInput + ".pwmInput1");
+                        modules.yPwmInput_WinderLength.resetCounter();
                     }
                     else {
-                        console.log("Can't find module " + serials.yPwmInput1 + ".pwmInput1");
+                        console.log("Can't find module " + serials.yPwmInput + ".pwmInput1");
                     }
                 });
             }
@@ -988,8 +1003,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             else {
                 $scope.winderData.railAlert = false;
             }
-            if (winderYoctoModules.yPwmInput1_Winder1Length) {
-                winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+            if (winderYoctoModules.yPwmInput_WinderLength) {
+                winderYoctoModules.yPwmInput_WinderLength.resetCounter();
                 previousWinderPulse = 1;
             }
         });
@@ -1021,32 +1036,32 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             if (previousWinderSpeed2 * value < 0 && !switchWinderDirection1 && !stopWinderOk) {
                 switchWinderDirection1 = true;
                 //Stop de motor and wait 5s before switching direction
-                if (winderYoctoModules.yPwmOutput1_Winder1Speed) {
-                    winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(0);
+                if (winderYoctoModules.yPwmOutput_WinderSpeed) {
+                    winderYoctoModules.yPwmOutput_WinderSpeed.set_dutyCycle(0);
                     clearTimeout(stopWinderTime);
                     setTimeout(winderDirectionTimeout, 4000);
                 }
             }
             else if (!switchWinderDirection1) {
-                if (winderYoctoModules.yRelay1_Winder1Direction) {
+                if (winderYoctoModules.yRelay_winderDirection) {
                     if (value > 0) {
-                        winderYoctoModules.yRelay1_Winder1Brake.set_state(false);
-                        winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
+                        winderYoctoModules.yRelay_winderBrake.set_state(false);
+                        winderYoctoModules.yRelay_winderDirection.set_state(true);
                         winderDirection1 = true;
                         stopWinderOk = false;
                         clearTimeout(stopWinderTime);
                     }
                     else if (value < 0) {
-                        winderYoctoModules.yRelay1_Winder1Brake.set_state(false);
-                        winderYoctoModules.yRelay1_Winder1Direction.set_state(false);
+                        winderYoctoModules.yRelay_winderBrake.set_state(false);
+                        winderYoctoModules.yRelay_winderDirection.set_state(false);
                         winderDirection1 = false;
                         stopWinderOk = false;
                         clearTimeout(stopWinderTime);
                     }
                     else stopWinderTime = setTimeout(stopWinderTimeout, 4000);
                 }
-                if (winderYoctoModules.yPwmOutput1_Winder1Speed) {
-                    winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(Math.abs(value) / 5.5 * 100);
+                if (winderYoctoModules.yPwmOutput_WinderSpeed) {
+                    winderYoctoModules.yPwmOutput_WinderSpeed.set_dutyCycle(Math.abs(value) / 5.5 * 100);
                 }
             }
             previousWinderSpeed2 = previousWinderSpeed1;
@@ -1078,6 +1093,26 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         $scope.$watch('rightData.securityAlert', function (value) {
             $scope.notifData.bubblotSecurity = value;
+        });
+        $scope.$watch('rightData.ballastFill', function (value) {
+            if (bubblot1YoctoModules.yDigitalIO) {
+                if (value) {
+                    bubblot1YoctoModules.yDigitalIO.set_bitState(4, 1);
+                    bubblot1YoctoModules.yRelay_elecMagnet.set_state(true);
+                }
+                else {
+                    bubblot1YoctoModules.yDigitalIO.set_bitState(4, 0);
+                }
+            }
+        });
+        $scope.$watch('rightData.ballastEmpty', function (value) {
+            if (bubblot1YoctoModules.yDigitalIO) {
+                if (value) {
+                    bubblot1YoctoModules.yRelay_elecMagnet.set_state(false);
+                }
+                else {
+                }
+            }
         });
         $scope.$watch('leftData.twistLeft', function (value) {
             $scope.notifData.bubblotTwistLeft = value;
@@ -1123,6 +1158,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             if ($scope.notifData.recData) intervalDataSave = setInterval(saveData, 2000);
             else clearInterval(intervalDataSave);
         });
+
     }
     var button11Pressed = false, button4Pressed = false, button2Pressed = false, button5Pressed = false, button3Pressed = false;
     //Loop function to get joystick values
@@ -1606,8 +1642,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var previousWinderPulse = 1;
     function computeWinderLength() {
         //Computation of the length for rail mode
-        if ($scope.winderData.railMode && winderYoctoModules.yPwmInput1_Winder1Length) {
-            winderYoctoModules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
+        if ($scope.winderData.railMode && winderYoctoModules.yPwmInput_WinderLength) {
+            winderYoctoModules.yPwmInput_WinderLength.get_pulseCounter().then((value) => {
                 //Compare speed with approximation
                 if (value - previousWinderPulse < 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) - 30 ||
                     value - previousWinderPulse > 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) + 30) {
@@ -1628,15 +1664,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
                 previousWinderPulse = value;
                 if (value > 10000) {
-                    winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+                    winderYoctoModules.yPwmInput_WinderLength.resetCounter();
                     previousWinderPulse = 1;
                 }
                 $scope.$apply();
             });
         }
         //Computation of the length for winder mode
-        else if (!$scope.winderData.railMode && winderYoctoModules.yPwmInput1_Winder1Length) {
-            winderYoctoModules.yPwmInput1_Winder1Length.get_pulseCounter().then((value) => {
+        else if (!$scope.winderData.railMode && winderYoctoModules.yPwmInput_WinderLength) {
+            winderYoctoModules.yPwmInput_WinderLength.get_pulseCounter().then((value) => {
                 //Compare speed with approximation
                 if (value - previousWinderPulse < 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) - 30 ||
                     value - previousWinderPulse > 4.3 * (Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100) + 30) {
@@ -1657,7 +1693,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
                 previousWinderPulse = value;
                 if (value > 10000) {
-                    winderYoctoModules.yPwmInput1_Winder1Length.resetCounter();
+                    winderYoctoModules.yPwmInput_WinderLength.resetCounter();
                     previousWinderPulse = 1;
                 }
                 $scope.$apply();
@@ -1667,9 +1703,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     //Functions to convert hex to binary to get IO states
     var ConvertBase = function (num) {
         return {
-            from : function (baseFrom) {
+            from: function (baseFrom) {
                 return {
-                    to : function (baseTo) {
+                    to: function (baseTo) {
                         return parseInt(num, baseFrom).toString(baseTo);
                     }
                 };
@@ -1681,14 +1717,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     };
     function computeIO(object, value) {
         valueBin = ConvertBase.hex2bin(value[1]);
-        if((valueBin & 0b0001) == 1){
-            $scope.rightData.ballastFill = 0;
-        } 
-        else if((valueBin & 0b0010) == 2){
-            $scope.rightData.ballastFill = 100;
-        } 
-        else{
-            $scope.rightData.ballastFill = 50;
+        if ((valueBin & 0b0001) == 1) {
+            $scope.rightData.ballastState = 0;
+            $scope.rightData.ballastEmpty = false;
+        }
+        else if ((valueBin & 0b0010) == 2) {
+            $scope.rightData.ballastState = 100;
+            $scope.rightData.ballastFill = false;
+        }
+        else {
+            $scope.rightData.ballastState = 50;
         }
         $scope.$apply();
     }
@@ -1748,24 +1786,24 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
     function computeAverageTurbidity() {
         if (!amountTurbi == 0) $scope.leftData.turbidityRed = totalTurbi / amountTurbi;
-        console.log($scope.leftData.turbidityRed);
+        //console.log($scope.leftData.turbidityRed);
         totalTurbi = 0;
         amountTurbi = 0;
     }
     function stopWinderTimeout() {
         stopWinderOk = true;
-        winderYoctoModules.yRelay1_Winder1Brake.set_state(true);
+        winderYoctoModules.yRelay_winderBrake.set_state(true);
     }
     function winderDirectionTimeout() {
-        if (winderYoctoModules.yRelay1_Winder1Direction && $scope.winderData.winderSpeed1 > 0) {
-            winderYoctoModules.yRelay1_Winder1Direction.set_state(true);
+        if (winderYoctoModules.yRelay_winderDirection && $scope.winderData.winderSpeed1 > 0) {
+            winderYoctoModules.yRelay_winderDirection.set_state(true);
             winderDirection1 = true;
         }
-        else if (winderYoctoModules.yRelay1_Winder1Direction) {
-            winderYoctoModules.yRelay1_Winder1Direction.set_state(false);
+        else if (winderYoctoModules.yRelay_winderDirection) {
+            winderYoctoModules.yRelay_winderDirection.set_state(false);
             winderDirection1 = false;
         }
-        winderYoctoModules.yPwmOutput1_Winder1Speed.set_dutyCycle(Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100);
+        winderYoctoModules.yPwmOutput_WinderSpeed.set_dutyCycle(Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100);
         switchWinderDirection1 = false;
     }
     var allScreen = document.getElementById('bubblotDisplay');

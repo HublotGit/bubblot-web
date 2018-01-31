@@ -633,7 +633,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
         });
         //Connect to Yocto module
-        connectYoctoBubblot("localhost", serialBubblot1, bubblot1YoctoModules);
+        connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
         //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);

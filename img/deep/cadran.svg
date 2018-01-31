@@ -20,6 +20,7 @@
 	.st14{fill:#353535;}
 	.st15{fill:#1E1E1E;}
 	.st16{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
+	.st17{font-size:16px;}
 </style>
 <g id="masque_1_" class="st0">
 	<g class="st1">
@@ -136,6 +137,6 @@
 </g>
 <g id="reperes" class="st0">
 </g>
-<text transform="matrix(1 0 0 1 403 133)" class="st10 st11">S.</text>
-<text transform="matrix(1 0 0 1 549 133)" class="st10 st11">B.</text>
+<text transform="matrix(1 0 0 1 370 90)" class="st10 st17">SECURITY</text>
+<text transform="matrix(1 0 0 1 528 90)" class="st10 st17">BALLASTS</text>
 </svg>

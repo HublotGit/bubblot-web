@@ -11,10 +11,16 @@
             replace: true,
             controller: 'deepCtrl',
             controllerAs: 'vm',
-            scope: {security: '=', securityAlert: '=', ballastFill: '=', circleSize: '=', circleThickness: '=', depth: '=', focusIndex: '='},
+            scope: {security: '=', securityAlert: '=', ballastState: '=', ballastFill: '=', ballastEmpty: '=', circleSize: '=', circleThickness: '=', depth: '=', focusIndex: '='},
             link: function(scope, element, attr) {
                 scope.$watch('security', function (value) {
                     scope.checkSecurity(value);
+                });
+                scope.$watch('ballastFill', function (value) {
+                    if(value) ballastEmpty = false;
+                });
+                scope.$watch('ballastEmpty', function (value) {
+                    if(value) ballastFill = false;
                 });
             }
         }

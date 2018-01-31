@@ -20,8 +20,8 @@ $positionYLedSecu: 20px;
 
 $widthProgressBarMaxFocus: 120px;
 $heightProgressBarFocus: 15px;
-$positionYProgressBarFocus: 80px;
-$positionXSpotlightProgressBarFocus: 115px;
+$positionYProgressBarFocus: 25%;
+$positionXSpotlightProgressBarFocus: 42%;
 $heightLedSecuFocus:25px;
 $positionXLedSecuFocus:85px;
 $positionYLedSecuFocus:40px;
@@ -86,21 +86,6 @@ $progressBarColor: $secondColor;
    .ballast-progressbar {
       right: $positionXFoglightProgressBar;
    }
-   .btn-ballast {
-      position: absolute;
-      width: $heightLedSecu;
-      height: $heightLedSecu;
-      bottom: $positionYLedSecu;
-      right: $positionXLedSecu;
-      text-align: center;
-      line-height: 10%;
-      background-color: $colorBtnBallast;
-      color:black;
-      z-index: 10;
-      cursor: pointer;
-      @include fontUse($fontFamilly, 10px, $fontWeight);
-      @include border(50%);
-    }
 
       .led-security {
         position: absolute;
@@ -148,20 +133,21 @@ $progressBarColor: $secondColor;
 
       .btn-ballast {
       position: absolute;
-      width: $heightLedSecuFocus;
-      height: $heightLedSecuFocus;
-      bottom: $positionYLedSecuFocus;
-      right: $positionXLedSecuFocus;
-      text-align: center;
-      line-height: 16%;
-      background-color: $colorBtnBallast;
-      color:black;
+      width: 8%;
+      height: 8%;
+      right: 34%;
+      background: url('../img/deep/arrow-simple-down.svg') no-repeat center;
+      background-size: 100% 100%;
+      background-color: grey;
       z-index: 10;
+      @include border(20%);
       cursor: pointer;
-      @include fontUse($fontFamilly, 15px, $fontWeight);
-      @include border(50%);
-      &.fill {
-         background-color: $colorBtnBallast ;
+      &.up{
+        top: 25%;
+        transform: rotate(180deg);
+      }
+      &.down{
+        bottom: 35%;
       }
       }
 

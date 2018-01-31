@@ -13,13 +13,13 @@
             var minX = clientRect.left + (clientRect.width/5);
             var maxX = clientRect.right - (clientRect.width/5);
             if(event.screenX > minX && event.screenX < maxX){
-                if($scope.ballastFill>=0 && $scope.ballastFill<=100){
-                    $scope.ballastFill=$scope.ballastFill+3*event.deltaY/200;
-                    if($scope.ballastFill>100){
-                        $scope.ballastFill=100;
+                if($scope.ballastState>=0 && $scope.ballastState<=100){
+                    $scope.ballastState=$scope.ballastState+3*event.deltaY/200;
+                    if($scope.ballastState>100){
+                        $scope.ballastState=100;
                     }
-                    else if($scope.ballastFill<0){
-                        $scope.ballastFill=0;
+                    else if($scope.ballastState<0){
+                        $scope.ballastState=0;
                     }
                     $scope.$apply();
                 }

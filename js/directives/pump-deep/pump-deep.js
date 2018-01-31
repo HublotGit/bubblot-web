@@ -11,7 +11,7 @@
             replace: true,
             controller: 'pumpDeepCtrl',
             controllerAs: 'vm',
-            scope: {security: '=', securityAlert: '=', ballastFill: '=', circleSize: '=', circleThickness: '=', depth: '=', focusIndex: '='},
+            scope: {security: '=', securityAlert: '=', ballastState: '=', circleSize: '=', circleThickness: '=', depth: '=', focusIndex: '='},
             link: function(scope, element, attr) {
                 scope.$watch('security', function (value) {
                     scope.checkSecurity(value);

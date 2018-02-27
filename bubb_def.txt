@@ -4,7 +4,7 @@ giCamFlagSepGraph                        0
 
 ! Cam num
 gpiCamNum[0]                             0
-gpiCamNum[1]                             0
+gpiCamNum[1]                             1
 
 ! Flag si sync cam
 giCamFlagSync                            1
@@ -16,12 +16,12 @@ giDispScreenHoriz                        1
 giTexCircleDiam                          1500
 
 ! Scaling texture ]0,1] : 1->90 degres 1/2 sphere
-gdTexSphAngleScale                       0.863837598531476
+gdTexSphAngleScale                       0.4581115219914
 
 ! Correction camera : Position objet
-obj_corrcam_latitude                     3.6
+obj_corrcam_latitude                     3.7
 obj_corrcam_longtitude                   2.2
-obj_corrcam_twist                        -0.3
+obj_corrcam_twist                        2.77555756156289e-017
 
 ! Persp. angle (1/2 angle)
 perspAngle                               40

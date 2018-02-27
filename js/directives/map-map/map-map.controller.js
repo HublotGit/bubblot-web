@@ -53,6 +53,7 @@
                 $scope.xlast = 0;
                 $scope.ylast = 0;
             }
+            $scope.$apply();
         }
 
         //Find data corresponding to the cursor position when clicking
@@ -102,6 +103,7 @@
                             $scope.infoTurbiBlue = data.rows[0].value.turbidity.dataBlue;
                             $scope.infoVa = data.rows[0].value.VA.data;
                             $scope.updatePanel = !$scope.updatePanel;
+                            $scope.$apply()
                             // data is json response 
                             // headers is an object with all response headers 
                             // status is statusCode number 
@@ -112,15 +114,21 @@
                             // ...or err.code=EUNKNOWN if statusCode is unexpected 
                         });
                     }
-                    if (dataFound == true) break;
+                    if (dataFound == true) {
+                        break;
+                    }
                 }
-                if (dataFound == true) break;
+                if (dataFound == true) {
+                    break;
+                }
             }
-            if (!dataFound) $scope.updatePanel = !$scope.updatePanel;
+            if (!dataFound){
+                $scope.updatePanel = !$scope.updatePanel;
+            }
         }
-        $scope.playTime=-1;
+        $scope.playTime = -1;
         //Draw data
-        $scope.drawData = function(element){
+        $scope.drawData = function (element) {
             element.width = element.clientWidth;
             element.height = element.clientHeight;
             var context = element.getContext("2d");
@@ -136,7 +144,7 @@
             for (var j = 0; j < $scope.datax.length; j++) {
                 //Loop for running through each measurement point of bubblot j
                 if ($scope.datax[j].length > 0) {
-                    for (var i = 0; i < Math.min($scope.playTime+1,$scope.datax[j].length); i++) {
+                    for (var i = 0; i < Math.min($scope.playTime + 1, $scope.datax[j].length); i++) {
                         //Corrdinates x y of the bubblot j
                         var x = $scope.datax[j][i];
                         var y = $scope.datay[j][i];
@@ -324,8 +332,8 @@
                             context.drawImage(imgMovie, x, y, 20 / $scope.zoom, 30 / $scope.zoom);
                         }
                     }
-                    if($scope.playTime >= $scope.datax[j].length-1) context.drawImage(imgBubblot, $scope.datax[j][$scope.datax[j].length-1]-15 / $scope.zoom, $scope.datay[j][$scope.datax[j].length-1]-30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
-                    else context.drawImage(imgBubblot, $scope.datax[j][$scope.playTime]-15 / $scope.zoom, $scope.datay[j][$scope.playTime]-30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
+                    if ($scope.playTime >= $scope.datax[j].length - 1) context.drawImage(imgBubblot, $scope.datax[j][$scope.datax[j].length - 1] - 15 / $scope.zoom, $scope.datay[j][$scope.datax[j].length - 1] - 30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
+                    else context.drawImage(imgBubblot, $scope.datax[j][$scope.playTime] - 15 / $scope.zoom, $scope.datay[j][$scope.playTime] - 30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
                 }
             }
             //Draw pump
@@ -336,13 +344,13 @@
                     //context.arc($scope.dataxPump[i], $scope.datayPump[i], 8 / $scope.zoom, 0, 2 * Math.PI, false);
                     //context.closePath();
                     //context.fill();
-                    context.drawImage(imgBubblot, $scope.dataxPump[i]-15 / $scope.zoom, $scope.datayPump[i]-30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
+                    context.drawImage(imgBubblot, $scope.dataxPump[i] - 15 / $scope.zoom, $scope.datayPump[i] - 30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
                 }
             }
-            if($scope.playData && $scope.playTime < Math.max($scope.datax[0].length, $scope.datax[1].length, $scope.datax[2].length)-1){
-                setTimeout(function(){ if($scope.playData) $scope.playTime++; }, 100);
+            if ($scope.playData && $scope.playTime < Math.max($scope.datax[0].length, $scope.datax[1].length, $scope.datax[2].length) - 1) {
+                setTimeout(function () { if ($scope.playData) $scope.playTime++; $scope.$apply()}, 100);
             }
-            else if($scope.playTime >= Math.max($scope.datax[0].length, $scope.datax[1].length, $scope.datax[2].length)-1) $scope.playData = false;
+            else if ($scope.playTime >= Math.max($scope.datax[0].length, $scope.datax[1].length, $scope.datax[2].length) - 1) $scope.playData = false;
         }
         //Draw the data 
         $scope.drawData2 = function (element) {
@@ -357,7 +365,7 @@
             context.translate($scope.xnew, $scope.ynew);
             context.translate(-$scope.ximage, -$scope.yimage);
             context.drawImage(imgMap, 0, 0, context.canvas.width, context.canvas.height);
-            
+
             //Loop for running through each bubblot data
             for (var j = 0; j < $scope.datax.length; j++) {
                 //Loop for running through each measurement point of bubblot j
@@ -548,8 +556,8 @@
                             context.drawImage(imgMovie, x, y, 20 / $scope.zoom, 30 / $scope.zoom);
                         }
                     }
-                    if(i==$scope.datax[j].length){
-                        context.drawImage(imgBubblot, x-15 / $scope.zoom, y-30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
+                    if (i == $scope.datax[j].length) {
+                        context.drawImage(imgBubblot, x - 15 / $scope.zoom, y - 30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
                     }
                 }
             }
@@ -561,7 +569,7 @@
                     //context.arc($scope.dataxPump[i], $scope.datayPump[i], 8 / $scope.zoom, 0, 2 * Math.PI, false);
                     //context.closePath();
                     //context.fill();
-                    context.drawImage(imgBubblot, $scope.dataxPump[i]-15 / $scope.zoom, $scope.datayPump[i]-30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
+                    context.drawImage(imgBubblot, $scope.dataxPump[i] - 15 / $scope.zoom, $scope.datayPump[i] - 30 / $scope.zoom, 30 / $scope.zoom, 60 / $scope.zoom);
                 }
             }
 

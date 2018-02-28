@@ -52,6 +52,9 @@
             stopDay[0].value = stopDay[1].value;
             stopTime[0].value = stopTime[1].value;
         }
+        $scope.playDataPressed = function (){
+            $scope.playData = !$scope.playData;
+        }
         //Extract data from the database into the program memory when clicking submit
         $scope.extractData = function (element) {
             //Get time slot 
@@ -130,6 +133,7 @@
                     else $scope.isMovie[bubblotIndex].push(false);
                 }
                 $scope.extractingData = !$scope.extractingData;
+                $scope.$apply();
                 // data is json response 
                 // headers is an object with all response headers 
                 // status is statusCode number 

@@ -1757,18 +1757,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
         }
     }
-    var gyroX = 0, gyroY = 0, gyroZ = 0;
-    var gyroXOk = false, gyroYOk = false, gyroZOk = false;
-    function computeGyroX(object, value) {
-        gyroX = value;
-        console.log(value);
-    }
-    function computeGyroY(object, value) {
-        gyroY = value;
-    }
-    function computeGyroZ(object, value) {
-        gyroZ = value;
-    }
     function computeCompass(object, value) {
         $scope.leftDataPump.gpsCompass = value;
         $scope.$apply();
@@ -1782,7 +1770,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         amountTurbi++;
         totalTurbi = totalTurbi + (1000 - value);
         $scope.leftData.turbidity = 1 - value / 1000;
-
     }
     function computeAverageTurbidity() {
         if (!amountTurbi == 0) $scope.leftData.turbidityRed = totalTurbi / amountTurbi;

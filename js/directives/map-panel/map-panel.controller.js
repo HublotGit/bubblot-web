@@ -6,7 +6,7 @@
 
     function mapPanelCtrl($scope, $element) {
         var vm = this;
-        $scope.graphName="V-A";
+        $scope.graphName = "V-A";
         //Initialiazing variables
         $scope.datax[0] = [], $scope.datay[0] = [], $scope.datax[1] = [], $scope.datay[1] = [], $scope.datax[2] = [], $scope.datay[2] = [];
         $scope.avgMagnetism[0] = [], $scope.avgMagnetism[1] = [], $scope.avgMagnetism[2] = [];
@@ -19,6 +19,77 @@
         $scope.avgTurbi[0] = [], $scope.avgTurbi[1] = [], $scope.avgTurbi[2] = [];
         $scope.isMovie[0] = [], $scope.isMovie[1] = [], $scope.isMovie[2] = [];
         $scope.dates[0] = [], $scope.dates[1] = [], $scope.dates[2] = [];
+
+        var btnMagnElement = $element.find("canvas")[1]
+        var contextMagn = btnMagnElement.getContext("2d");
+        contextMagn.scale(1, 0.5);
+        contextMagn.strokeStyle = 'white';
+        contextMagn.globalAlpha = 1;
+        contextMagn.lineWidth = 12;
+        contextMagn.beginPath();
+        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 20, 0, 2 * Math.PI, false);
+        contextMagn.closePath();
+        contextMagn.stroke();
+        contextMagn.beginPath();
+        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 50, 0, 2 * Math.PI, false);
+        contextMagn.closePath();
+        contextMagn.stroke();
+        contextMagn.beginPath();
+        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 80, 0, 2 * Math.PI, false);
+        contextMagn.closePath();
+        contextMagn.stroke();
+        contextMagn.beginPath();
+        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 110, 0, 2 * Math.PI, false);
+        contextMagn.closePath();
+        contextMagn.stroke();
+        
+        var btnTurbiElement = $element.find("canvas")[3]
+        var contextTurbi = btnTurbiElement.getContext("2d");
+        contextTurbi.scale(1, 0.5);
+        contextTurbi.strokeStyle = 'aqua';
+        contextTurbi.lineWidth = 12;
+        var x = btnTurbiElement.width/2
+        var y = btnTurbiElement.height
+        var spiraleX = x, spiraleY = y;
+        var spiraleAngle = 0;
+        while (spiraleAngle < 6 * Math.PI) {
+            contextTurbi.beginPath();
+            contextTurbi.moveTo(spiraleX, spiraleY);
+            spiraleX = x + 6 / $scope.zoom * spiraleAngle * Math.cos(spiraleAngle);
+            spiraleY = y + 6 / $scope.zoom * spiraleAngle * Math.sin(spiraleAngle);
+            contextTurbi.lineTo(spiraleX, spiraleY);
+            contextTurbi.closePath();
+            contextTurbi.stroke();
+            spiraleAngle = spiraleAngle + 2 * Math.PI / 60;
+        }
+
+        var btnPathElement = $element.find("canvas")[0]
+        var contextPath = btnPathElement.getContext("2d");
+        contextPath.scale(1, 0.5);
+        var imgLocation = new Image();
+        imgLocation.src = '../img/locationIcon.png';
+        imgLocation.onload = function() {
+            contextPath.drawImage(imgLocation, btnPathElement.width/12, btnPathElement.height/6, btnPathElement.width/1.2, btnPathElement.height/0.6);
+        };
+
+        var btnVideoElement = $element.find("canvas")[2]
+        var contextVideo = btnVideoElement.getContext("2d");
+        contextVideo.scale(1, 0.5);
+        var imgVideo = new Image();
+        imgVideo.src = '../img/videoIcon.png';
+        imgVideo.onload = function() {
+            contextVideo.drawImage(imgVideo, btnVideoElement.width/12, btnVideoElement.height/6, btnVideoElement.width/1.2, btnVideoElement.height/0.6);
+        };
+
+        var btnVaElement = $element.find("canvas")[4]
+        var contextVa = btnVaElement.getContext("2d");
+        contextVa.scale(1, 0.5);
+        var imgVa = new Image();
+        imgVa.src = '../img/vaIcon.png';
+        imgVa.onload = function() {
+            contextVa.drawImage(imgVa, btnVaElement.width/12, btnVaElement.height/6, btnVaElement.width/1.2, btnVaElement.height/0.6);
+        };
+        
 
         //Callback functions for date input to update fond-marin and fond-marin2
         var startDay = document.getElementsByClassName("start-day");
@@ -52,7 +123,7 @@
             stopDay[0].value = stopDay[1].value;
             stopTime[0].value = stopTime[1].value;
         }
-        $scope.playDataPressed = function (){
+        $scope.playDataPressed = function () {
             $scope.playData = !$scope.playData;
         }
         //Extract data from the database into the program memory when clicking submit
@@ -156,7 +227,7 @@
         };
         //Init graph in information panel 
         var graphInfoData;
-        var context = $element.find("canvas")[0].getContext("2d");
+        var context = $element.find("canvas")[5].getContext("2d");
         var graphInfo = new Chart(context, {
             type: 'line',
             data: initData,
@@ -216,7 +287,7 @@
         $scope.updateInfoPanel = function (element) {
             //If cursor is on VA spot, plot V-A graph
             if ($scope.vaCursor) {
-                while(graphInfo.data.datasets.length>0){
+                while (graphInfo.data.datasets.length > 0) {
                     graphInfo.data.datasets.pop();
                 };
                 graphInfo.data.datasets.push({
@@ -236,7 +307,7 @@
             }
             //If cursor click on turbidity spot, plot turbi graph
             else if ($scope.turbiCursor) {
-                while(graphInfo.data.datasets.length>0){
+                while (graphInfo.data.datasets.length > 0) {
                     graphInfo.data.datasets.pop();
                 };
                 graphInfo.data.datasets.push({
@@ -270,7 +341,7 @@
             }
             //If cursor click on magnetic spot, plot magn graph
             else if ($scope.magnCursor) {
-                while(graphInfo.data.datasets.length>0){
+                while (graphInfo.data.datasets.length > 0) {
                     graphInfo.data.datasets.pop();
                 };
                 graphInfo.data.datasets.push({

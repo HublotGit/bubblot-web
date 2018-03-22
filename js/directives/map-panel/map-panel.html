@@ -10,24 +10,54 @@
                 <div class="btn-load" style="left:40%" ng-click="extractData()">Load</div>
                 <br><br>
             </fieldset>
-            <br>
-            <fieldset>
+            <br><br><br><br><br>
+            <fieldset class="display">
                 <legend>Data to display</legend>
-                General:<br>
-                <div class="btn-path" ng-click="displayPath=!displayPath" ng-class="{on:displayPath}">Path</div>
-                <div class="btn-vi" ng-click="displayVa=!displayVa" ng-class="{on:displayVa}" style="left: 23%">V-A</div>
-                <div class="btn-rec" ng-click="displayMovie=!displayMovie" ng-class="{on:displayMovie}"style="left:39%">Movie</div>
-                <br><br><br>
-                V-A data:<br>
-                <div class="btn-fe" ng-click="displayFe=!displayFe" ng-class="{on:displayFe}">Fe</div>
-                <div class="btn-pb" ng-click="displayPb=!displayPb" ng-class="{on:displayPb}" style="left: 17%">Pb</div>
-                <div class="btn-cu" ng-click="displayCu=!displayCu" ng-class="{on:displayCu}" style="left: 30%">Cu</div>
-                <div class="btn-sn" ng-click="displaySn=!displaySn" ng-class="{on:displaySn}" style="left: 44%">Sn</div>
-                <br><br><br>
-                Nose data:<br>
-                <div class="btn-magnetism" ng-click="displayMagn=!displayMagn" ng-class="{on:displayMagn}">Magnetism</div>
-                <div class="btn-turbidity" style="left: 41%" ng-click="displayTurbi=!displayTurbi" ng-class="{on:displayTurbi}">Turbidity</div>
-                <br><br><br>
+                <table cellspacing="20">
+                    <tr>
+                        <td>
+                            <div class="btn-path" ng-click="displayPath=!displayPath" ng-class="{on:displayPath}"><canvas style="height: 75; width: 75" ></canvas></div>
+                        </td>
+                        <td>
+                            <div class="btn-magnetism" ng-click="displayMagn=!displayMagn" ng-class="{on:displayMagn}"><canvas style="height: 75; width: 75" ></canvas></div>
+                        </td>
+                        <td>
+                            <div class="btn-rec" ng-click="displayMovie=!displayMovie" ng-class="{on:displayMovie}"><canvas style="height:75; width: 75" ></canvas></div>
+                        </td>
+                        <td>
+                            <div class="btn-turbidity" ng-click="displayTurbi=!displayTurbi" ng-class="{on:displayTurbi}"><canvas style="height: 75; width: 75" ></canvas></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <div class="btn-vi" ng-click="displayVa=!displayVa" ng-class="{on:displayVa}"><canvas style="height: 75; width: 75" ></canvas></div>
+                        </td>
+                        <td>
+                            <table cellspacing="2">
+                                <tr>
+                                    <td>
+                                        <div class="btn-fe" ng-click="displayFe=!displayFe" ng-class="{on:displayFe}">Fe</div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-pb" ng-click="displayPb=!displayPb" ng-class="{on:displayPb}" style="left: 17%">Pb</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="btn-cu" ng-click="displayCu=!displayCu" ng-class="{on:displayCu}" style="left: 30%">Cu</div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-sn" ng-click="displaySn=!displaySn" ng-class="{on:displaySn}" style="left: 44%">Sn</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
             </fieldset>
             <br>
             <fieldset>

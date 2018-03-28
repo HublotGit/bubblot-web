@@ -18,7 +18,7 @@
 
         function successCallback(stream) {
             var options = {
-                mimeType: 'video/webm',
+                mimeType: 'video/webm\;codecs=h264',
                 bitsPerSecond: 128000
             };
             video[0].src = vendorURL.createObjectURL(stream);

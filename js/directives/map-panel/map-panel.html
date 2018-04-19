@@ -2,18 +2,9 @@
 <div class="map-panel">
         <form>
             <fieldset>
-                <legend>Time slot</legend>
-                From: Day <input type="date" value="2017-02-17" name="dataStartDay" class="start-day"> Time <input type="time" name="dataStartTime" class="start-time"><br>
-                <br>
-                To: Day <input type="date" value="2017-02-18" name="dataStopDay" class="stop-day"> Time <input type="time" name="dataStopTime" class="stop-time"><br><br><br>
-                <div class="btn-play" ng-class="{on:playData}" ng-click="playDataPressed()">Play</div>
-                <div class="btn-load" style="left:40%" ng-click="extractData()">Load</div>
-                <br><br>
-            </fieldset>
-            <br><br><br>
-            <fieldset class="display">
-                <legend>Data to display</legend>
-                <table cellspacing="20">
+                <legend>Control panel</legend>
+                <div class="caleandar"></div>
+                <table cellspacing="20" class="display">
                     <tr>
                         <td>
                             <div class="btn-path" ng-click="displayPath=!displayPath" ng-class="{on:displayPath}"><canvas style="height: 75; width: 75" ></canvas></div>
@@ -35,20 +26,20 @@
                             <div class="btn-vi" ng-click="displayVa=!displayVa" ng-class="{on:displayVa}"><canvas style="height: 75; width: 75" ></canvas></div>
                         </td>
                         <td>
-                            <table cellspacing="2">
-                                <tr>
-                                    <td>
-                                        <div class="btn-fe" ng-click="displayFe=!displayFe" ng-class="{on:displayFe}">Fe</div>
-                                    </td>
-                                    <td>
+                        <table cellspacing="2">
+                            <tr>
+                                <td style="width:37px; height:37px;">
+                                    <div class="btn-fe" ng-click="displayFe=!displayFe" ng-class="{on:displayFe}">Fe</div>
+                                </td>
+                                    <td style="width:37px; height:37px;">
                                         <div class="btn-pb" ng-click="displayPb=!displayPb" ng-class="{on:displayPb}" style="left: 17%">Pb</div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>
+                                    <td style="width:37px; height:37px;">
                                         <div class="btn-cu" ng-click="displayCu=!displayCu" ng-class="{on:displayCu}" style="left: 30%">Cu</div>
                                     </td>
-                                    <td>
+                                    <td style="width:37px; height:37px;">
                                         <div class="btn-sn" ng-click="displaySn=!displaySn" ng-class="{on:displaySn}" style="left: 44%">Sn</div>
                                     </td>
                                 </tr>
@@ -62,7 +53,7 @@
             <br>
             <fieldset>
                 <legend>Informations</legend>
-                <fieldset style="position:absolute;top:65%;right:3%;height:29%;width:45%">
+                <fieldset style="position:absolute;top:69%;right:3%;height:25%;width:45%">
                     <legend>{{graphName}}</legend>
                     <div style="height: 80%; width: 93%;position:absolute;left:2%;top:15%;">
                         <canvas style="height:100;width:110;"></canvas>

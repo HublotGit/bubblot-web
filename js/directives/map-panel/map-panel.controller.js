@@ -6,6 +6,21 @@
 
     function mapPanelCtrl($scope, $element) {
         var vm = this;
+        var element = $element.find(".caleandar")[0];
+        var settings = {
+            Color: '',
+            LinkColor: '',
+            NavShow: true,
+            NavVertical: false,
+            NavLocation: '',
+            DateTimeShow: true,
+            DateTimeFormat: 'mmm, yyyy',
+            DatetimeLocation: '',
+            EventClick: '',
+            EventTargetWholeDay: false,
+            DisabledDays: [],
+            ModelChange: element
+        };
         $scope.graphName = "V-A";
         //Initialiazing variables
         $scope.datax[0] = [], $scope.datay[0] = [], $scope.datax[1] = [], $scope.datay[1] = [], $scope.datax[2] = [], $scope.datay[2] = [];
@@ -20,35 +35,35 @@
         $scope.isMovie[0] = [], $scope.isMovie[1] = [], $scope.isMovie[2] = [];
         $scope.dates[0] = [], $scope.dates[1] = [], $scope.dates[2] = [];
 
-        var btnMagnElement = $element.find("canvas")[1]
+        var btnMagnElement = $element.find("canvas")[1];
         var contextMagn = btnMagnElement.getContext("2d");
         contextMagn.scale(1, 0.5);
         contextMagn.strokeStyle = 'white';
         contextMagn.globalAlpha = 1;
         contextMagn.lineWidth = 12;
         contextMagn.beginPath();
-        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 20, 0, 2 * Math.PI, false);
+        contextMagn.arc(btnMagnElement.width / 2, btnMagnElement.height, 20, 0, 2 * Math.PI, false);
         contextMagn.closePath();
         contextMagn.stroke();
         contextMagn.beginPath();
-        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 50, 0, 2 * Math.PI, false);
+        contextMagn.arc(btnMagnElement.width / 2, btnMagnElement.height, 50, 0, 2 * Math.PI, false);
         contextMagn.closePath();
         contextMagn.stroke();
         contextMagn.beginPath();
-        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 80, 0, 2 * Math.PI, false);
+        contextMagn.arc(btnMagnElement.width / 2, btnMagnElement.height, 80, 0, 2 * Math.PI, false);
         contextMagn.closePath();
         contextMagn.stroke();
         contextMagn.beginPath();
-        contextMagn.arc(btnMagnElement.width/2, btnMagnElement.height, 110, 0, 2 * Math.PI, false);
+        contextMagn.arc(btnMagnElement.width / 2, btnMagnElement.height, 110, 0, 2 * Math.PI, false);
         contextMagn.closePath();
         contextMagn.stroke();
-        
+
         var btnTurbiElement = $element.find("canvas")[3]
         var contextTurbi = btnTurbiElement.getContext("2d");
         contextTurbi.scale(1, 0.5);
         contextTurbi.strokeStyle = 'aqua';
         contextTurbi.lineWidth = 12;
-        var x = btnTurbiElement.width/2
+        var x = btnTurbiElement.width / 2
         var y = btnTurbiElement.height
         var spiraleX = x, spiraleY = y;
         var spiraleAngle = 0;
@@ -68,8 +83,8 @@
         contextPath.scale(1, 0.5);
         var imgLocation = new Image();
         imgLocation.src = '../img/locationIcon.png';
-        imgLocation.onload = function() {
-            contextPath.drawImage(imgLocation, btnPathElement.width/12, btnPathElement.height/6, btnPathElement.width/1.2, btnPathElement.height/0.6);
+        imgLocation.onload = function () {
+            contextPath.drawImage(imgLocation, btnPathElement.width / 12, btnPathElement.height / 6, btnPathElement.width / 1.2, btnPathElement.height / 0.6);
         };
 
         var btnVideoElement = $element.find("canvas")[2]
@@ -77,8 +92,8 @@
         contextVideo.scale(1, 0.5);
         var imgVideo = new Image();
         imgVideo.src = '../img/videoIcon.png';
-        imgVideo.onload = function() {
-            contextVideo.drawImage(imgVideo, btnVideoElement.width/12, btnVideoElement.height/6, btnVideoElement.width/1.2, btnVideoElement.height/0.6);
+        imgVideo.onload = function () {
+            contextVideo.drawImage(imgVideo, btnVideoElement.width / 12, btnVideoElement.height / 6, btnVideoElement.width / 1.2, btnVideoElement.height / 0.6);
         };
 
         var btnVaElement = $element.find("canvas")[4]
@@ -86,10 +101,10 @@
         contextVa.scale(1, 0.5);
         var imgVa = new Image();
         imgVa.src = '../img/vaIcon.png';
-        imgVa.onload = function() {
-            contextVa.drawImage(imgVa, btnVaElement.width/12, btnVaElement.height/6, btnVaElement.width/1.2, btnVaElement.height/0.6);
+        imgVa.onload = function () {
+            contextVa.drawImage(imgVa, btnVaElement.width / 12, btnVaElement.height / 6, btnVaElement.width / 1.2, btnVaElement.height / 0.6);
         };
-        
+
 
         //Callback functions for date input to update fond-marin and fond-marin2
         var startDay = document.getElementsByClassName("start-day");
@@ -601,6 +616,428 @@
                 }
             });
         }
+        /*
+  Author: Jack Ducasse;
+  Version: 0.1.0;
+  (◠‿◠✿)
+*/
+        var Calendar = function (model, options, date) {
+            // Default Values
+            this.Options = {
+                Color: '',
+                LinkColor: '',
+                NavShow: true,
+                NavVertical: false,
+                NavLocation: '',
+                DateTimeShow: true,
+                DateTimeFormat: 'mmm, yyyy',
+                DatetimeLocation: '',
+                EventClick: '',
+                EventTargetWholeDay: false,
+                DisabledDays: [],
+                ModelChange: model
+            };
+            // Overwriting default values
+            for (var key in options) {
+                this.Options[key] = typeof options[key] == 'string' ? options[key].toLowerCase() : options[key];
+            }
+
+            model ? this.Model = model : this.Model = {};
+            this.Today = new Date();
+
+            this.Selected = this.Today
+            this.Today.Month = this.Today.getMonth();
+            this.Today.Year = this.Today.getFullYear();
+            if (date) { this.Selected = date }
+            this.Selected.Month = this.Selected.getMonth();
+            this.Selected.Year = this.Selected.getFullYear();
+
+            this.Selected.Days = new Date(this.Selected.Year, (this.Selected.Month + 1), 0).getDate();
+            this.Selected.FirstDay = new Date(this.Selected.Year, (this.Selected.Month), 1).getDay();
+            this.Selected.LastDay = new Date(this.Selected.Year, (this.Selected.Month + 1), 0).getDay();
+
+            this.Prev = new Date(this.Selected.Year, (this.Selected.Month - 1), 1);
+            if (this.Selected.Month == 0) { this.Prev = new Date(this.Selected.Year - 1, 11, 1); }
+            this.Prev.Days = new Date(this.Prev.getFullYear(), (this.Prev.getMonth() + 1), 0).getDate();
+        };
+
+        function createCalendar(calendar, element, adjuster) {
+            if (typeof adjuster !== 'undefined') {
+                var newDate = new Date(calendar.Selected.Year, calendar.Selected.Month + adjuster, 1);
+                calendar = new Calendar(calendar.Model, calendar.Options, newDate);
+                element.innerHTML = '';
+            } else {
+                for (var key in calendar.Options) {
+                    typeof calendar.Options[key] != 'function' && typeof calendar.Options[key] != 'object' && calendar.Options[key] ? element.className += " " + key + "-" + calendar.Options[key] : 0;
+                }
+            }
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            function AddSidebar() {
+                var sidebar = document.createElement('div');
+                sidebar.className += 'cld-sidebar';
+
+                var monthList = document.createElement('ul');
+                monthList.className += 'cld-monthList';
+
+                for (var i = 0; i < months.length - 3; i++) {
+                    var x = document.createElement('li');
+                    x.className += 'cld-month';
+                    var n = i - (4 - calendar.Selected.Month);
+                    // Account for overflowing month values
+                    if (n < 0) { n += 12; }
+                    else if (n > 11) { n -= 12; }
+                    // Add Appropriate Class
+                    if (i == 0) {
+                        x.className += ' cld-rwd cld-nav';
+                        x.addEventListener('click', function () {
+                            typeof calendar.Options.ModelChange == 'function' ? calendar.Model = calendar.Options.ModelChange() : calendar.Model = calendar.Options.ModelChange;
+                            createCalendar(calendar, element, -1);
+                        });
+                        x.innerHTML += '<svg height="15" width="15" viewBox="0 0 100 75" fill="rgba(255,255,255,0.5)"><polyline points="0,75 100,75 50,0"></polyline></svg>';
+                    }
+                    else if (i == months.length - 4) {
+                        x.className += ' cld-fwd cld-nav';
+                        x.addEventListener('click', function () {
+                            typeof calendar.Options.ModelChange == 'function' ? calendar.Model = calendar.Options.ModelChange() : calendar.Model = calendar.Options.ModelChange;
+                            createCalendar(calendar, element, 1);
+                        });
+                        x.innerHTML += '<svg height="15" width="15" viewBox="0 0 100 75" fill="rgba(255,255,255,0.5)"><polyline points="0,0 100,0 50,75"></polyline></svg>';
+                    }
+                    else {
+                        if (i < 4) { x.className += ' cld-pre'; }
+                        else if (i > 4) { x.className += ' cld-post'; }
+                        else { x.className += ' cld-curr'; }
+
+                        //prevent losing var adj value (for whatever reason that is happening)
+                        (function () {
+                            var adj = (i - 4);
+                            //x.addEventListener('click', function(){createCalendar(calendar, element, adj);console.log('kk', adj);} );
+                            x.addEventListener('click', function () {
+                                typeof calendar.Options.ModelChange == 'function' ? calendar.Model = calendar.Options.ModelChange() : calendar.Model = calendar.Options.ModelChange;
+                                createCalendar(calendar, element, adj);
+                            });
+                            x.setAttribute('style', 'opacity:' + (1 - Math.abs(adj) / 4));
+                            x.innerHTML += months[n].substr(0, 3);
+                        }()); // immediate invocation
+
+                        if (n == 0) {
+                            var y = document.createElement('li');
+                            y.className += 'cld-year';
+                            if (i < 5) {
+                                y.innerHTML += calendar.Selected.Year;
+                            } else {
+                                y.innerHTML += calendar.Selected.Year + 1;
+                            }
+                            monthList.appendChild(y);
+                        }
+                    }
+                    monthList.appendChild(x);
+                }
+                sidebar.appendChild(monthList);
+                if (calendar.Options.NavLocation) {
+                    document.getElementById(calendar.Options.NavLocation).innerHTML = "";
+                    document.getElementById(calendar.Options.NavLocation).appendChild(sidebar);
+                }
+                else { element.appendChild(sidebar); }
+            }
+
+            var mainSection = document.createElement('div');
+            mainSection.className += "cld-main";
+
+            function AddDateTime() {
+                var datetime = document.createElement('div');
+                datetime.className += "cld-datetime";
+                if (calendar.Options.NavShow && !calendar.Options.NavVertical) {
+                    var rwd = document.createElement('div');
+                    rwd.className += " cld-rwd cld-nav";
+                    rwd.addEventListener('click', function () { createCalendar(calendar, element, -1); });
+                    rwd.innerHTML = '<svg height="15" width="15" viewBox="0 0 75 100" fill="rgba(0,0,0,0.5)"><polyline points="0,50 75,0 75,100"></polyline></svg>';
+                    datetime.appendChild(rwd);
+                }
+                var today = document.createElement('div');
+                today.className += ' today';
+                today.innerHTML = months[calendar.Selected.Month] + ", " + calendar.Selected.Year;
+                datetime.appendChild(today);
+                if (calendar.Options.NavShow && !calendar.Options.NavVertical) {
+                    var fwd = document.createElement('div');
+                    fwd.className += " cld-fwd cld-nav";
+                    fwd.addEventListener('click', function () { createCalendar(calendar, element, 1); });
+                    fwd.innerHTML = '<svg height="15" width="15" viewBox="0 0 75 100" fill="rgba(0,0,0,0.5)"><polyline points="0,0 75,50 0,100"></polyline></svg>';
+                    datetime.appendChild(fwd);
+                }
+                if (calendar.Options.DatetimeLocation) {
+                    document.getElementById(calendar.Options.DatetimeLocation).innerHTML = "";
+                    document.getElementById(calendar.Options.DatetimeLocation).appendChild(datetime);
+                }
+                else { mainSection.appendChild(datetime); }
+            }
+
+            function AddLabels() {
+                var labels = document.createElement('ul');
+                labels.className = 'cld-labels';
+                var labelsList = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                for (var i = 0; i < labelsList.length; i++) {
+                    var label = document.createElement('li');
+                    label.className += "cld-label";
+                    label.innerHTML = labelsList[i];
+                    labels.appendChild(label);
+                }
+                mainSection.appendChild(labels);
+            }
+            function AddDays() {
+                // Create Number Element
+                function DayNumber(n) {
+                    var number = document.createElement('p');
+                    number.className += "cld-number";
+                    number.innerHTML += n;
+                    number.addEventListener("mouseup", function () {
+                        //Get time slot 
+                        var dataStartYear = calendar.Selected.Year;
+                        var dataStartMonth = calendar.Selected.Month+1;
+                        var dataStartDay = parseInt(number.innerHTML);
+
+                        var dataEndYear = calendar.Selected.Year;
+                        var dataEndMonth = calendar.Selected.Month+1;
+                        var dataEndDay = parseInt(number.innerHTML);
+
+                        //Initialiazing data
+                        $scope.dataxPump = [], $scope.datayPump = [], $scope.datax[0] = [], $scope.datay[0] = [], $scope.datax[1] = [], $scope.datay[1] = [], $scope.datax[2] = [], $scope.datay[2] = [];
+                        $scope.avgMagnetism[0] = [], $scope.avgMagnetism[1] = [], $scope.avgMagnetism[2] = [];
+                        $scope.isVa[0] = [], $scope.isVa[1] = [], $scope.isVa[2] = [];
+                        $scope.isFe[0] = [], $scope.isFe[1] = [], $scope.isFe[2] = [];
+                        $scope.isPb[0] = [], $scope.isPb[1] = [], $scope.isPb[2] = [];
+                        $scope.isCu[0] = [], $scope.isCu[1] = [], $scope.isCu[2] = [];
+                        $scope.isSn[0] = [], $scope.isSn[1] = [], $scope.isSn[2] = [];
+                        $scope.isTurbi[0] = [], $scope.isTurbi[1] = [], $scope.isTurbi[2] = [];
+                        $scope.avgTurbi[0] = [], $scope.avgTurbi[1] = [], $scope.avgTurbi[2] = [];
+                        $scope.isMovie[0] = [], $scope.isMovie[1] = [], $scope.isMovie[2] = [];
+                        $scope.dates[0] = [], $scope.dates[1] = [], $scope.dates[2] = [];
+
+                        const viewUrl = "_design/by_date/_view/allData";
+
+                        //Database key
+                        const queryOptions = {
+                            startkey: [dataStartYear, dataStartMonth, dataStartDay, 0, 0, 0, 1],
+                            endkey: [dataEndYear, dataEndMonth, dataEndDay, 23, 59, 59, 3]
+                        };
+                        //Searching in the database
+                        couchBubblot1.get("bubblot", viewUrl, queryOptions).then(({ data, headers, status }) => {
+                            //Loop for running through each data received
+                            for (var i = 0; i < data.rows.length; i++) {
+                                //Get from which bubblot comes the data
+                                var bubblotIndex = data.rows[i].key[6] - 1;
+                                //Get the date of the measurement
+                                $scope.dates[bubblotIndex].push([data.rows[i].key[0], data.rows[i].key[1], data.rows[i].key[2], data.rows[i].key[3], data.rows[i].key[4], data.rows[i].key[5]]);
+                                if (i == 0) {
+                                    $scope.dataxPump.push(500);
+                                    $scope.datayPump.push(600);
+                                }
+                                //Get x y coordinates
+                                $scope.datax[bubblotIndex].push(parseInt($scope.dataxPump) + parseInt(data.rows[i].value.distancexToPump));
+                                $scope.datay[bubblotIndex].push(parseInt($scope.datayPump) + parseInt(data.rows[i].value.distanceyToPump));
+                                //Get magnetism
+                                $scope.avgMagnetism[bubblotIndex].push(parseFloat(data.rows[i].value.magnetism.mean));
+                                //Get if there is VA
+                                if (data.rows[i].value.VA.available) $scope.isVa[bubblotIndex].push(true);
+                                else $scope.isVa[bubblotIndex].push(false);
+                                //Get if there is Fe
+                                if (data.rows[i].value.VA.fe) $scope.isFe[bubblotIndex].push(true);
+                                else $scope.isFe[bubblotIndex].push(false);
+                                //Get if there is Pb
+                                if (data.rows[i].value.VA.pb) $scope.isPb[bubblotIndex].push(true);
+                                else $scope.isPb[bubblotIndex].push(false);
+                                //Get if there is Cu
+                                if (data.rows[i].value.VA.cu) $scope.isCu[bubblotIndex].push(true);
+                                else $scope.isCu[bubblotIndex].push(false);
+                                //Get if there is Sn
+                                if (data.rows[i].value.VA.sn) $scope.isSn[bubblotIndex].push(true);
+                                else $scope.isSn[bubblotIndex].push(false);
+                                //Get if there is turbidity
+                                if (data.rows[i].value.turbidity.available) {
+                                    $scope.isTurbi[bubblotIndex].push(true);
+                                    //Get turbidity average values for each color
+                                    $scope.avgTurbi[bubblotIndex].push([data.rows[i].value.turbidity.avgRed, data.rows[i].value.turbidity.avgGreen, data.rows[i].value.turbidity.avgBlue]);
+                                }
+                                else {
+                                    $scope.isTurbi[bubblotIndex].push(false);
+                                    $scope.avgTurbi[bubblotIndex].push([null, null, null]);
+                                }
+                                //Get if there is a movie
+                                if (data.rows[i].value.movie.available) $scope.isMovie[bubblotIndex].push(true);
+                                else $scope.isMovie[bubblotIndex].push(false);
+                            }
+                            $scope.extractingData = !$scope.extractingData;
+                            $scope.$apply();
+                            // data is json response 
+                            // headers is an object with all response headers 
+                            // status is statusCode number 
+                        }, err => {
+                            console.log(err.code);
+                            // either request error occured 
+                            // ...or err.code=EDOCMISSING if document is missing 
+                            // ...or err.code=EUNKNOWN if statusCode is unexpected 
+                        });
+                    })
+                    return number;
+                }
+                var days = document.createElement('ul');
+                days.className += "cld-days";
+                // Previous Month's Days
+                for (var i = 0; i < (calendar.Selected.FirstDay); i++) {
+                    var day = document.createElement('li');
+                    day.className += "cld-day prevMonth";
+                    //Disabled Days
+                    var d = i % 7;
+                    for (var q = 0; q < calendar.Options.DisabledDays.length; q++) {
+                        if (d == calendar.Options.DisabledDays[q]) {
+                            day.className += " disableDay";
+                        }
+                    }
+
+                    var number = DayNumber((calendar.Prev.Days - calendar.Selected.FirstDay) + (i + 1));
+                    day.appendChild(number);
+
+                    days.appendChild(day);
+                }
+                
+                // Current Month's Days
+                for (var i = 0; i < calendar.Selected.Days; i++) {
+                    var day = document.createElement('li');
+                    day.className += "cld-day currMonth";
+                    //Disabled Days
+                    var d = (i + calendar.Selected.FirstDay) % 7;
+                    for (var q = 0; q < calendar.Options.DisabledDays.length; q++) {
+                        if (d == calendar.Options.DisabledDays[q]) {
+                            day.className += " disableDay";
+                        }
+                    }
+                    var number = DayNumber(i + 1);
+                    // Check Date against Event Dates
+                    for (var n = 0; n < calendar.Model.length; n++) {
+                        var evDate = calendar.Model[n].Date;
+                        var toDate = new Date(calendar.Selected.Year, calendar.Selected.Month, (i + 1));
+                        if (evDate.getTime() == toDate.getTime()) {
+                            number.className += " eventday";
+                            var title = document.createElement('span');
+                            title.className += "cld-title";
+                            if (typeof calendar.Model[n].Link == 'function' || calendar.Options.EventClick) {
+                                var a = document.createElement('a');
+                                a.setAttribute('href', '#');
+                                a.innerHTML += calendar.Model[n].Title;
+                                if (calendar.Options.EventClick) {
+                                    var z = calendar.Model[n].Link;
+                                    if (typeof calendar.Model[n].Link != 'string') {
+                                        a.addEventListener('click', calendar.Options.EventClick.bind.apply(calendar.Options.EventClick, [null].concat(z)));
+                                        if (calendar.Options.EventTargetWholeDay) {
+                                            day.className += " clickable";
+                                            day.addEventListener('click', calendar.Options.EventClick.bind.apply(calendar.Options.EventClick, [null].concat(z)));
+                                        }
+                                    } else {
+                                        a.addEventListener('click', calendar.Options.EventClick.bind(null, z));
+                                        if (calendar.Options.EventTargetWholeDay) {
+                                            day.className += " clickable";
+                                            day.addEventListener('click', calendar.Options.EventClick.bind(null, z));
+                                        }
+                                    }
+                                } else {
+                                    a.addEventListener('click', calendar.Model[n].Link);
+                                    if (calendar.Options.EventTargetWholeDay) {
+                                        day.className += " clickable";
+                                        day.addEventListener('click', calendar.Model[n].Link);
+                                    }
+                                }
+                                title.appendChild(a);
+                            } else {
+                                title.innerHTML += '<a href="' + calendar.Model[n].Link + '">' + calendar.Model[n].Title + '</a>';
+                            }
+                            number.appendChild(title);
+                        }
+                    }
+                    day.appendChild(number);
+                    // If Today..
+                    if ((i + 1) == calendar.Today.getDate() && calendar.Selected.Month == calendar.Today.Month && calendar.Selected.Year == calendar.Today.Year) {
+                        day.className += " today";
+                    }
+                    for(var j=0; j<dataDate.length; j++){
+                        if((i+1) == dataDate[j][2] && calendar.Selected.Month + 1 == dataDate[j][1] && calendar.Selected.Year == dataDate[j][0]){
+                            day.className += " data";
+                        }
+                    }
+                    days.appendChild(day);
+                }
+                // Next Month's Days
+                // Always same amount of days in calander
+                var extraDays = 13;
+                if (days.children.length > 35) { extraDays = 6; }
+                else if (days.children.length < 29) { extraDays = 20; }
+
+                for (var i = 0; i < (extraDays - calendar.Selected.LastDay); i++) {
+                    var day = document.createElement('li');
+                    day.className += "cld-day nextMonth";
+                    //Disabled Days
+                    var d = (i + calendar.Selected.LastDay + 1) % 7;
+                    for (var q = 0; q < calendar.Options.DisabledDays.length; q++) {
+                        if (d == calendar.Options.DisabledDays[q]) {
+                            day.className += " disableDay";
+                        }
+                    }
+
+                    var number = DayNumber(i + 1);
+                    day.appendChild(number);
+
+                    days.appendChild(day);
+                }
+                mainSection.appendChild(days);
+            }
+            if (calendar.Options.Color) {
+                mainSection.innerHTML += '<style>.cld-main{color:' + calendar.Options.Color + ';}</style>';
+            }
+            if (calendar.Options.LinkColor) {
+                mainSection.innerHTML += '<style>.cld-title a{color:' + calendar.Options.LinkColor + ';}</style>';
+            }
+            element.appendChild(mainSection);
+
+            if (calendar.Options.NavShow && calendar.Options.NavVertical) {
+                AddSidebar();
+            }
+            if (calendar.Options.DateTimeShow) {
+                AddDateTime();
+            }
+            AddLabels();
+            AddDays();
+        }
+
+        function caleandar(el, data, settings) {
+            var obj = new Calendar(data, settings);
+            createCalendar(obj, el);
+        }
+
+        // Check if there is data
+        var dataDate = new Array();
+        const viewUrl2 = "_design/by_date/_view/key";
+        //Searching in the database
+        couchBubblot1.get("bubblot", viewUrl2).then(({ data, headers, status }) => {
+            for(var i = 0; i<data.rows.length; i++){
+                if(dataDate.length>0){
+                    for(var j = 0; j<dataDate.length; j++){
+                        if(data.rows[i].value[0] != dataDate[j][0] || data.rows[i].value[1] != dataDate[j][1] || data.rows[i].value[2] != dataDate[j][2]){
+                            dataDate.push([data.rows[i].value[0], data.rows[i].value[1],data.rows[i].value[2]])
+                        }
+                    }
+                }
+                else dataDate.push([data.rows[i].value[0], data.rows[i].value[1],data.rows[i].value[2]])
+            }
+            caleandar(element);
+            // data is json response 
+            // headers is an object with all response headers 
+            // status is statusCode number 
+        }, err => {
+            console.log(err.code);
+            // either request error occured 
+            // ...or err.code=EDOCMISSING if document is missing 
+            // ...or err.code=EUNKNOWN if statusCode is unexpected 
+        });
     }
 
 }());

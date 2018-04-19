@@ -13,7 +13,7 @@
         }
         fieldset{
             color: white;
-            @include fontUse($fontFamilly, 22px, $fontWeight);
+            @include fontUse($fontFamilly, 19px, $fontWeight);
         }
         input{
             @include fontUse($fontFamilly, 22px, $fontWeight);
@@ -172,14 +172,6 @@
                 width: 75px;
                 height: 75px;
             }
-            table{
-                margin:auto;
-                td{
-                    width: 37px;
-                    height: 37px;
-                }
-
-            }
         }
-        }
+    }
     }

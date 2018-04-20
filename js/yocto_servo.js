@@ -1,10 +1,10 @@
 /*********************************************************************
  *
- * $Id: yocto_servo.js 23963 2016-04-17 20:55:12Z mvuilleu $
+ * $Id: yocto_servo.js 28746 2017-10-03 08:19:35Z seb $
  *
  * Implements the high-level API for Servo functions
  *
- * - - - - - - - - - License information: - - - - - - - - - 
+ * - - - - - - - - - License information: - - - - - - - - -
  *
  *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
@@ -23,7 +23,7 @@
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
  *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
@@ -39,29 +39,9 @@
 
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.YServoProxy = exports.YServo = exports.Y_POSITIONATPOWERON_INVALID = exports.Y_MOVE_INVALID = exports.Y_NEUTRAL_INVALID = exports.Y_RANGE_INVALID = exports.Y_POSITION_INVALID = exports.Y_ENABLEDATPOWERON_INVALID = exports.Y_ENABLEDATPOWERON_TRUE = exports.Y_ENABLEDATPOWERON_FALSE = exports.Y_ENABLED_INVALID = exports.Y_ENABLED_TRUE = exports.Y_ENABLED_FALSE = undefined;
-exports.yFindServo = yFindServo;
-exports.yFirstServo = yFirstServo;
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
 //--- (YServo return codes)
 //--- (end of YServo return codes)
 //--- (YServo definitions)
-var Y_ENABLED_FALSE = exports.Y_ENABLED_FALSE = 0;
-var Y_ENABLED_TRUE = exports.Y_ENABLED_TRUE = 1;
-var Y_ENABLED_INVALID = exports.Y_ENABLED_INVALID = -1;
-var Y_ENABLEDATPOWERON_FALSE = exports.Y_ENABLEDATPOWERON_FALSE = 0;
-var Y_ENABLEDATPOWERON_TRUE = exports.Y_ENABLEDATPOWERON_TRUE = 1;
-var Y_ENABLEDATPOWERON_INVALID = exports.Y_ENABLEDATPOWERON_INVALID = -1;
-var Y_POSITION_INVALID = exports.Y_POSITION_INVALID = _yocto_api.YAPI.INVALID_INT;
-var Y_RANGE_INVALID = exports.Y_RANGE_INVALID = _yocto_api.YAPI.INVALID_UINT;
-var Y_NEUTRAL_INVALID = exports.Y_NEUTRAL_INVALID = _yocto_api.YAPI.INVALID_UINT;
-var Y_MOVE_INVALID = exports.Y_MOVE_INVALID = null;
-var Y_POSITIONATPOWERON_INVALID = exports.Y_POSITIONATPOWERON_INVALID = _yocto_api.YAPI.INVALID_INT;
 //--- (end of YServo definitions)
 
 //--- (YServo class start)
@@ -75,84 +55,57 @@ var Y_POSITIONATPOWERON_INVALID = exports.Y_POSITIONATPOWERON_INVALID = _yocto_a
  */
 //--- (end of YServo class start)
 
-class YServo extends _yocto_api.YFunction {
-    constructor(obj_yapi, str_func) {
+class YServo extends YFunction
+{
+    constructor(obj_yapi, str_func)
+    {
         //--- (YServo constructor)
         super(obj_yapi, str_func);
         /** @member {string} **/
-        this._className = 'Servo';
+        this._className                  = 'Servo';
         /** @member {number} **/
-        this._position = Y_POSITION_INVALID;
+        this._position                   = YServo.POSITION_INVALID;
         /** @member {number} **/
-        this._enabled = Y_ENABLED_INVALID;
+        this._enabled                    = YServo.ENABLED_INVALID;
         /** @member {number} **/
-        this._range = Y_RANGE_INVALID;
+        this._range                      = YServo.RANGE_INVALID;
         /** @member {number} **/
-        this._neutral = Y_NEUTRAL_INVALID;
+        this._neutral                    = YServo.NEUTRAL_INVALID;
         /** @member {YMove} **/
-        this._move = Y_MOVE_INVALID;
+        this._move                       = YServo.MOVE_INVALID;
         /** @member {number} **/
-        this._positionAtPowerOn = Y_POSITIONATPOWERON_INVALID;
+        this._positionAtPowerOn          = YServo.POSITIONATPOWERON_INVALID;
         /** @member {number} **/
-        this._enabledAtPowerOn = Y_ENABLEDATPOWERON_INVALID;
-        this.imm_setConst({
-            POSITION_INVALID: _yocto_api.YAPI.INVALID_INT,
-            ENABLED_FALSE: 0,
-            ENABLED_TRUE: 1,
-            ENABLED_INVALID: -1,
-            RANGE_INVALID: _yocto_api.YAPI.INVALID_UINT,
-            NEUTRAL_INVALID: _yocto_api.YAPI.INVALID_UINT,
-            POSITIONATPOWERON_INVALID: _yocto_api.YAPI.INVALID_INT,
-            ENABLEDATPOWERON_FALSE: 0,
-            ENABLEDATPOWERON_TRUE: 1,
-            ENABLEDATPOWERON_INVALID: -1
-        });
+        this._enabledAtPowerOn           = YServo.ENABLEDATPOWERON_INVALID;
         //--- (end of YServo constructor)
     }
 
     //--- (YServo implementation)
 
-    get_syncProxy() {
-        var _this = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this._cacheExpiration <= _this._yapi.GetTickCount()) {
-                try {
-                    yield _this.load(_this._yapi.defaultCacheValidity);
-                } catch (e) {
-                    // device might be offline
-                }
-            }
-            var res = new YServoProxy(_this);
-            yield res._asyncInit();
-            res._module = yield (yield _this.module()).get_syncProxy();
-            return res;
-        })();
-    }
-
-    imm_parseAttr(name, val) {
-        switch (name) {
-            case 'position':
-                this._position = parseInt(val);
-                return 1;
-            case 'enabled':
-                this._enabled = parseInt(val);
-                return 1;
-            case 'range':
-                this._range = parseInt(val);
-                return 1;
-            case 'neutral':
-                this._neutral = parseInt(val);
-                return 1;
-            case 'move':
-                this._move = val;
-                return 1;
-            case 'positionAtPowerOn':
-                this._positionAtPowerOn = parseInt(val);
-                return 1;
-            case 'enabledAtPowerOn':
-                this._enabledAtPowerOn = parseInt(val);
-                return 1;
+    imm_parseAttr(name, val)
+    {
+        switch(name) {
+        case 'position':
+            this._position = parseInt(val);
+            return 1;
+        case 'enabled':
+            this._enabled = parseInt(val);
+            return 1;
+        case 'range':
+            this._range = parseInt(val);
+            return 1;
+        case 'neutral':
+            this._neutral = parseInt(val);
+            return 1;
+        case 'move':
+            this._move = val;
+            return 1;
+        case 'positionAtPowerOn':
+            this._positionAtPowerOn = parseInt(val);
+            return 1;
+        case 'enabledAtPowerOn':
+            this._enabledAtPowerOn = parseInt(val);
+            return 1;
         }
         return super.imm_parseAttr(name, val);
     }
@@ -164,17 +117,17 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YServo.POSITION_INVALID.
      */
-    get_position() {
-        var _this2 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this2._cacheExpiration <= _this2._yapi.GetTickCount()) {
-                if ((yield _this2.load(_this2._yapi.defaultCacheValidity)) != _this2._yapi.SUCCESS) {
-                    return Y_POSITION_INVALID;
-                }
+    async get_position()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YServo.POSITION_INVALID;
             }
-            return _this2._position;
-        })();
+        }
+        res = this._position;
+        return res;
     }
 
     /**
@@ -186,15 +139,12 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_position(newval) {
-        var _this3 = this;
-        
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this3._setAttr('position', rest_val);
-        })();
+    async set_position(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('position',rest_val);
     }
 
     /**
@@ -204,17 +154,17 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YServo.ENABLED_INVALID.
      */
-    get_enabled() {
-        var _this4 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this4._cacheExpiration <= _this4._yapi.GetTickCount()) {
-                if ((yield _this4.load(_this4._yapi.defaultCacheValidity)) != _this4._yapi.SUCCESS) {
-                    return Y_ENABLED_INVALID;
-                }
+    async get_enabled()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YServo.ENABLED_INVALID;
             }
-            return _this4._enabled;
-        })();
+        }
+        res = this._enabled;
+        return res;
     }
 
     /**
@@ -226,15 +176,12 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabled(newval) {
-        var _this5 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this5._setAttr('enabled', rest_val);
-        })();
+    async set_enabled(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('enabled',rest_val);
     }
 
     /**
@@ -244,17 +191,17 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YServo.RANGE_INVALID.
      */
-    get_range() {
-        var _this6 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this6._cacheExpiration <= _this6._yapi.GetTickCount()) {
-                if ((yield _this6.load(_this6._yapi.defaultCacheValidity)) != _this6._yapi.SUCCESS) {
-                    return Y_RANGE_INVALID;
-                }
+    async get_range()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YServo.RANGE_INVALID;
             }
-            return _this6._range;
-        })();
+        }
+        res = this._range;
+        return res;
     }
 
     /**
@@ -272,15 +219,12 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_range(newval) {
-        var _this7 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this7._setAttr('range', rest_val);
-        })();
+    async set_range(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('range',rest_val);
     }
 
     /**
@@ -290,17 +234,17 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YServo.NEUTRAL_INVALID.
      */
-    get_neutral() {
-        var _this8 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this8._cacheExpiration <= _this8._yapi.GetTickCount()) {
-                if ((yield _this8.load(_this8._yapi.defaultCacheValidity)) != _this8._yapi.SUCCESS) {
-                    return Y_NEUTRAL_INVALID;
-                }
+    async get_neutral()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YServo.NEUTRAL_INVALID;
             }
-            return _this8._neutral;
-        })();
+        }
+        res = this._neutral;
+        return res;
     }
 
     /**
@@ -318,39 +262,33 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_neutral(newval) {
-        var _this9 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this9._setAttr('neutral', rest_val);
-        })();
+    async set_neutral(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('neutral',rest_val);
     }
 
-    get_move() {
-        var _this10 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this10._cacheExpiration <= _this10._yapi.GetTickCount()) {
-                if ((yield _this10.load(_this10._yapi.defaultCacheValidity)) != _this10._yapi.SUCCESS) {
-                    return Y_MOVE_INVALID;
-                }
+    async get_move()
+    {
+        /** @type {YMove} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YServo.MOVE_INVALID;
             }
-            return _this10._move;
-        })();
+        }
+        res = this._move;
+        return res;
     }
 
-    set_move(newval) {
-        var _this11 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval.target) + ':' + String(newval.ms);
-            return yield _this11._setAttr('move', rest_val);
-        })();
+    async set_move(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval.target)+':'+String(newval.ms);
+        return await this._setAttr('move',rest_val);
     }
 
     /**
@@ -363,15 +301,12 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    move(target, ms_duration) {
-        var _this12 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(target) + ':' + String(ms_duration);
-            return yield _this12._setAttr('move', rest_val);
-        })();
+    async move(target,ms_duration)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(target)+':'+String(ms_duration);
+        return await this._setAttr('move',rest_val);
     }
 
     /**
@@ -381,17 +316,17 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YServo.POSITIONATPOWERON_INVALID.
      */
-    get_positionAtPowerOn() {
-        var _this13 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this13._cacheExpiration <= _this13._yapi.GetTickCount()) {
-                if ((yield _this13.load(_this13._yapi.defaultCacheValidity)) != _this13._yapi.SUCCESS) {
-                    return Y_POSITIONATPOWERON_INVALID;
-                }
+    async get_positionAtPowerOn()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YServo.POSITIONATPOWERON_INVALID;
             }
-            return _this13._positionAtPowerOn;
-        })();
+        }
+        res = this._positionAtPowerOn;
+        return res;
     }
 
     /**
@@ -404,15 +339,12 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_positionAtPowerOn(newval) {
-        var _this14 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this14._setAttr('positionAtPowerOn', rest_val);
-        })();
+    async set_positionAtPowerOn(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('positionAtPowerOn',rest_val);
     }
 
     /**
@@ -423,17 +355,17 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YServo.ENABLEDATPOWERON_INVALID.
      */
-    get_enabledAtPowerOn() {
-        var _this15 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this15._cacheExpiration <= _this15._yapi.GetTickCount()) {
-                if ((yield _this15.load(_this15._yapi.defaultCacheValidity)) != _this15._yapi.SUCCESS) {
-                    return Y_ENABLEDATPOWERON_INVALID;
-                }
+    async get_enabledAtPowerOn()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YServo.ENABLEDATPOWERON_INVALID;
             }
-            return _this15._enabledAtPowerOn;
-        })();
+        }
+        res = this._enabledAtPowerOn;
+        return res;
     }
 
     /**
@@ -446,15 +378,12 @@ class YServo extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabledAtPowerOn(newval) {
-        var _this16 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this16._setAttr('enabledAtPowerOn', rest_val);
-        })();
+    async set_enabledAtPowerOn(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('enabledAtPowerOn',rest_val);
     }
 
     /**
@@ -476,17 +405,22 @@ class YServo extends _yocto_api.YFunction {
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
+     * If a call to this object's is_online() method returns FALSE although
+     * you are certain that the matching device is plugged, make sure that you did
+     * call registerHub() at application initialization time.
+     *
      * @param func {string} : a string that uniquely characterizes the servo
      *
      * @return {YServo} a YServo object allowing you to drive the servo.
      */
-    static FindServo(func) {
+    static FindServo(func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCache('Servo', func);
+        obj = YFunction._FindFromCache('Servo', func);
         if (obj == null) {
-            obj = new YServo(_yocto_api.YAPI, func);
-            _yocto_api.YFunction._AddToCache('Servo', func, obj);
+            obj = new YServo(YAPI, func);
+            YFunction._AddToCache('Servo',  func, obj);
         }
         return obj;
     }
@@ -515,13 +449,14 @@ class YServo extends _yocto_api.YFunction {
      *
      * @return {YServo} a YServo object allowing you to drive the servo.
      */
-    static FindServoInContext(yctx, func) {
+    static FindServoInContext(yctx,func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCacheInContext(yctx, 'Servo', func);
+        obj = YFunction._FindFromCacheInContext(yctx,  'Servo', func);
         if (obj == null) {
             obj = new YServo(yctx, func);
-            _yocto_api.YFunction._AddToCache('Servo', func, obj);
+            YFunction._AddToCache('Servo',  func, obj);
         }
         return obj;
     }
@@ -533,13 +468,14 @@ class YServo extends _yocto_api.YFunction {
      *         a servo currently online, or a null pointer
      *         if there are no more servos to enumerate.
      */
-    nextServo() {
+    nextServo()
+    {
         /** @type {object} **/
         let resolve = this._yapi.imm_resolveFunction(this._className, this._func);
-        if (resolve.errorType != _yocto_api.YAPI_SUCCESS) return null;
+        if(resolve.errorType != YAPI.SUCCESS) return null;
         /** @type {string|null} **/
         let next_hwid = this._yapi.imm_getNextHardwareId(this._className, resolve.result);
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YServo.FindServoInContext(this._yapi, next_hwid);
     }
 
@@ -552,10 +488,11 @@ class YServo extends _yocto_api.YFunction {
      *         the first servo currently online, or a null pointer
      *         if there are none.
      */
-    static FirstServo() {
+    static FirstServo()
+    {
         /** @type {string|null} **/
-        let next_hwid = _yocto_api.YAPI.imm_getFirstHardwareId('Servo');
-        if (next_hwid == null) return null;
+        let next_hwid = YAPI.imm_getFirstHardwareId('Servo');
+        if(next_hwid == null) return null;
         return YServo.FindServo(next_hwid);
     }
 
@@ -570,17 +507,34 @@ class YServo extends _yocto_api.YFunction {
      *         the first servo currently online, or a null pointer
      *         if there are none.
      */
-    static FirstServoInContext(yctx) {
+    static FirstServoInContext(yctx)
+    {
         /** @type {string|null} **/
         let next_hwid = yctx.imm_getFirstHardwareId('Servo');
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YServo.FindServoInContext(yctx, next_hwid);
+    }
+
+    static imm_Const()
+    {
+        return Object.assign(super.imm_Const(), {
+            POSITION_INVALID             : YAPI.INVALID_INT,
+            ENABLED_FALSE                : 0,
+            ENABLED_TRUE                 : 1,
+            ENABLED_INVALID              : -1,
+            RANGE_INVALID                : YAPI.INVALID_UINT,
+            NEUTRAL_INVALID              : YAPI.INVALID_UINT,
+            POSITIONATPOWERON_INVALID    : YAPI.INVALID_INT,
+            ENABLEDATPOWERON_FALSE       : 0,
+            ENABLEDATPOWERON_TRUE        : 1,
+            ENABLEDATPOWERON_INVALID     : -1
+        });
     }
 
     //--- (end of YServo implementation)
 }
 
-exports.YServo = YServo; //
+//
 // YServoProxy Class: synchronous proxy to YServo objects
 //
 // This class is used to provide a pseudo-synchronous API on top
@@ -594,9 +548,10 @@ exports.YServo = YServo; //
 // To get a function proxy from a function, use get_syncProxy
 //
 /** @extends {YFunctionProxy} **/
-
-class YServoProxy extends _yocto_api.YFunctionProxy {
-    constructor(obj_func) {
+class YServoProxy extends YFunctionProxy
+{
+    constructor(obj_func)
+    {
         super(obj_func);
     }
 
@@ -609,7 +564,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_POSITION_INVALID.
      */
-    get_position() {
+    get_position()
+    {
         return this.liveFunc._position;
     }
 
@@ -622,7 +578,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_position(newval) {
+    set_position(newval)
+    {
         this.liveFunc.set_position(newval);
         return this._yapi.SUCCESS;
     }
@@ -634,7 +591,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_ENABLED_INVALID.
      */
-    get_enabled() {
+    get_enabled()
+    {
         return this.liveFunc._enabled;
     }
 
@@ -647,7 +605,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabled(newval) {
+    set_enabled(newval)
+    {
         this.liveFunc.set_enabled(newval);
         return this._yapi.SUCCESS;
     }
@@ -659,7 +618,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_RANGE_INVALID.
      */
-    get_range() {
+    get_range()
+    {
         return this.liveFunc._range;
     }
 
@@ -678,7 +638,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_range(newval) {
+    set_range(newval)
+    {
         this.liveFunc.set_range(newval);
         return this._yapi.SUCCESS;
     }
@@ -690,7 +651,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_NEUTRAL_INVALID.
      */
-    get_neutral() {
+    get_neutral()
+    {
         return this.liveFunc._neutral;
     }
 
@@ -709,16 +671,19 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_neutral(newval) {
+    set_neutral(newval)
+    {
         this.liveFunc.set_neutral(newval);
         return this._yapi.SUCCESS;
     }
 
-    get_move() {
+    get_move()
+    {
         return this.liveFunc._move;
     }
 
-    set_move(newval) {
+    set_move(newval)
+    {
         this.liveFunc.set_move(newval);
         return this._yapi.SUCCESS;
     }
@@ -730,7 +695,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_POSITIONATPOWERON_INVALID.
      */
-    get_positionAtPowerOn() {
+    get_positionAtPowerOn()
+    {
         return this.liveFunc._positionAtPowerOn;
     }
 
@@ -744,7 +710,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_positionAtPowerOn(newval) {
+    set_positionAtPowerOn(newval)
+    {
         this.liveFunc.set_positionAtPowerOn(newval);
         return this._yapi.SUCCESS;
     }
@@ -757,7 +724,8 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_ENABLEDATPOWERON_INVALID.
      */
-    get_enabledAtPowerOn() {
+    get_enabledAtPowerOn()
+    {
         return this.liveFunc._enabledAtPowerOn;
     }
 
@@ -771,54 +739,18 @@ class YServoProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabledAtPowerOn(newval) {
+    set_enabledAtPowerOn(newval)
+    {
         this.liveFunc.set_enabledAtPowerOn(newval);
         return this._yapi.SUCCESS;
     }
     //--- (end of YServo accessors declaration)
 }
 
-exports.YServoProxy = YServoProxy; //--- (Servo functions)
+//--- (YServo functions)
 
-/**
- * Retrieves a servo for a given identifier.
- * The identifier can be specified using several formats:
- * <ul>
- * <li>FunctionLogicalName</li>
- * <li>ModuleSerialNumber.FunctionIdentifier</li>
- * <li>ModuleSerialNumber.FunctionLogicalName</li>
- * <li>ModuleLogicalName.FunctionIdentifier</li>
- * <li>ModuleLogicalName.FunctionLogicalName</li>
- * </ul>
- *
- * This function does not require that the servo is online at the time
- * it is invoked. The returned object is nevertheless valid.
- * Use the method YServo.isOnline() to test if the servo is
- * indeed online at a given time. In case of ambiguity when looking for
- * a servo by logical name, no error is notified: the first instance
- * found is returned. The search is performed first by hardware name,
- * then by logical name.
- *
- * @param func {string} : a string that uniquely characterizes the servo
- *
- * @return {YServo} a YServo object allowing you to drive the servo.
- */
+YoctoLibExport('YServo', YServo);
+YoctoLibExport('YServoProxy', YServoProxy);
+YServo.imm_Init();
 
-function yFindServo(func) {
-    return YServo.FindServo(func);
-}
-
-/**
- * Starts the enumeration of servos currently accessible.
- * Use the method YServo.nextServo() to iterate on
- * next servos.
- *
- * @return {YServo} a pointer to a YServo object, corresponding to
- *         the first servo currently online, or a null pointer
- *         if there are none.
- */
-function yFirstServo() {
-    return YServo.FirstServo();
-}
-
-//--- (end of Servo functions)
+//--- (end of YServo functions)

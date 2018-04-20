@@ -7,6 +7,16 @@
     <link href="css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="caleandar-master/css/theme2.css">
 
+    <script>
+        var _yocto_api = {};
+        var YoctoLibExport = function(symbol, definition) {
+            _yocto_api[symbol] = definition;
+        }
+        if (typeof require != 'undefined') {
+            require("ws");
+            require("crypto");
+        }
+    </script>
     <script type="text/javascript" src="js/yocto_api.js"></script>
     <script type="text/javascript" src="js/yocto_tilt.js"></script>
     <script type="text/javascript" src="js/yocto_compass.js"></script>
@@ -32,10 +42,11 @@
     <script>
         if (typeof require != 'undefined') {
             require("ws");
-            var module3dconnexion = require('vrviewer');
+            require("crypto");
+            var randomFillSync = require("crypto").randomFillSync;
             var fs = require('fs');
             var recordRTC = require('recordrtc');
-            var SerialPort = require('serialport');
+            //var SerialPort = require('serialport');
             var NodeCouchDb = require('node-couchdb');
             var Cam = require('onvif').Cam;
             var onvif = require('onvif');
@@ -620,6 +631,7 @@
 
     <!-- Display and choose the media devices -->
     <script>
+        /*
         MediaStreamTrack.getSources(function (sourceInfos) {
             var audioSource = null;
             var videoSource = null;
@@ -639,6 +651,7 @@
                 }
             }
         });
+        */
         var video = document.getElementsByClassName('camera-winder'),
             vendorURL = window.URL || window.webkitURL;
 

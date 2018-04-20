@@ -1,10 +1,10 @@
 /*********************************************************************
  *
- * $Id: yocto_relay.js 23963 2016-04-17 20:55:12Z mvuilleu $
+ * $Id: yocto_relay.js 28746 2017-10-03 08:19:35Z seb $
  *
  * Implements the high-level API for Relay functions
  *
- * - - - - - - - - - License information: - - - - - - - - - 
+ * - - - - - - - - - License information: - - - - - - - - -
  *
  *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
@@ -23,7 +23,7 @@
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
  *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
@@ -39,36 +39,9 @@
 
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.YRelayProxy = exports.YRelay = exports.Y_COUNTDOWN_INVALID = exports.Y_DELAYEDPULSETIMER_INVALID = exports.Y_PULSETIMER_INVALID = exports.Y_MAXTIMEONSTATEB_INVALID = exports.Y_MAXTIMEONSTATEA_INVALID = exports.Y_OUTPUT_INVALID = exports.Y_OUTPUT_ON = exports.Y_OUTPUT_OFF = exports.Y_STATEATPOWERON_INVALID = exports.Y_STATEATPOWERON_B = exports.Y_STATEATPOWERON_A = exports.Y_STATEATPOWERON_UNCHANGED = exports.Y_STATE_INVALID = exports.Y_STATE_B = exports.Y_STATE_A = undefined;
-exports.yFindRelay = yFindRelay;
-exports.yFirstRelay = yFirstRelay;
-
-// CHANGEMENT AIM
-var _yocto_api = exports;
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
 //--- (YRelay return codes)
 //--- (end of YRelay return codes)
 //--- (YRelay definitions)
-var Y_STATE_A = exports.Y_STATE_A = 0;
-var Y_STATE_B = exports.Y_STATE_B = 1;
-var Y_STATE_INVALID = exports.Y_STATE_INVALID = -1;
-var Y_STATEATPOWERON_UNCHANGED = exports.Y_STATEATPOWERON_UNCHANGED = 0;
-var Y_STATEATPOWERON_A = exports.Y_STATEATPOWERON_A = 1;
-var Y_STATEATPOWERON_B = exports.Y_STATEATPOWERON_B = 2;
-var Y_STATEATPOWERON_INVALID = exports.Y_STATEATPOWERON_INVALID = -1;
-var Y_OUTPUT_OFF = exports.Y_OUTPUT_OFF = 0;
-var Y_OUTPUT_ON = exports.Y_OUTPUT_ON = 1;
-var Y_OUTPUT_INVALID = exports.Y_OUTPUT_INVALID = -1;
-var Y_MAXTIMEONSTATEA_INVALID = exports.Y_MAXTIMEONSTATEA_INVALID = _yocto_api.YAPI.INVALID_LONG;
-var Y_MAXTIMEONSTATEB_INVALID = exports.Y_MAXTIMEONSTATEB_INVALID = _yocto_api.YAPI.INVALID_LONG;
-var Y_PULSETIMER_INVALID = exports.Y_PULSETIMER_INVALID = _yocto_api.YAPI.INVALID_LONG;
-var Y_DELAYEDPULSETIMER_INVALID = exports.Y_DELAYEDPULSETIMER_INVALID = null;
-var Y_COUNTDOWN_INVALID = exports.Y_COUNTDOWN_INVALID = _yocto_api.YAPI.INVALID_LONG;
 //--- (end of YRelay definitions)
 
 //--- (YRelay class start)
@@ -85,93 +58,62 @@ var Y_COUNTDOWN_INVALID = exports.Y_COUNTDOWN_INVALID = _yocto_api.YAPI.INVALID_
  */
 //--- (end of YRelay class start)
 
-class YRelay extends _yocto_api.YFunction {
-    constructor(obj_yapi, str_func) {
+class YRelay extends YFunction
+{
+    constructor(obj_yapi, str_func)
+    {
         //--- (YRelay constructor)
         super(obj_yapi, str_func);
         /** @member {string} **/
-        this._className = 'Relay';
+        this._className                  = 'Relay';
         /** @member {number} **/
-        this._state = Y_STATE_INVALID;
+        this._state                      = YRelay.STATE_INVALID;
         /** @member {number} **/
-        this._stateAtPowerOn = Y_STATEATPOWERON_INVALID;
+        this._stateAtPowerOn             = YRelay.STATEATPOWERON_INVALID;
         /** @member {number} **/
-        this._maxTimeOnStateA = Y_MAXTIMEONSTATEA_INVALID;
+        this._maxTimeOnStateA            = YRelay.MAXTIMEONSTATEA_INVALID;
         /** @member {number} **/
-        this._maxTimeOnStateB = Y_MAXTIMEONSTATEB_INVALID;
+        this._maxTimeOnStateB            = YRelay.MAXTIMEONSTATEB_INVALID;
         /** @member {number} **/
-        this._output = Y_OUTPUT_INVALID;
+        this._output                     = YRelay.OUTPUT_INVALID;
         /** @member {number} **/
-        this._pulseTimer = Y_PULSETIMER_INVALID;
+        this._pulseTimer                 = YRelay.PULSETIMER_INVALID;
         /** @member {YDelayedPulse} **/
-        this._delayedPulseTimer = Y_DELAYEDPULSETIMER_INVALID;
+        this._delayedPulseTimer          = YRelay.DELAYEDPULSETIMER_INVALID;
         /** @member {number} **/
-        this._countdown = Y_COUNTDOWN_INVALID;
-        this.imm_setConst({
-            STATE_A: 0,
-            STATE_B: 1,
-            STATE_INVALID: -1,
-            STATEATPOWERON_UNCHANGED: 0,
-            STATEATPOWERON_A: 1,
-            STATEATPOWERON_B: 2,
-            STATEATPOWERON_INVALID: -1,
-            MAXTIMEONSTATEA_INVALID: _yocto_api.YAPI.INVALID_LONG,
-            MAXTIMEONSTATEB_INVALID: _yocto_api.YAPI.INVALID_LONG,
-            OUTPUT_OFF: 0,
-            OUTPUT_ON: 1,
-            OUTPUT_INVALID: -1,
-            PULSETIMER_INVALID: _yocto_api.YAPI.INVALID_LONG,
-            COUNTDOWN_INVALID: _yocto_api.YAPI.INVALID_LONG
-        });
+        this._countdown                  = YRelay.COUNTDOWN_INVALID;
         //--- (end of YRelay constructor)
     }
 
     //--- (YRelay implementation)
 
-    get_syncProxy() {
-        var _this = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this._cacheExpiration <= _this._yapi.GetTickCount()) {
-                try {
-                    yield _this.load(_this._yapi.defaultCacheValidity);
-                } catch (e) {
-                    // device might be offline
-                }
-            }
-            var res = new YRelayProxy(_this);
-            yield res._asyncInit();
-            res._module = yield (yield _this.module()).get_syncProxy();
-            return res;
-        })();
-    }
-
-    imm_parseAttr(name, val) {
-        switch (name) {
-            case 'state':
-                this._state = parseInt(val);
-                return 1;
-            case 'stateAtPowerOn':
-                this._stateAtPowerOn = parseInt(val);
-                return 1;
-            case 'maxTimeOnStateA':
-                this._maxTimeOnStateA = parseInt(val);
-                return 1;
-            case 'maxTimeOnStateB':
-                this._maxTimeOnStateB = parseInt(val);
-                return 1;
-            case 'output':
-                this._output = parseInt(val);
-                return 1;
-            case 'pulseTimer':
-                this._pulseTimer = parseInt(val);
-                return 1;
-            case 'delayedPulseTimer':
-                this._delayedPulseTimer = val;
-                return 1;
-            case 'countdown':
-                this._countdown = parseInt(val);
-                return 1;
+    imm_parseAttr(name, val)
+    {
+        switch(name) {
+        case 'state':
+            this._state = parseInt(val);
+            return 1;
+        case 'stateAtPowerOn':
+            this._stateAtPowerOn = parseInt(val);
+            return 1;
+        case 'maxTimeOnStateA':
+            this._maxTimeOnStateA = parseInt(val);
+            return 1;
+        case 'maxTimeOnStateB':
+            this._maxTimeOnStateB = parseInt(val);
+            return 1;
+        case 'output':
+            this._output = parseInt(val);
+            return 1;
+        case 'pulseTimer':
+            this._pulseTimer = parseInt(val);
+            return 1;
+        case 'delayedPulseTimer':
+            this._delayedPulseTimer = val;
+            return 1;
+        case 'countdown':
+            this._countdown = parseInt(val);
+            return 1;
         }
         return super.imm_parseAttr(name, val);
     }
@@ -184,17 +126,17 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YRelay.STATE_INVALID.
      */
-    get_state() {
-        var _this2 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this2._cacheExpiration <= _this2._yapi.GetTickCount()) {
-                if ((yield _this2.load(_this2._yapi.defaultCacheValidity)) != _this2._yapi.SUCCESS) {
-                    return Y_STATE_INVALID;
-                }
+    async get_state()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.STATE_INVALID;
             }
-            return _this2._state;
-        })();
+        }
+        res = this._state;
+        return res;
     }
 
     /**
@@ -207,15 +149,12 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_state(newval) {
-        var _this3 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this3._setAttr('state', rest_val);
-        })();
+    async set_state(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('state',rest_val);
     }
 
     /**
@@ -228,17 +167,17 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YRelay.STATEATPOWERON_INVALID.
      */
-    get_stateAtPowerOn() {
-        var _this4 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this4._cacheExpiration <= _this4._yapi.GetTickCount()) {
-                if ((yield _this4.load(_this4._yapi.defaultCacheValidity)) != _this4._yapi.SUCCESS) {
-                    return Y_STATEATPOWERON_INVALID;
-                }
+    async get_stateAtPowerOn()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.STATEATPOWERON_INVALID;
             }
-            return _this4._stateAtPowerOn;
-        })();
+        }
+        res = this._stateAtPowerOn;
+        return res;
     }
 
     /**
@@ -253,15 +192,12 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_stateAtPowerOn(newval) {
-        var _this5 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this5._setAttr('stateAtPowerOn', rest_val);
-        })();
+    async set_stateAtPowerOn(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('stateAtPowerOn',rest_val);
     }
 
     /**
@@ -272,17 +208,17 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YRelay.MAXTIMEONSTATEA_INVALID.
      */
-    get_maxTimeOnStateA() {
-        var _this6 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this6._cacheExpiration <= _this6._yapi.GetTickCount()) {
-                if ((yield _this6.load(_this6._yapi.defaultCacheValidity)) != _this6._yapi.SUCCESS) {
-                    return Y_MAXTIMEONSTATEA_INVALID;
-                }
+    async get_maxTimeOnStateA()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.MAXTIMEONSTATEA_INVALID;
             }
-            return _this6._maxTimeOnStateA;
-        })();
+        }
+        res = this._maxTimeOnStateA;
+        return res;
     }
 
     /**
@@ -295,15 +231,12 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_maxTimeOnStateA(newval) {
-        var _this7 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this7._setAttr('maxTimeOnStateA', rest_val);
-        })();
+    async set_maxTimeOnStateA(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('maxTimeOnStateA',rest_val);
     }
 
     /**
@@ -314,17 +247,17 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YRelay.MAXTIMEONSTATEB_INVALID.
      */
-    get_maxTimeOnStateB() {
-        var _this8 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this8._cacheExpiration <= _this8._yapi.GetTickCount()) {
-                if ((yield _this8.load(_this8._yapi.defaultCacheValidity)) != _this8._yapi.SUCCESS) {
-                    return Y_MAXTIMEONSTATEB_INVALID;
-                }
+    async get_maxTimeOnStateB()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.MAXTIMEONSTATEB_INVALID;
             }
-            return _this8._maxTimeOnStateB;
-        })();
+        }
+        res = this._maxTimeOnStateB;
+        return res;
     }
 
     /**
@@ -337,15 +270,12 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_maxTimeOnStateB(newval) {
-        var _this9 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this9._setAttr('maxTimeOnStateB', rest_val);
-        })();
+    async set_maxTimeOnStateB(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('maxTimeOnStateB',rest_val);
     }
 
     /**
@@ -356,17 +286,17 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YRelay.OUTPUT_INVALID.
      */
-    get_output() {
-        var _this10 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this10._cacheExpiration <= _this10._yapi.GetTickCount()) {
-                if ((yield _this10.load(_this10._yapi.defaultCacheValidity)) != _this10._yapi.SUCCESS) {
-                    return Y_OUTPUT_INVALID;
-                }
+    async get_output()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.OUTPUT_INVALID;
             }
-            return _this10._output;
-        })();
+        }
+        res = this._output;
+        return res;
     }
 
     /**
@@ -379,15 +309,12 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_output(newval) {
-        var _this11 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this11._setAttr('output', rest_val);
-        })();
+    async set_output(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('output',rest_val);
     }
 
     /**
@@ -400,28 +327,25 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YRelay.PULSETIMER_INVALID.
      */
-    get_pulseTimer() {
-        var _this12 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this12._cacheExpiration <= _this12._yapi.GetTickCount()) {
-                if ((yield _this12.load(_this12._yapi.defaultCacheValidity)) != _this12._yapi.SUCCESS) {
-                    return Y_PULSETIMER_INVALID;
-                }
+    async get_pulseTimer()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.PULSETIMER_INVALID;
             }
-            return _this12._pulseTimer;
-        })();
+        }
+        res = this._pulseTimer;
+        return res;
     }
 
-    set_pulseTimer(newval) {
-        var _this13 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this13._setAttr('pulseTimer', rest_val);
-        })();
+    async set_pulseTimer(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('pulseTimer',rest_val);
     }
 
     /**
@@ -434,39 +358,33 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    pulse(ms_duration) {
-        var _this14 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(ms_duration);
-            return yield _this14._setAttr('pulseTimer', rest_val);
-        })();
+    async pulse(ms_duration)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(ms_duration);
+        return await this._setAttr('pulseTimer',rest_val);
     }
 
-    get_delayedPulseTimer() {
-        var _this15 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this15._cacheExpiration <= _this15._yapi.GetTickCount()) {
-                if ((yield _this15.load(_this15._yapi.defaultCacheValidity)) != _this15._yapi.SUCCESS) {
-                    return Y_DELAYEDPULSETIMER_INVALID;
-                }
+    async get_delayedPulseTimer()
+    {
+        /** @type {YDelayedPulse} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.DELAYEDPULSETIMER_INVALID;
             }
-            return _this15._delayedPulseTimer;
-        })();
+        }
+        res = this._delayedPulseTimer;
+        return res;
     }
 
-    set_delayedPulseTimer(newval) {
-        var _this16 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval.target) + ':' + String(newval.ms);
-            return yield _this16._setAttr('delayedPulseTimer', rest_val);
-        })();
+    async set_delayedPulseTimer(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval.target)+':'+String(newval.ms);
+        return await this._setAttr('delayedPulseTimer',rest_val);
     }
 
     /**
@@ -479,15 +397,12 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    delayedPulse(ms_delay, ms_duration) {
-        var _this17 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(ms_delay) + ':' + String(ms_duration);
-            return yield _this17._setAttr('delayedPulseTimer', rest_val);
-        })();
+    async delayedPulse(ms_delay,ms_duration)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(ms_delay)+':'+String(ms_duration);
+        return await this._setAttr('delayedPulseTimer',rest_val);
     }
 
     /**
@@ -500,17 +415,17 @@ class YRelay extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YRelay.COUNTDOWN_INVALID.
      */
-    get_countdown() {
-        var _this18 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this18._cacheExpiration <= _this18._yapi.GetTickCount()) {
-                if ((yield _this18.load(_this18._yapi.defaultCacheValidity)) != _this18._yapi.SUCCESS) {
-                    return Y_COUNTDOWN_INVALID;
-                }
+    async get_countdown()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YRelay.COUNTDOWN_INVALID;
             }
-            return _this18._countdown;
-        })();
+        }
+        res = this._countdown;
+        return res;
     }
 
     /**
@@ -532,17 +447,22 @@ class YRelay extends _yocto_api.YFunction {
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
+     * If a call to this object's is_online() method returns FALSE although
+     * you are certain that the matching device is plugged, make sure that you did
+     * call registerHub() at application initialization time.
+     *
      * @param func {string} : a string that uniquely characterizes the relay
      *
      * @return {YRelay} a YRelay object allowing you to drive the relay.
      */
-    static FindRelay(func) {
+    static FindRelay(func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCache('Relay', func);
+        obj = YFunction._FindFromCache('Relay', func);
         if (obj == null) {
-            obj = new YRelay(_yocto_api.YAPI, func);
-            _yocto_api.YFunction._AddToCache('Relay', func, obj);
+            obj = new YRelay(YAPI, func);
+            YFunction._AddToCache('Relay',  func, obj);
         }
         return obj;
     }
@@ -571,13 +491,14 @@ class YRelay extends _yocto_api.YFunction {
      *
      * @return {YRelay} a YRelay object allowing you to drive the relay.
      */
-    static FindRelayInContext(yctx, func) {
+    static FindRelayInContext(yctx,func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCacheInContext(yctx, 'Relay', func);
+        obj = YFunction._FindFromCacheInContext(yctx,  'Relay', func);
         if (obj == null) {
             obj = new YRelay(yctx, func);
-            _yocto_api.YFunction._AddToCache('Relay', func, obj);
+            YFunction._AddToCache('Relay',  func, obj);
         }
         return obj;
     }
@@ -589,13 +510,14 @@ class YRelay extends _yocto_api.YFunction {
      *         a relay currently online, or a null pointer
      *         if there are no more relays to enumerate.
      */
-    nextRelay() {
+    nextRelay()
+    {
         /** @type {object} **/
         let resolve = this._yapi.imm_resolveFunction(this._className, this._func);
-        if (resolve.errorType != _yocto_api.YAPI_SUCCESS) return null;
+        if(resolve.errorType != YAPI.SUCCESS) return null;
         /** @type {string|null} **/
         let next_hwid = this._yapi.imm_getNextHardwareId(this._className, resolve.result);
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YRelay.FindRelayInContext(this._yapi, next_hwid);
     }
 
@@ -608,10 +530,11 @@ class YRelay extends _yocto_api.YFunction {
      *         the first relay currently online, or a null pointer
      *         if there are none.
      */
-    static FirstRelay() {
+    static FirstRelay()
+    {
         /** @type {string|null} **/
-        let next_hwid = _yocto_api.YAPI.imm_getFirstHardwareId('Relay');
-        if (next_hwid == null) return null;
+        let next_hwid = YAPI.imm_getFirstHardwareId('Relay');
+        if(next_hwid == null) return null;
         return YRelay.FindRelay(next_hwid);
     }
 
@@ -626,17 +549,38 @@ class YRelay extends _yocto_api.YFunction {
      *         the first relay currently online, or a null pointer
      *         if there are none.
      */
-    static FirstRelayInContext(yctx) {
+    static FirstRelayInContext(yctx)
+    {
         /** @type {string|null} **/
         let next_hwid = yctx.imm_getFirstHardwareId('Relay');
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YRelay.FindRelayInContext(yctx, next_hwid);
+    }
+
+    static imm_Const()
+    {
+        return Object.assign(super.imm_Const(), {
+            STATE_A                      : 0,
+            STATE_B                      : 1,
+            STATE_INVALID                : -1,
+            STATEATPOWERON_UNCHANGED     : 0,
+            STATEATPOWERON_A             : 1,
+            STATEATPOWERON_B             : 2,
+            STATEATPOWERON_INVALID       : -1,
+            MAXTIMEONSTATEA_INVALID      : YAPI.INVALID_LONG,
+            MAXTIMEONSTATEB_INVALID      : YAPI.INVALID_LONG,
+            OUTPUT_OFF                   : 0,
+            OUTPUT_ON                    : 1,
+            OUTPUT_INVALID               : -1,
+            PULSETIMER_INVALID           : YAPI.INVALID_LONG,
+            COUNTDOWN_INVALID            : YAPI.INVALID_LONG
+        });
     }
 
     //--- (end of YRelay implementation)
 }
 
-exports.YRelay = YRelay; //
+//
 // YRelayProxy Class: synchronous proxy to YRelay objects
 //
 // This class is used to provide a pseudo-synchronous API on top
@@ -650,9 +594,10 @@ exports.YRelay = YRelay; //
 // To get a function proxy from a function, use get_syncProxy
 //
 /** @extends {YFunctionProxy} **/
-
-class YRelayProxy extends _yocto_api.YFunctionProxy {
-    constructor(obj_func) {
+class YRelayProxy extends YFunctionProxy
+{
+    constructor(obj_func)
+    {
         super(obj_func);
     }
 
@@ -666,7 +611,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_STATE_INVALID.
      */
-    get_state() {
+    get_state()
+    {
         return this.liveFunc._state;
     }
 
@@ -680,7 +626,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_state(newval) {
+    set_state(newval)
+    {
         this.liveFunc.set_state(newval);
         return this._yapi.SUCCESS;
     }
@@ -695,7 +642,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_STATEATPOWERON_INVALID.
      */
-    get_stateAtPowerOn() {
+    get_stateAtPowerOn()
+    {
         return this.liveFunc._stateAtPowerOn;
     }
 
@@ -710,7 +658,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_stateAtPowerOn(newval) {
+    set_stateAtPowerOn(newval)
+    {
         this.liveFunc.set_stateAtPowerOn(newval);
         return this._yapi.SUCCESS;
     }
@@ -723,7 +672,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_MAXTIMEONSTATEA_INVALID.
      */
-    get_maxTimeOnStateA() {
+    get_maxTimeOnStateA()
+    {
         return this.liveFunc._maxTimeOnStateA;
     }
 
@@ -737,7 +687,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_maxTimeOnStateA(newval) {
+    set_maxTimeOnStateA(newval)
+    {
         this.liveFunc.set_maxTimeOnStateA(newval);
         return this._yapi.SUCCESS;
     }
@@ -750,7 +701,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_MAXTIMEONSTATEB_INVALID.
      */
-    get_maxTimeOnStateB() {
+    get_maxTimeOnStateB()
+    {
         return this.liveFunc._maxTimeOnStateB;
     }
 
@@ -764,7 +716,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_maxTimeOnStateB(newval) {
+    set_maxTimeOnStateB(newval)
+    {
         this.liveFunc.set_maxTimeOnStateB(newval);
         return this._yapi.SUCCESS;
     }
@@ -777,7 +730,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_OUTPUT_INVALID.
      */
-    get_output() {
+    get_output()
+    {
         return this.liveFunc._output;
     }
 
@@ -791,7 +745,8 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_output(newval) {
+    set_output(newval)
+    {
         this.liveFunc.set_output(newval);
         return this._yapi.SUCCESS;
     }
@@ -806,20 +761,24 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_PULSETIMER_INVALID.
      */
-    get_pulseTimer() {
+    get_pulseTimer()
+    {
         return this.liveFunc._pulseTimer;
     }
 
-    set_pulseTimer(newval) {
+    set_pulseTimer(newval)
+    {
         this.liveFunc.set_pulseTimer(newval);
         return this._yapi.SUCCESS;
     }
 
-    get_delayedPulseTimer() {
+    get_delayedPulseTimer()
+    {
         return this.liveFunc._delayedPulseTimer;
     }
 
-    set_delayedPulseTimer(newval) {
+    set_delayedPulseTimer(newval)
+    {
         this.liveFunc.set_delayedPulseTimer(newval);
         return this._yapi.SUCCESS;
     }
@@ -833,53 +792,17 @@ class YRelayProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_COUNTDOWN_INVALID.
      */
-    get_countdown() {
+    get_countdown()
+    {
         return this.liveFunc._countdown;
     }
     //--- (end of YRelay accessors declaration)
 }
 
-exports.YRelayProxy = YRelayProxy; //--- (Relay functions)
+//--- (YRelay functions)
 
-/**
- * Retrieves a relay for a given identifier.
- * The identifier can be specified using several formats:
- * <ul>
- * <li>FunctionLogicalName</li>
- * <li>ModuleSerialNumber.FunctionIdentifier</li>
- * <li>ModuleSerialNumber.FunctionLogicalName</li>
- * <li>ModuleLogicalName.FunctionIdentifier</li>
- * <li>ModuleLogicalName.FunctionLogicalName</li>
- * </ul>
- *
- * This function does not require that the relay is online at the time
- * it is invoked. The returned object is nevertheless valid.
- * Use the method YRelay.isOnline() to test if the relay is
- * indeed online at a given time. In case of ambiguity when looking for
- * a relay by logical name, no error is notified: the first instance
- * found is returned. The search is performed first by hardware name,
- * then by logical name.
- *
- * @param func {string} : a string that uniquely characterizes the relay
- *
- * @return {YRelay} a YRelay object allowing you to drive the relay.
- */
+YoctoLibExport('YRelay', YRelay);
+YoctoLibExport('YRelayProxy', YRelayProxy);
+YRelay.imm_Init();
 
-function yFindRelay(func) {
-    return YRelay.FindRelay(func);
-}
-
-/**
- * Starts the enumeration of relays currently accessible.
- * Use the method YRelay.nextRelay() to iterate on
- * next relays.
- *
- * @return {YRelay} a pointer to a YRelay object, corresponding to
- *         the first relay currently online, or a null pointer
- *         if there are none.
- */
-function yFirstRelay() {
-    return YRelay.FirstRelay();
-}
-
-//--- (end of Relay functions)
+//--- (end of YRelay functions)

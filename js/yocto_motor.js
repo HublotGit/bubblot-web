@@ -1,10 +1,10 @@
 /*********************************************************************
  *
- * $Id: yocto_motor.js 23963 2016-04-17 20:55:12Z mvuilleu $
+ * $Id: yocto_motor.js 28746 2017-10-03 08:19:35Z seb $
  *
  * Implements the high-level API for Motor functions
  *
- * - - - - - - - - - License information: - - - - - - - - - 
+ * - - - - - - - - - License information: - - - - - - - - -
  *
  *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
@@ -23,7 +23,7 @@
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
  *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
@@ -39,39 +39,9 @@
 
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.YMotorProxy = exports.YMotor = exports.Y_COMMAND_INVALID = exports.Y_FAILSAFETIMEOUT_INVALID = exports.Y_STARTERTIME_INVALID = exports.Y_FREQUENCY_INVALID = exports.Y_OVERCURRENTLIMIT_INVALID = exports.Y_CUTOFFVOLTAGE_INVALID = exports.Y_BRAKINGFORCE_INVALID = exports.Y_DRIVINGFORCE_INVALID = exports.Y_MOTORSTATUS_INVALID = exports.Y_MOTORSTATUS_FAILSF = exports.Y_MOTORSTATUS_HIHEAT = exports.Y_MOTORSTATUS_HICURR = exports.Y_MOTORSTATUS_LOVOLT = exports.Y_MOTORSTATUS_BACKWD = exports.Y_MOTORSTATUS_FORWD = exports.Y_MOTORSTATUS_BRAKE = exports.Y_MOTORSTATUS_IDLE = undefined;
-exports.yFindMotor = yFindMotor;
-exports.yFirstMotor = yFirstMotor;
-
-//var _yocto_api = require('./yocto_api');
-// CHANGEMENT AIM
-var _yocto_api = exports;
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
 //--- (YMotor return codes)
 //--- (end of YMotor return codes)
 //--- (YMotor definitions)
-var Y_MOTORSTATUS_IDLE = exports.Y_MOTORSTATUS_IDLE = 0;
-var Y_MOTORSTATUS_BRAKE = exports.Y_MOTORSTATUS_BRAKE = 1;
-var Y_MOTORSTATUS_FORWD = exports.Y_MOTORSTATUS_FORWD = 2;
-var Y_MOTORSTATUS_BACKWD = exports.Y_MOTORSTATUS_BACKWD = 3;
-var Y_MOTORSTATUS_LOVOLT = exports.Y_MOTORSTATUS_LOVOLT = 4;
-var Y_MOTORSTATUS_HICURR = exports.Y_MOTORSTATUS_HICURR = 5;
-var Y_MOTORSTATUS_HIHEAT = exports.Y_MOTORSTATUS_HIHEAT = 6;
-var Y_MOTORSTATUS_FAILSF = exports.Y_MOTORSTATUS_FAILSF = 7;
-var Y_MOTORSTATUS_INVALID = exports.Y_MOTORSTATUS_INVALID = -1;
-var Y_DRIVINGFORCE_INVALID = exports.Y_DRIVINGFORCE_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_BRAKINGFORCE_INVALID = exports.Y_BRAKINGFORCE_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_CUTOFFVOLTAGE_INVALID = exports.Y_CUTOFFVOLTAGE_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_OVERCURRENTLIMIT_INVALID = exports.Y_OVERCURRENTLIMIT_INVALID = _yocto_api.YAPI.INVALID_INT;
-var Y_FREQUENCY_INVALID = exports.Y_FREQUENCY_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_STARTERTIME_INVALID = exports.Y_STARTERTIME_INVALID = _yocto_api.YAPI.INVALID_INT;
-var Y_FAILSAFETIMEOUT_INVALID = exports.Y_FAILSAFETIMEOUT_INVALID = _yocto_api.YAPI.INVALID_UINT;
-var Y_COMMAND_INVALID = exports.Y_COMMAND_INVALID = _yocto_api.YAPI.INVALID_STRING;
 //--- (end of YMotor definitions)
 
 //--- (YMotor class start)
@@ -86,101 +56,67 @@ var Y_COMMAND_INVALID = exports.Y_COMMAND_INVALID = _yocto_api.YAPI.INVALID_STRI
  */
 //--- (end of YMotor class start)
 
-class YMotor extends _yocto_api.YFunction {
-    constructor(obj_yapi, str_func) {
+class YMotor extends YFunction
+{
+    constructor(obj_yapi, str_func)
+    {
         //--- (YMotor constructor)
         super(obj_yapi, str_func);
         /** @member {string} **/
-        this._className = 'Motor';
+        this._className                  = 'Motor';
         /** @member {number} **/
-        this._motorStatus = Y_MOTORSTATUS_INVALID;
+        this._motorStatus                = YMotor.MOTORSTATUS_INVALID;
         /** @member {number} **/
-        this._drivingForce = Y_DRIVINGFORCE_INVALID;
+        this._drivingForce               = YMotor.DRIVINGFORCE_INVALID;
         /** @member {number} **/
-        this._brakingForce = Y_BRAKINGFORCE_INVALID;
+        this._brakingForce               = YMotor.BRAKINGFORCE_INVALID;
         /** @member {number} **/
-        this._cutOffVoltage = Y_CUTOFFVOLTAGE_INVALID;
+        this._cutOffVoltage              = YMotor.CUTOFFVOLTAGE_INVALID;
         /** @member {number} **/
-        this._overCurrentLimit = Y_OVERCURRENTLIMIT_INVALID;
+        this._overCurrentLimit           = YMotor.OVERCURRENTLIMIT_INVALID;
         /** @member {number} **/
-        this._frequency = Y_FREQUENCY_INVALID;
+        this._frequency                  = YMotor.FREQUENCY_INVALID;
         /** @member {number} **/
-        this._starterTime = Y_STARTERTIME_INVALID;
+        this._starterTime                = YMotor.STARTERTIME_INVALID;
         /** @member {number} **/
-        this._failSafeTimeout = Y_FAILSAFETIMEOUT_INVALID;
+        this._failSafeTimeout            = YMotor.FAILSAFETIMEOUT_INVALID;
         /** @member {string} **/
-        this._command = Y_COMMAND_INVALID;
-        this.imm_setConst({
-            MOTORSTATUS_IDLE: 0,
-            MOTORSTATUS_BRAKE: 1,
-            MOTORSTATUS_FORWD: 2,
-            MOTORSTATUS_BACKWD: 3,
-            MOTORSTATUS_LOVOLT: 4,
-            MOTORSTATUS_HICURR: 5,
-            MOTORSTATUS_HIHEAT: 6,
-            MOTORSTATUS_FAILSF: 7,
-            MOTORSTATUS_INVALID: -1,
-            DRIVINGFORCE_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            BRAKINGFORCE_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            CUTOFFVOLTAGE_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            OVERCURRENTLIMIT_INVALID: _yocto_api.YAPI.INVALID_INT,
-            FREQUENCY_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            STARTERTIME_INVALID: _yocto_api.YAPI.INVALID_INT,
-            FAILSAFETIMEOUT_INVALID: _yocto_api.YAPI.INVALID_UINT,
-            COMMAND_INVALID: _yocto_api.YAPI.INVALID_STRING
-        });
+        this._command                    = YMotor.COMMAND_INVALID;
         //--- (end of YMotor constructor)
     }
 
     //--- (YMotor implementation)
 
-    get_syncProxy() {
-        var _this = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this._cacheExpiration <= _this._yapi.GetTickCount()) {
-                try {
-                    yield _this.load(_this._yapi.defaultCacheValidity);
-                } catch (e) {
-                    // device might be offline
-                }
-            }
-            var res = new YMotorProxy(_this);
-            yield res._asyncInit();
-            res._module = yield (yield _this.module()).get_syncProxy();
-            return res;
-        })();
-    }
-
-    imm_parseAttr(name, val) {
-        switch (name) {
-            case 'motorStatus':
-                this._motorStatus = parseInt(val);
-                return 1;
-            case 'drivingForce':
-                this._drivingForce = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'brakingForce':
-                this._brakingForce = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'cutOffVoltage':
-                this._cutOffVoltage = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'overCurrentLimit':
-                this._overCurrentLimit = parseInt(val);
-                return 1;
-            case 'frequency':
-                this._frequency = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'starterTime':
-                this._starterTime = parseInt(val);
-                return 1;
-            case 'failSafeTimeout':
-                this._failSafeTimeout = parseInt(val);
-                return 1;
-            case 'command':
-                this._command = val;
-                return 1;
+    imm_parseAttr(name, val)
+    {
+        switch(name) {
+        case 'motorStatus':
+            this._motorStatus = parseInt(val);
+            return 1;
+        case 'drivingForce':
+            this._drivingForce = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'brakingForce':
+            this._brakingForce = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'cutOffVoltage':
+            this._cutOffVoltage = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'overCurrentLimit':
+            this._overCurrentLimit = parseInt(val);
+            return 1;
+        case 'frequency':
+            this._frequency = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'starterTime':
+            this._starterTime = parseInt(val);
+            return 1;
+        case 'failSafeTimeout':
+            this._failSafeTimeout = parseInt(val);
+            return 1;
+        case 'command':
+            this._command = val;
+            return 1;
         }
         return super.imm_parseAttr(name, val);
     }
@@ -205,28 +141,25 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.MOTORSTATUS_INVALID.
      */
-    get_motorStatus() {
-        var _this2 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this2._cacheExpiration <= _this2._yapi.GetTickCount()) {
-                if ((yield _this2.load(_this2._yapi.defaultCacheValidity)) != _this2._yapi.SUCCESS) {
-                    return Y_MOTORSTATUS_INVALID;
-                }
+    async get_motorStatus()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.MOTORSTATUS_INVALID;
             }
-            return _this2._motorStatus;
-        })();
+        }
+        res = this._motorStatus;
+        return res;
     }
 
-    set_motorStatus(newval) {
-        var _this3 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this3._setAttr('motorStatus', rest_val);
-        })();
+    async set_motorStatus(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('motorStatus',rest_val);
     }
 
     /**
@@ -242,15 +175,12 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_drivingForce(newval) {
-        var _this4 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this4._setAttr('drivingForce', rest_val);
-        })();
+    async set_drivingForce(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('drivingForce',rest_val);
     }
 
     /**
@@ -261,17 +191,17 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.DRIVINGFORCE_INVALID.
      */
-    get_drivingForce() {
-        var _this5 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this5._cacheExpiration <= _this5._yapi.GetTickCount()) {
-                if ((yield _this5.load(_this5._yapi.defaultCacheValidity)) != _this5._yapi.SUCCESS) {
-                    return Y_DRIVINGFORCE_INVALID;
-                }
+    async get_drivingForce()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.DRIVINGFORCE_INVALID;
             }
-            return _this5._drivingForce;
-        })();
+        }
+        res = this._drivingForce;
+        return res;
     }
 
     /**
@@ -286,15 +216,12 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_brakingForce(newval) {
-        var _this6 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this6._setAttr('brakingForce', rest_val);
-        })();
+    async set_brakingForce(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('brakingForce',rest_val);
     }
 
     /**
@@ -306,17 +233,17 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.BRAKINGFORCE_INVALID.
      */
-    get_brakingForce() {
-        var _this7 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this7._cacheExpiration <= _this7._yapi.GetTickCount()) {
-                if ((yield _this7.load(_this7._yapi.defaultCacheValidity)) != _this7._yapi.SUCCESS) {
-                    return Y_BRAKINGFORCE_INVALID;
-                }
+    async get_brakingForce()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.BRAKINGFORCE_INVALID;
             }
-            return _this7._brakingForce;
-        })();
+        }
+        res = this._brakingForce;
+        return res;
     }
 
     /**
@@ -334,15 +261,12 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_cutOffVoltage(newval) {
-        var _this8 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this8._setAttr('cutOffVoltage', rest_val);
-        })();
+    async set_cutOffVoltage(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('cutOffVoltage',rest_val);
     }
 
     /**
@@ -356,17 +280,17 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.CUTOFFVOLTAGE_INVALID.
      */
-    get_cutOffVoltage() {
-        var _this9 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this9._cacheExpiration <= _this9._yapi.GetTickCount()) {
-                if ((yield _this9.load(_this9._yapi.defaultCacheValidity)) != _this9._yapi.SUCCESS) {
-                    return Y_CUTOFFVOLTAGE_INVALID;
-                }
+    async get_cutOffVoltage()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.CUTOFFVOLTAGE_INVALID;
             }
-            return _this9._cutOffVoltage;
-        })();
+        }
+        res = this._cutOffVoltage;
+        return res;
     }
 
     /**
@@ -379,17 +303,17 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.OVERCURRENTLIMIT_INVALID.
      */
-    get_overCurrentLimit() {
-        var _this10 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this10._cacheExpiration <= _this10._yapi.GetTickCount()) {
-                if ((yield _this10.load(_this10._yapi.defaultCacheValidity)) != _this10._yapi.SUCCESS) {
-                    return Y_OVERCURRENTLIMIT_INVALID;
-                }
+    async get_overCurrentLimit()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.OVERCURRENTLIMIT_INVALID;
             }
-            return _this10._overCurrentLimit;
-        })();
+        }
+        res = this._overCurrentLimit;
+        return res;
     }
 
     /**
@@ -406,15 +330,12 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_overCurrentLimit(newval) {
-        var _this11 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this11._setAttr('overCurrentLimit', rest_val);
-        })();
+    async set_overCurrentLimit(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('overCurrentLimit',rest_val);
     }
 
     /**
@@ -429,15 +350,12 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_frequency(newval) {
-        var _this12 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this12._setAttr('frequency', rest_val);
-        })();
+    async set_frequency(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('frequency',rest_val);
     }
 
     /**
@@ -447,17 +365,17 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.FREQUENCY_INVALID.
      */
-    get_frequency() {
-        var _this13 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this13._cacheExpiration <= _this13._yapi.GetTickCount()) {
-                if ((yield _this13.load(_this13._yapi.defaultCacheValidity)) != _this13._yapi.SUCCESS) {
-                    return Y_FREQUENCY_INVALID;
-                }
+    async get_frequency()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.FREQUENCY_INVALID;
             }
-            return _this13._frequency;
-        })();
+        }
+        res = this._frequency;
+        return res;
     }
 
     /**
@@ -470,17 +388,17 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.STARTERTIME_INVALID.
      */
-    get_starterTime() {
-        var _this14 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this14._cacheExpiration <= _this14._yapi.GetTickCount()) {
-                if ((yield _this14.load(_this14._yapi.defaultCacheValidity)) != _this14._yapi.SUCCESS) {
-                    return Y_STARTERTIME_INVALID;
-                }
+    async get_starterTime()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.STARTERTIME_INVALID;
             }
-            return _this14._starterTime;
-        })();
+        }
+        res = this._starterTime;
+        return res;
     }
 
     /**
@@ -495,15 +413,12 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_starterTime(newval) {
-        var _this15 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this15._setAttr('starterTime', rest_val);
-        })();
+    async set_starterTime(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('starterTime',rest_val);
     }
 
     /**
@@ -518,17 +433,17 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YMotor.FAILSAFETIMEOUT_INVALID.
      */
-    get_failSafeTimeout() {
-        var _this16 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this16._cacheExpiration <= _this16._yapi.GetTickCount()) {
-                if ((yield _this16.load(_this16._yapi.defaultCacheValidity)) != _this16._yapi.SUCCESS) {
-                    return Y_FAILSAFETIMEOUT_INVALID;
-                }
+    async get_failSafeTimeout()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.FAILSAFETIMEOUT_INVALID;
             }
-            return _this16._failSafeTimeout;
-        })();
+        }
+        res = this._failSafeTimeout;
+        return res;
     }
 
     /**
@@ -545,39 +460,33 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_failSafeTimeout(newval) {
-        var _this17 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this17._setAttr('failSafeTimeout', rest_val);
-        })();
+    async set_failSafeTimeout(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('failSafeTimeout',rest_val);
     }
 
-    get_command() {
-        var _this18 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this18._cacheExpiration <= _this18._yapi.GetTickCount()) {
-                if ((yield _this18.load(_this18._yapi.defaultCacheValidity)) != _this18._yapi.SUCCESS) {
-                    return Y_COMMAND_INVALID;
-                }
+    async get_command()
+    {
+        /** @type {string} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YMotor.COMMAND_INVALID;
             }
-            return _this18._command;
-        })();
+        }
+        res = this._command;
+        return res;
     }
 
-    set_command(newval) {
-        var _this19 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = newval;
-            return yield _this19._setAttr('command', rest_val);
-        })();
+    async set_command(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = newval;
+        return await this._setAttr('command',rest_val);
     }
 
     /**
@@ -599,17 +508,22 @@ class YMotor extends _yocto_api.YFunction {
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
+     * If a call to this object's is_online() method returns FALSE although
+     * you are certain that the matching device is plugged, make sure that you did
+     * call registerHub() at application initialization time.
+     *
      * @param func {string} : a string that uniquely characterizes the motor
      *
      * @return {YMotor} a YMotor object allowing you to drive the motor.
      */
-    static FindMotor(func) {
+    static FindMotor(func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCache('Motor', func);
+        obj = YFunction._FindFromCache('Motor', func);
         if (obj == null) {
-            obj = new YMotor(_yocto_api.YAPI, func);
-            _yocto_api.YFunction._AddToCache('Motor', func, obj);
+            obj = new YMotor(YAPI, func);
+            YFunction._AddToCache('Motor',  func, obj);
         }
         return obj;
     }
@@ -638,13 +552,14 @@ class YMotor extends _yocto_api.YFunction {
      *
      * @return {YMotor} a YMotor object allowing you to drive the motor.
      */
-    static FindMotorInContext(yctx, func) {
+    static FindMotorInContext(yctx,func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCacheInContext(yctx, 'Motor', func);
+        obj = YFunction._FindFromCacheInContext(yctx,  'Motor', func);
         if (obj == null) {
             obj = new YMotor(yctx, func);
-            _yocto_api.YFunction._AddToCache('Motor', func, obj);
+            YFunction._AddToCache('Motor',  func, obj);
         }
         return obj;
     }
@@ -655,24 +570,18 @@ class YMotor extends _yocto_api.YFunction {
      * is running properly. Otherwise, the motor is automatically stopped after the specified
      * timeout. Calling a motor <i>set</i> function implicitely rearms the failsafe timer.
      */
-    keepALive() {
-        var _this20 = this;
-
-        return _asyncToGenerator(function* () {
-            return yield _this20.set_command('K');
-        })();
+    async keepALive()
+    {
+        return await this.set_command('K');
     }
 
     /**
      * Reset the controller state to IDLE. This function must be invoked explicitely
      * after any error condition is signaled.
      */
-    resetStatus() {
-        var _this21 = this;
-
-        return _asyncToGenerator(function* () {
-            return yield _this21.set_motorStatus(Y_MOTORSTATUS_IDLE);
-        })();
+    async resetStatus()
+    {
+        return await this.set_motorStatus(YMotor.MOTORSTATUS_IDLE);
     }
 
     /**
@@ -685,12 +594,9 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    drivingForceMove(targetPower, delay) {
-        var _this22 = this;
-
-        return _asyncToGenerator(function* () {
-            return yield _this22.set_command('P' + String(Math.round(Math.round(targetPower * 10))) + ',' + String(Math.round(delay)));
-        })();
+    async drivingForceMove(targetPower,delay)
+    {
+        return await this.set_command('P'+String(Math.round(Math.round(targetPower*10)))+','+String(Math.round(delay)));
     }
 
     /**
@@ -703,12 +609,9 @@ class YMotor extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    brakingForceMove(targetPower, delay) {
-        var _this23 = this;
-
-        return _asyncToGenerator(function* () {
-            return yield _this23.set_command('B' + String(Math.round(Math.round(targetPower * 10))) + ',' + String(Math.round(delay)));
-        })();
+    async brakingForceMove(targetPower,delay)
+    {
+        return await this.set_command('B'+String(Math.round(Math.round(targetPower*10)))+','+String(Math.round(delay)));
     }
 
     /**
@@ -718,13 +621,14 @@ class YMotor extends _yocto_api.YFunction {
      *         a motor currently online, or a null pointer
      *         if there are no more motors to enumerate.
      */
-    nextMotor() {
+    nextMotor()
+    {
         /** @type {object} **/
         let resolve = this._yapi.imm_resolveFunction(this._className, this._func);
-        if (resolve.errorType != _yocto_api.YAPI_SUCCESS) return null;
+        if(resolve.errorType != YAPI.SUCCESS) return null;
         /** @type {string|null} **/
         let next_hwid = this._yapi.imm_getNextHardwareId(this._className, resolve.result);
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YMotor.FindMotorInContext(this._yapi, next_hwid);
     }
 
@@ -737,10 +641,11 @@ class YMotor extends _yocto_api.YFunction {
      *         the first motor currently online, or a null pointer
      *         if there are none.
      */
-    static FirstMotor() {
+    static FirstMotor()
+    {
         /** @type {string|null} **/
-        let next_hwid = _yocto_api.YAPI.imm_getFirstHardwareId('Motor');
-        if (next_hwid == null) return null;
+        let next_hwid = YAPI.imm_getFirstHardwareId('Motor');
+        if(next_hwid == null) return null;
         return YMotor.FindMotor(next_hwid);
     }
 
@@ -755,17 +660,41 @@ class YMotor extends _yocto_api.YFunction {
      *         the first motor currently online, or a null pointer
      *         if there are none.
      */
-    static FirstMotorInContext(yctx) {
+    static FirstMotorInContext(yctx)
+    {
         /** @type {string|null} **/
         let next_hwid = yctx.imm_getFirstHardwareId('Motor');
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YMotor.FindMotorInContext(yctx, next_hwid);
+    }
+
+    static imm_Const()
+    {
+        return Object.assign(super.imm_Const(), {
+            MOTORSTATUS_IDLE             : 0,
+            MOTORSTATUS_BRAKE            : 1,
+            MOTORSTATUS_FORWD            : 2,
+            MOTORSTATUS_BACKWD           : 3,
+            MOTORSTATUS_LOVOLT           : 4,
+            MOTORSTATUS_HICURR           : 5,
+            MOTORSTATUS_HIHEAT           : 6,
+            MOTORSTATUS_FAILSF           : 7,
+            MOTORSTATUS_INVALID          : -1,
+            DRIVINGFORCE_INVALID         : YAPI.INVALID_DOUBLE,
+            BRAKINGFORCE_INVALID         : YAPI.INVALID_DOUBLE,
+            CUTOFFVOLTAGE_INVALID        : YAPI.INVALID_DOUBLE,
+            OVERCURRENTLIMIT_INVALID     : YAPI.INVALID_INT,
+            FREQUENCY_INVALID            : YAPI.INVALID_DOUBLE,
+            STARTERTIME_INVALID          : YAPI.INVALID_INT,
+            FAILSAFETIMEOUT_INVALID      : YAPI.INVALID_UINT,
+            COMMAND_INVALID              : YAPI.INVALID_STRING
+        });
     }
 
     //--- (end of YMotor implementation)
 }
 
-exports.YMotor = YMotor; //
+//
 // YMotorProxy Class: synchronous proxy to YMotor objects
 //
 // This class is used to provide a pseudo-synchronous API on top
@@ -779,9 +708,10 @@ exports.YMotor = YMotor; //
 // To get a function proxy from a function, use get_syncProxy
 //
 /** @extends {YFunctionProxy} **/
-
-class YMotorProxy extends _yocto_api.YFunctionProxy {
-    constructor(obj_func) {
+class YMotorProxy extends YFunctionProxy
+{
+    constructor(obj_func)
+    {
         super(obj_func);
     }
 
@@ -806,11 +736,13 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_MOTORSTATUS_INVALID.
      */
-    get_motorStatus() {
+    get_motorStatus()
+    {
         return this.liveFunc._motorStatus;
     }
 
-    set_motorStatus(newval) {
+    set_motorStatus(newval)
+    {
         this.liveFunc.set_motorStatus(newval);
         return this._yapi.SUCCESS;
     }
@@ -828,7 +760,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_drivingForce(newval) {
+    set_drivingForce(newval)
+    {
         this.liveFunc.set_drivingForce(newval);
         return this._yapi.SUCCESS;
     }
@@ -841,7 +774,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_DRIVINGFORCE_INVALID.
      */
-    get_drivingForce() {
+    get_drivingForce()
+    {
         return this.liveFunc._drivingForce;
     }
 
@@ -857,7 +791,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_brakingForce(newval) {
+    set_brakingForce(newval)
+    {
         this.liveFunc.set_brakingForce(newval);
         return this._yapi.SUCCESS;
     }
@@ -870,7 +805,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_BRAKINGFORCE_INVALID.
      */
-    get_brakingForce() {
+    get_brakingForce()
+    {
         return this.liveFunc._brakingForce;
     }
 
@@ -889,7 +825,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_cutOffVoltage(newval) {
+    set_cutOffVoltage(newval)
+    {
         this.liveFunc.set_cutOffVoltage(newval);
         return this._yapi.SUCCESS;
     }
@@ -905,7 +842,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_CUTOFFVOLTAGE_INVALID.
      */
-    get_cutOffVoltage() {
+    get_cutOffVoltage()
+    {
         return this.liveFunc._cutOffVoltage;
     }
 
@@ -918,7 +856,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_OVERCURRENTLIMIT_INVALID.
      */
-    get_overCurrentLimit() {
+    get_overCurrentLimit()
+    {
         return this.liveFunc._overCurrentLimit;
     }
 
@@ -936,7 +875,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_overCurrentLimit(newval) {
+    set_overCurrentLimit(newval)
+    {
         this.liveFunc.set_overCurrentLimit(newval);
         return this._yapi.SUCCESS;
     }
@@ -953,7 +893,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_frequency(newval) {
+    set_frequency(newval)
+    {
         this.liveFunc.set_frequency(newval);
         return this._yapi.SUCCESS;
     }
@@ -965,7 +906,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_FREQUENCY_INVALID.
      */
-    get_frequency() {
+    get_frequency()
+    {
         return this.liveFunc._frequency;
     }
 
@@ -979,7 +921,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_STARTERTIME_INVALID.
      */
-    get_starterTime() {
+    get_starterTime()
+    {
         return this.liveFunc._starterTime;
     }
 
@@ -995,7 +938,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_starterTime(newval) {
+    set_starterTime(newval)
+    {
         this.liveFunc.set_starterTime(newval);
         return this._yapi.SUCCESS;
     }
@@ -1012,7 +956,8 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_FAILSAFETIMEOUT_INVALID.
      */
-    get_failSafeTimeout() {
+    get_failSafeTimeout()
+    {
         return this.liveFunc._failSafeTimeout;
     }
 
@@ -1030,16 +975,19 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_failSafeTimeout(newval) {
+    set_failSafeTimeout(newval)
+    {
         this.liveFunc.set_failSafeTimeout(newval);
         return this._yapi.SUCCESS;
     }
 
-    get_command() {
+    get_command()
+    {
         return this.liveFunc._command;
     }
 
-    set_command(newval) {
+    set_command(newval)
+    {
         this.liveFunc.set_command(newval);
         return this._yapi.SUCCESS;
     }
@@ -1050,18 +998,20 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      * is running properly. Otherwise, the motor is automatically stopped after the specified
      * timeout. Calling a motor <i>set</i> function implicitely rearms the failsafe timer.
      */
-    keepALive() {
+    keepALive()
+    {
         this.liveFunc.keepALive();
-        return _yocto_api.YAPI_SUCCESS;
+        return YAPI_SUCCESS;
     }
 
     /**
      * Reset the controller state to IDLE. This function must be invoked explicitely
      * after any error condition is signaled.
      */
-    resetStatus() {
+    resetStatus()
+    {
         this.liveFunc.resetStatus();
-        return _yocto_api.YAPI_SUCCESS;
+        return YAPI_SUCCESS;
     }
 
     /**
@@ -1074,9 +1024,10 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    drivingForceMove(targetPower, delay) {
+    drivingForceMove(targetPower,delay)
+    {
         this.liveFunc.drivingForceMove(targetPower, delay);
-        return _yocto_api.YAPI_SUCCESS;
+        return YAPI_SUCCESS;
     }
 
     /**
@@ -1089,54 +1040,18 @@ class YMotorProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    brakingForceMove(targetPower, delay) {
+    brakingForceMove(targetPower,delay)
+    {
         this.liveFunc.brakingForceMove(targetPower, delay);
-        return _yocto_api.YAPI_SUCCESS;
+        return YAPI_SUCCESS;
     }
     //--- (end of YMotor accessors declaration)
 }
 
-exports.YMotorProxy = YMotorProxy; //--- (Motor functions)
+//--- (YMotor functions)
 
-/**
- * Retrieves a motor for a given identifier.
- * The identifier can be specified using several formats:
- * <ul>
- * <li>FunctionLogicalName</li>
- * <li>ModuleSerialNumber.FunctionIdentifier</li>
- * <li>ModuleSerialNumber.FunctionLogicalName</li>
- * <li>ModuleLogicalName.FunctionIdentifier</li>
- * <li>ModuleLogicalName.FunctionLogicalName</li>
- * </ul>
- *
- * This function does not require that the motor is online at the time
- * it is invoked. The returned object is nevertheless valid.
- * Use the method YMotor.isOnline() to test if the motor is
- * indeed online at a given time. In case of ambiguity when looking for
- * a motor by logical name, no error is notified: the first instance
- * found is returned. The search is performed first by hardware name,
- * then by logical name.
- *
- * @param func {string} : a string that uniquely characterizes the motor
- *
- * @return {YMotor} a YMotor object allowing you to drive the motor.
- */
+YoctoLibExport('YMotor', YMotor);
+YoctoLibExport('YMotorProxy', YMotorProxy);
+YMotor.imm_Init();
 
-function yFindMotor(func) {
-    return YMotor.FindMotor(func);
-}
-
-/**
- * Starts the enumeration of motors currently accessible.
- * Use the method YMotor.nextMotor() to iterate on
- * next motors.
- *
- * @return {YMotor} a pointer to a YMotor object, corresponding to
- *         the first motor currently online, or a null pointer
- *         if there are none.
- */
-function yFirstMotor() {
-    return YMotor.FirstMotor();
-}
-
-//--- (end of Motor functions)
+//--- (end of YMotor functions)

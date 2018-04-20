@@ -1,10 +1,10 @@
 /*********************************************************************
  *
- * $Id: yocto_pwmoutput.js 23963 2016-04-17 20:55:12Z mvuilleu $
+ * $Id: yocto_pwmoutput.js 28746 2017-10-03 08:19:35Z seb $
  *
  * Implements the high-level API for PwmOutput functions
  *
- * - - - - - - - - - License information: - - - - - - - - - 
+ * - - - - - - - - - License information: - - - - - - - - -
  *
  *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
@@ -23,7 +23,7 @@
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
  *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
@@ -39,33 +39,9 @@
 
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.YPwmOutputProxy = exports.YPwmOutput = exports.Y_DUTYCYCLEATPOWERON_INVALID = exports.Y_PWMTRANSITION_INVALID = exports.Y_PULSEDURATION_INVALID = exports.Y_DUTYCYCLE_INVALID = exports.Y_PERIOD_INVALID = exports.Y_FREQUENCY_INVALID = exports.Y_ENABLEDATPOWERON_INVALID = exports.Y_ENABLEDATPOWERON_TRUE = exports.Y_ENABLEDATPOWERON_FALSE = exports.Y_ENABLED_INVALID = exports.Y_ENABLED_TRUE = exports.Y_ENABLED_FALSE = undefined;
-exports.yFindPwmOutput = yFindPwmOutput;
-exports.yFirstPwmOutput = yFirstPwmOutput;
-
-// CHANGEMENT AIM
-var _yocto_api = exports;
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
 //--- (YPwmOutput return codes)
 //--- (end of YPwmOutput return codes)
 //--- (YPwmOutput definitions)
-var Y_ENABLED_FALSE = exports.Y_ENABLED_FALSE = 0;
-var Y_ENABLED_TRUE = exports.Y_ENABLED_TRUE = 1;
-var Y_ENABLED_INVALID = exports.Y_ENABLED_INVALID = -1;
-var Y_ENABLEDATPOWERON_FALSE = exports.Y_ENABLEDATPOWERON_FALSE = 0;
-var Y_ENABLEDATPOWERON_TRUE = exports.Y_ENABLEDATPOWERON_TRUE = 1;
-var Y_ENABLEDATPOWERON_INVALID = exports.Y_ENABLEDATPOWERON_INVALID = -1;
-var Y_FREQUENCY_INVALID = exports.Y_FREQUENCY_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_PERIOD_INVALID = exports.Y_PERIOD_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_DUTYCYCLE_INVALID = exports.Y_DUTYCYCLE_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_PULSEDURATION_INVALID = exports.Y_PULSEDURATION_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
-var Y_PWMTRANSITION_INVALID = exports.Y_PWMTRANSITION_INVALID = _yocto_api.YAPI.INVALID_STRING;
-var Y_DUTYCYCLEATPOWERON_INVALID = exports.Y_DUTYCYCLEATPOWERON_INVALID = _yocto_api.YAPI.INVALID_DOUBLE;
 //--- (end of YPwmOutput definitions)
 
 //--- (YPwmOutput class start)
@@ -76,91 +52,62 @@ var Y_DUTYCYCLEATPOWERON_INVALID = exports.Y_DUTYCYCLEATPOWERON_INVALID = _yocto
  */
 //--- (end of YPwmOutput class start)
 
-class YPwmOutput extends _yocto_api.YFunction {
-    constructor(obj_yapi, str_func) {
+class YPwmOutput extends YFunction
+{
+    constructor(obj_yapi, str_func)
+    {
         //--- (YPwmOutput constructor)
         super(obj_yapi, str_func);
         /** @member {string} **/
-        this._className = 'PwmOutput';
+        this._className                  = 'PwmOutput';
         /** @member {number} **/
-        this._enabled = Y_ENABLED_INVALID;
+        this._enabled                    = YPwmOutput.ENABLED_INVALID;
         /** @member {number} **/
-        this._frequency = Y_FREQUENCY_INVALID;
+        this._frequency                  = YPwmOutput.FREQUENCY_INVALID;
         /** @member {number} **/
-        this._period = Y_PERIOD_INVALID;
+        this._period                     = YPwmOutput.PERIOD_INVALID;
         /** @member {number} **/
-        this._dutyCycle = Y_DUTYCYCLE_INVALID;
+        this._dutyCycle                  = YPwmOutput.DUTYCYCLE_INVALID;
         /** @member {number} **/
-        this._pulseDuration = Y_PULSEDURATION_INVALID;
+        this._pulseDuration              = YPwmOutput.PULSEDURATION_INVALID;
         /** @member {string} **/
-        this._pwmTransition = Y_PWMTRANSITION_INVALID;
+        this._pwmTransition              = YPwmOutput.PWMTRANSITION_INVALID;
         /** @member {number} **/
-        this._enabledAtPowerOn = Y_ENABLEDATPOWERON_INVALID;
+        this._enabledAtPowerOn           = YPwmOutput.ENABLEDATPOWERON_INVALID;
         /** @member {number} **/
-        this._dutyCycleAtPowerOn = Y_DUTYCYCLEATPOWERON_INVALID;
-        this.imm_setConst({
-            ENABLED_FALSE: 0,
-            ENABLED_TRUE: 1,
-            ENABLED_INVALID: -1,
-            FREQUENCY_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            PERIOD_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            DUTYCYCLE_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            PULSEDURATION_INVALID: _yocto_api.YAPI.INVALID_DOUBLE,
-            PWMTRANSITION_INVALID: _yocto_api.YAPI.INVALID_STRING,
-            ENABLEDATPOWERON_FALSE: 0,
-            ENABLEDATPOWERON_TRUE: 1,
-            ENABLEDATPOWERON_INVALID: -1,
-            DUTYCYCLEATPOWERON_INVALID: _yocto_api.YAPI.INVALID_DOUBLE
-        });
+        this._dutyCycleAtPowerOn         = YPwmOutput.DUTYCYCLEATPOWERON_INVALID;
         //--- (end of YPwmOutput constructor)
     }
 
     //--- (YPwmOutput implementation)
 
-    get_syncProxy() {
-        var _this = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this._cacheExpiration <= _this._yapi.GetTickCount()) {
-                try {
-                    yield _this.load(_this._yapi.defaultCacheValidity);
-                } catch (e) {
-                    // device might be offline
-                }
-            }
-            var res = new YPwmOutputProxy(_this);
-            yield res._asyncInit();
-            res._module = yield (yield _this.module()).get_syncProxy();
-            return res;
-        })();
-    }
-
-    imm_parseAttr(name, val) {
-        switch (name) {
-            case 'enabled':
-                this._enabled = parseInt(val);
-                return 1;
-            case 'frequency':
-                this._frequency = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'period':
-                this._period = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'dutyCycle':
-                this._dutyCycle = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'pulseDuration':
-                this._pulseDuration = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
-            case 'pwmTransition':
-                this._pwmTransition = val;
-                return 1;
-            case 'enabledAtPowerOn':
-                this._enabledAtPowerOn = parseInt(val);
-                return 1;
-            case 'dutyCycleAtPowerOn':
-                this._dutyCycleAtPowerOn = Math.round(val * 1000.0 / 65536.0) / 1000.0;
-                return 1;
+    imm_parseAttr(name, val)
+    {
+        switch(name) {
+        case 'enabled':
+            this._enabled = parseInt(val);
+            return 1;
+        case 'frequency':
+            this._frequency = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'period':
+            this._period = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'dutyCycle':
+            this._dutyCycle = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'pulseDuration':
+            this._pulseDuration = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
+        case 'pwmTransition':
+            this._pwmTransition = val;
+            return 1;
+        case 'enabledAtPowerOn':
+            this._enabledAtPowerOn = parseInt(val);
+            return 1;
+        case 'dutyCycleAtPowerOn':
+            this._dutyCycleAtPowerOn = Math.round(val * 1000.0 / 65536.0) / 1000.0;
+            return 1;
         }
         return super.imm_parseAttr(name, val);
     }
@@ -172,17 +119,17 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YPwmOutput.ENABLED_INVALID.
      */
-    get_enabled() {
-        var _this2 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this2._cacheExpiration <= _this2._yapi.GetTickCount()) {
-                if ((yield _this2.load(_this2._yapi.defaultCacheValidity)) != _this2._yapi.SUCCESS) {
-                    return Y_ENABLED_INVALID;
-                }
+    async get_enabled()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.ENABLED_INVALID;
             }
-            return _this2._enabled;
-        })();
+        }
+        res = this._enabled;
+        return res;
     }
 
     /**
@@ -194,15 +141,12 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabled(newval) {
-        var _this3 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this3._setAttr('enabled', rest_val);
-        })();
+    async set_enabled(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('enabled',rest_val);
     }
 
     /**
@@ -215,15 +159,12 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_frequency(newval) {
-        var _this4 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this4._setAttr('frequency', rest_val);
-        })();
+    async set_frequency(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('frequency',rest_val);
     }
 
     /**
@@ -233,17 +174,17 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YPwmOutput.FREQUENCY_INVALID.
      */
-    get_frequency() {
-        var _this5 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this5._cacheExpiration <= _this5._yapi.GetTickCount()) {
-                if ((yield _this5.load(_this5._yapi.defaultCacheValidity)) != _this5._yapi.SUCCESS) {
-                    return Y_FREQUENCY_INVALID;
-                }
+    async get_frequency()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.FREQUENCY_INVALID;
             }
-            return _this5._frequency;
-        })();
+        }
+        res = this._frequency;
+        return res;
     }
 
     /**
@@ -255,15 +196,12 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_period(newval) {
-        var _this6 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this6._setAttr('period', rest_val);
-        })();
+    async set_period(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('period',rest_val);
     }
 
     /**
@@ -273,17 +211,17 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YPwmOutput.PERIOD_INVALID.
      */
-    get_period() {
-        var _this7 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this7._cacheExpiration <= _this7._yapi.GetTickCount()) {
-                if ((yield _this7.load(_this7._yapi.defaultCacheValidity)) != _this7._yapi.SUCCESS) {
-                    return Y_PERIOD_INVALID;
-                }
+    async get_period()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.PERIOD_INVALID;
             }
-            return _this7._period;
-        })();
+        }
+        res = this._period;
+        return res;
     }
 
     /**
@@ -295,15 +233,12 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_dutyCycle(newval) {
-        var _this8 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this8._setAttr('dutyCycle', rest_val);
-        })();
+    async set_dutyCycle(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('dutyCycle',rest_val);
     }
 
     /**
@@ -313,17 +248,17 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YPwmOutput.DUTYCYCLE_INVALID.
      */
-    get_dutyCycle() {
-        var _this9 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this9._cacheExpiration <= _this9._yapi.GetTickCount()) {
-                if ((yield _this9.load(_this9._yapi.defaultCacheValidity)) != _this9._yapi.SUCCESS) {
-                    return Y_DUTYCYCLE_INVALID;
-                }
+    async get_dutyCycle()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.DUTYCYCLE_INVALID;
             }
-            return _this9._dutyCycle;
-        })();
+        }
+        res = this._dutyCycle;
+        return res;
     }
 
     /**
@@ -336,15 +271,12 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_pulseDuration(newval) {
-        var _this10 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this10._setAttr('pulseDuration', rest_val);
-        })();
+    async set_pulseDuration(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('pulseDuration',rest_val);
     }
 
     /**
@@ -355,41 +287,38 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YPwmOutput.PULSEDURATION_INVALID.
      */
-    get_pulseDuration() {
-        var _this11 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this11._cacheExpiration <= _this11._yapi.GetTickCount()) {
-                if ((yield _this11.load(_this11._yapi.defaultCacheValidity)) != _this11._yapi.SUCCESS) {
-                    return Y_PULSEDURATION_INVALID;
-                }
+    async get_pulseDuration()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.PULSEDURATION_INVALID;
             }
-            return _this11._pulseDuration;
-        })();
+        }
+        res = this._pulseDuration;
+        return res;
     }
 
-    get_pwmTransition() {
-        var _this12 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this12._cacheExpiration <= _this12._yapi.GetTickCount()) {
-                if ((yield _this12.load(_this12._yapi.defaultCacheValidity)) != _this12._yapi.SUCCESS) {
-                    return Y_PWMTRANSITION_INVALID;
-                }
+    async get_pwmTransition()
+    {
+        /** @type {string} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.PWMTRANSITION_INVALID;
             }
-            return _this12._pwmTransition;
-        })();
+        }
+        res = this._pwmTransition;
+        return res;
     }
 
-    set_pwmTransition(newval) {
-        var _this13 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = newval;
-            return yield _this13._setAttr('pwmTransition', rest_val);
-        })();
+    async set_pwmTransition(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = newval;
+        return await this._setAttr('pwmTransition',rest_val);
     }
 
     /**
@@ -400,17 +329,17 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YPwmOutput.ENABLEDATPOWERON_INVALID.
      */
-    get_enabledAtPowerOn() {
-        var _this14 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this14._cacheExpiration <= _this14._yapi.GetTickCount()) {
-                if ((yield _this14.load(_this14._yapi.defaultCacheValidity)) != _this14._yapi.SUCCESS) {
-                    return Y_ENABLEDATPOWERON_INVALID;
-                }
+    async get_enabledAtPowerOn()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.ENABLEDATPOWERON_INVALID;
             }
-            return _this14._enabledAtPowerOn;
-        })();
+        }
+        res = this._enabledAtPowerOn;
+        return res;
     }
 
     /**
@@ -424,15 +353,12 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabledAtPowerOn(newval) {
-        var _this15 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(newval);
-            return yield _this15._setAttr('enabledAtPowerOn', rest_val);
-        })();
+    async set_enabledAtPowerOn(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(newval);
+        return await this._setAttr('enabledAtPowerOn',rest_val);
     }
 
     /**
@@ -445,15 +371,12 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_dutyCycleAtPowerOn(newval) {
-        var _this16 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let rest_val;
-            rest_val = String(Math.round(newval * 65536.0));
-            return yield _this16._setAttr('dutyCycleAtPowerOn', rest_val);
-        })();
+    async set_dutyCycleAtPowerOn(newval)
+    {
+        /** @type {string} **/
+        let rest_val;
+        rest_val = String(Math.round(newval * 65536.0));
+        return await this._setAttr('dutyCycleAtPowerOn',rest_val);
     }
 
     /**
@@ -464,17 +387,17 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns YPwmOutput.DUTYCYCLEATPOWERON_INVALID.
      */
-    get_dutyCycleAtPowerOn() {
-        var _this17 = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this17._cacheExpiration <= _this17._yapi.GetTickCount()) {
-                if ((yield _this17.load(_this17._yapi.defaultCacheValidity)) != _this17._yapi.SUCCESS) {
-                    return Y_DUTYCYCLEATPOWERON_INVALID;
-                }
+    async get_dutyCycleAtPowerOn()
+    {
+        /** @type {number} **/
+        let res;
+        if (this._cacheExpiration <= this._yapi.GetTickCount()) {
+            if (await this.load(this._yapi.defaultCacheValidity) != this._yapi.SUCCESS) {
+                return YPwmOutput.DUTYCYCLEATPOWERON_INVALID;
             }
-            return _this17._dutyCycleAtPowerOn;
-        })();
+        }
+        res = this._dutyCycleAtPowerOn;
+        return res;
     }
 
     /**
@@ -496,17 +419,22 @@ class YPwmOutput extends _yocto_api.YFunction {
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
+     * If a call to this object's is_online() method returns FALSE although
+     * you are certain that the matching device is plugged, make sure that you did
+     * call registerHub() at application initialization time.
+     *
      * @param func {string} : a string that uniquely characterizes the PWM
      *
      * @return {YPwmOutput} a YPwmOutput object allowing you to drive the PWM.
      */
-    static FindPwmOutput(func) {
+    static FindPwmOutput(func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCache('PwmOutput', func);
+        obj = YFunction._FindFromCache('PwmOutput', func);
         if (obj == null) {
-            obj = new YPwmOutput(_yocto_api.YAPI, func);
-            _yocto_api.YFunction._AddToCache('PwmOutput', func, obj);
+            obj = new YPwmOutput(YAPI, func);
+            YFunction._AddToCache('PwmOutput',  func, obj);
         }
         return obj;
     }
@@ -535,13 +463,14 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * @return {YPwmOutput} a YPwmOutput object allowing you to drive the PWM.
      */
-    static FindPwmOutputInContext(yctx, func) {
+    static FindPwmOutputInContext(yctx,func)
+    {
         /** @type {YFunction} **/
         let obj;
-        obj = _yocto_api.YFunction._FindFromCacheInContext(yctx, 'PwmOutput', func);
+        obj = YFunction._FindFromCacheInContext(yctx,  'PwmOutput', func);
         if (obj == null) {
             obj = new YPwmOutput(yctx, func);
-            _yocto_api.YFunction._AddToCache('PwmOutput', func, obj);
+            YFunction._AddToCache('PwmOutput',  func, obj);
         }
         return obj;
     }
@@ -558,18 +487,15 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    pulseDurationMove(ms_target, ms_duration) {
-        var _this18 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let newval;
-            if (ms_target < 0.0) {
-                ms_target = 0.0;
-            }
-            newval = String(Math.round(Math.round(ms_target * 65536))) + 'ms:' + String(Math.round(ms_duration));
-            return yield _this18.set_pwmTransition(newval);
-        })();
+    async pulseDurationMove(ms_target,ms_duration)
+    {
+        /** @type {string} **/
+        let newval;
+        if (ms_target < 0.0) {
+            ms_target = 0.0;
+        }
+        newval = String(Math.round(Math.round(ms_target*65536)))+'ms:'+String(Math.round(ms_duration));
+        return await this.set_pwmTransition(newval);
     }
 
     /**
@@ -583,21 +509,18 @@ class YPwmOutput extends _yocto_api.YFunction {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    dutyCycleMove(target, ms_duration) {
-        var _this19 = this;
-
-        return _asyncToGenerator(function* () {
-            /** @type {string} **/
-            let newval;
-            if (target < 0.0) {
-                target = 0.0;
-            }
-            if (target > 100.0) {
-                target = 100.0;
-            }
-            newval = String(Math.round(Math.round(target * 65536))) + ':' + String(Math.round(ms_duration));
-            return yield _this19.set_pwmTransition(newval);
-        })();
+    async dutyCycleMove(target,ms_duration)
+    {
+        /** @type {string} **/
+        let newval;
+        if (target < 0.0) {
+            target = 0.0;
+        }
+        if (target > 100.0) {
+            target = 100.0;
+        }
+        newval = String(Math.round(Math.round(target*65536)))+':'+String(Math.round(ms_duration));
+        return await this.set_pwmTransition(newval);
     }
 
     /**
@@ -607,13 +530,14 @@ class YPwmOutput extends _yocto_api.YFunction {
      *         a PWM currently online, or a null pointer
      *         if there are no more PWMs to enumerate.
      */
-    nextPwmOutput() {
+    nextPwmOutput()
+    {
         /** @type {object} **/
         let resolve = this._yapi.imm_resolveFunction(this._className, this._func);
-        if (resolve.errorType != _yocto_api.YAPI_SUCCESS) return null;
+        if(resolve.errorType != YAPI.SUCCESS) return null;
         /** @type {string|null} **/
         let next_hwid = this._yapi.imm_getNextHardwareId(this._className, resolve.result);
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YPwmOutput.FindPwmOutputInContext(this._yapi, next_hwid);
     }
 
@@ -626,10 +550,11 @@ class YPwmOutput extends _yocto_api.YFunction {
      *         the first PWM currently online, or a null pointer
      *         if there are none.
      */
-    static FirstPwmOutput() {
+    static FirstPwmOutput()
+    {
         /** @type {string|null} **/
-        let next_hwid = _yocto_api.YAPI.imm_getFirstHardwareId('PwmOutput');
-        if (next_hwid == null) return null;
+        let next_hwid = YAPI.imm_getFirstHardwareId('PwmOutput');
+        if(next_hwid == null) return null;
         return YPwmOutput.FindPwmOutput(next_hwid);
     }
 
@@ -644,17 +569,36 @@ class YPwmOutput extends _yocto_api.YFunction {
      *         the first PWM currently online, or a null pointer
      *         if there are none.
      */
-    static FirstPwmOutputInContext(yctx) {
+    static FirstPwmOutputInContext(yctx)
+    {
         /** @type {string|null} **/
         let next_hwid = yctx.imm_getFirstHardwareId('PwmOutput');
-        if (next_hwid == null) return null;
+        if(next_hwid == null) return null;
         return YPwmOutput.FindPwmOutputInContext(yctx, next_hwid);
+    }
+
+    static imm_Const()
+    {
+        return Object.assign(super.imm_Const(), {
+            ENABLED_FALSE                : 0,
+            ENABLED_TRUE                 : 1,
+            ENABLED_INVALID              : -1,
+            FREQUENCY_INVALID            : YAPI.INVALID_DOUBLE,
+            PERIOD_INVALID               : YAPI.INVALID_DOUBLE,
+            DUTYCYCLE_INVALID            : YAPI.INVALID_DOUBLE,
+            PULSEDURATION_INVALID        : YAPI.INVALID_DOUBLE,
+            PWMTRANSITION_INVALID        : YAPI.INVALID_STRING,
+            ENABLEDATPOWERON_FALSE       : 0,
+            ENABLEDATPOWERON_TRUE        : 1,
+            ENABLEDATPOWERON_INVALID     : -1,
+            DUTYCYCLEATPOWERON_INVALID   : YAPI.INVALID_DOUBLE
+        });
     }
 
     //--- (end of YPwmOutput implementation)
 }
 
-exports.YPwmOutput = YPwmOutput; //
+//
 // YPwmOutputProxy Class: synchronous proxy to YPwmOutput objects
 //
 // This class is used to provide a pseudo-synchronous API on top
@@ -668,9 +612,10 @@ exports.YPwmOutput = YPwmOutput; //
 // To get a function proxy from a function, use get_syncProxy
 //
 /** @extends {YFunctionProxy} **/
-
-class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
-    constructor(obj_func) {
+class YPwmOutputProxy extends YFunctionProxy
+{
+    constructor(obj_func)
+    {
         super(obj_func);
     }
 
@@ -683,7 +628,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_ENABLED_INVALID.
      */
-    get_enabled() {
+    get_enabled()
+    {
         return this.liveFunc._enabled;
     }
 
@@ -696,7 +642,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabled(newval) {
+    set_enabled(newval)
+    {
         this.liveFunc.set_enabled(newval);
         return this._yapi.SUCCESS;
     }
@@ -711,7 +658,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_frequency(newval) {
+    set_frequency(newval)
+    {
         this.liveFunc.set_frequency(newval);
         return this._yapi.SUCCESS;
     }
@@ -723,7 +671,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_FREQUENCY_INVALID.
      */
-    get_frequency() {
+    get_frequency()
+    {
         return this.liveFunc._frequency;
     }
 
@@ -736,7 +685,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_period(newval) {
+    set_period(newval)
+    {
         this.liveFunc.set_period(newval);
         return this._yapi.SUCCESS;
     }
@@ -748,7 +698,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_PERIOD_INVALID.
      */
-    get_period() {
+    get_period()
+    {
         return this.liveFunc._period;
     }
 
@@ -761,7 +712,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_dutyCycle(newval) {
+    set_dutyCycle(newval)
+    {
         this.liveFunc.set_dutyCycle(newval);
         return this._yapi.SUCCESS;
     }
@@ -773,7 +725,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_DUTYCYCLE_INVALID.
      */
-    get_dutyCycle() {
+    get_dutyCycle()
+    {
         return this.liveFunc._dutyCycle;
     }
 
@@ -787,7 +740,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_pulseDuration(newval) {
+    set_pulseDuration(newval)
+    {
         this.liveFunc.set_pulseDuration(newval);
         return this._yapi.SUCCESS;
     }
@@ -800,15 +754,18 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_PULSEDURATION_INVALID.
      */
-    get_pulseDuration() {
+    get_pulseDuration()
+    {
         return this.liveFunc._pulseDuration;
     }
 
-    get_pwmTransition() {
+    get_pwmTransition()
+    {
         return this.liveFunc._pwmTransition;
     }
 
-    set_pwmTransition(newval) {
+    set_pwmTransition(newval)
+    {
         this.liveFunc.set_pwmTransition(newval);
         return this._yapi.SUCCESS;
     }
@@ -821,7 +778,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_ENABLEDATPOWERON_INVALID.
      */
-    get_enabledAtPowerOn() {
+    get_enabledAtPowerOn()
+    {
         return this.liveFunc._enabledAtPowerOn;
     }
 
@@ -836,7 +794,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_enabledAtPowerOn(newval) {
+    set_enabledAtPowerOn(newval)
+    {
         this.liveFunc.set_enabledAtPowerOn(newval);
         return this._yapi.SUCCESS;
     }
@@ -851,7 +810,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    set_dutyCycleAtPowerOn(newval) {
+    set_dutyCycleAtPowerOn(newval)
+    {
         this.liveFunc.set_dutyCycleAtPowerOn(newval);
         return this._yapi.SUCCESS;
     }
@@ -864,7 +824,8 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns Y_DUTYCYCLEATPOWERON_INVALID.
      */
-    get_dutyCycleAtPowerOn() {
+    get_dutyCycleAtPowerOn()
+    {
         return this.liveFunc._dutyCycleAtPowerOn;
     }
 
@@ -880,9 +841,10 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    pulseDurationMove(ms_target, ms_duration) {
+    pulseDurationMove(ms_target,ms_duration)
+    {
         this.liveFunc.pulseDurationMove(ms_target, ms_duration);
-        return _yocto_api.YAPI_SUCCESS;
+        return YAPI_SUCCESS;
     }
 
     /**
@@ -896,54 +858,18 @@ class YPwmOutputProxy extends _yocto_api.YFunctionProxy {
      *
      * On failure, throws an exception or returns a negative error code.
      */
-    dutyCycleMove(target, ms_duration) {
+    dutyCycleMove(target,ms_duration)
+    {
         this.liveFunc.dutyCycleMove(target, ms_duration);
-        return _yocto_api.YAPI_SUCCESS;
+        return YAPI_SUCCESS;
     }
     //--- (end of YPwmOutput accessors declaration)
 }
 
-exports.YPwmOutputProxy = YPwmOutputProxy; //--- (PwmOutput functions)
+//--- (YPwmOutput functions)
 
-/**
- * Retrieves a PWM for a given identifier.
- * The identifier can be specified using several formats:
- * <ul>
- * <li>FunctionLogicalName</li>
- * <li>ModuleSerialNumber.FunctionIdentifier</li>
- * <li>ModuleSerialNumber.FunctionLogicalName</li>
- * <li>ModuleLogicalName.FunctionIdentifier</li>
- * <li>ModuleLogicalName.FunctionLogicalName</li>
- * </ul>
- *
- * This function does not require that the PWM is online at the time
- * it is invoked. The returned object is nevertheless valid.
- * Use the method YPwmOutput.isOnline() to test if the PWM is
- * indeed online at a given time. In case of ambiguity when looking for
- * a PWM by logical name, no error is notified: the first instance
- * found is returned. The search is performed first by hardware name,
- * then by logical name.
- *
- * @param func {string} : a string that uniquely characterizes the PWM
- *
- * @return {YPwmOutput} a YPwmOutput object allowing you to drive the PWM.
- */
+YoctoLibExport('YPwmOutput', YPwmOutput);
+YoctoLibExport('YPwmOutputProxy', YPwmOutputProxy);
+YPwmOutput.imm_Init();
 
-function yFindPwmOutput(func) {
-    return YPwmOutput.FindPwmOutput(func);
-}
-
-/**
- * Starts the enumeration of PWMs currently accessible.
- * Use the method YPwmOutput.nextPwmOutput() to iterate on
- * next PWMs.
- *
- * @return {YPwmOutput} a pointer to a YPwmOutput object, corresponding to
- *         the first PWM currently online, or a null pointer
- *         if there are none.
- */
-function yFirstPwmOutput() {
-    return YPwmOutput.FirstPwmOutput();
-}
-
-//--- (end of PwmOutput functions)
+//--- (end of YPwmOutput functions)

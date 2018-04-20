@@ -308,214 +308,165 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yPwmInput: 'Yocto-PWM-Rx'
     }
 
-    function connectYoctoBubblot(ipaddress, serials, modules) {
+    async function connectYoctoBubblot(ipaddress, serials, modules) {
         var YAPI = _yocto_api.YAPI;
-        YAPI.LogUnhandledPromiseRejections().then(() => {
-            return YAPI.DisableExceptions();
+        await YAPI.LogUnhandledPromiseRejections();
+        await YAPI.DisableExceptions();
+        // Setup the API to use the VirtualHub on local machine
+        if(await YAPI.RegisterHub('http://' + ipaddress + ':4444', errmsg) != YAPI.SUCCESS) {
+            console.log('Cannot contact VirtualHub on ' + ipaddress + ': ' + errmsg.msg);
+            return;
         }
-        ).then(() => {
-            // Setup the API to use the VirtualHub on local machine
-            return YAPI.RegisterHub('http://' + ipaddress + ':4444', errmsg);
+        //Connexion to 3D module
+        //Connexion to tilt module
+        modules.yTilt_Roll = YTilt.FindTilt(serials.y3d + ".tilt1");
+        if (await modules.yTilt_Roll.isOnline()) {
+            console.log('Using module ' + serials.y3d + ".tilt1");
+            await modules.yTilt_Roll.registerValueCallback(computeRoll);
         }
-            ).then((res) => {
-                if (res != YAPI.SUCCESS) {
-                    console.log('Cannot contact VirtualHub on ' + ipaddress + ': ' + errmsg.msg);
-                    return;
-                }
-            }
-            //Connexion to 3D module
-            ).then(() => {
-                //Connexion to tilt module
-                modules.yTilt_Roll = YTilt.FindTilt(serials.y3d + ".tilt1");
-                modules.yTilt_Roll.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.y3d + ".tilt1");
-                        modules.yTilt_Roll.registerValueCallback(computeRoll);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.y3d + ".tilt1");
-                    }
-                })
-                //Connextion to pitch module
-                modules.yTilt_Pitch = YTilt.FindTilt(serials.y3d + ".tilt2");
-                modules.yTilt_Pitch.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.y3d + ".tilt2");
-                        modules.yTilt_Pitch.registerValueCallback(computePitch);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.y3d + ".tilt2");
-                    }
-                })
-                //Connexion to compass module
-                modules.yCompass = YCompass.FindCompass(serials.y3d + ".compass");
-                modules.yCompass.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.y3d + ".compass");
-                        modules.yCompass.registerValueCallback(computeCompass);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.y3d + ".compass");
-                    }
-                })
-            }
-            //Connexion to Digital-IO module
-            ).then(() => {
-                modules.yDigitalIO = YDigitalIO.FindDigitalIO(serials.yDigitalIO + ".digitalIO");
-                modules.yDigitalIO.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yDigitalIO + ".digitalIO");
-                        modules.yDigitalIO.set_portDirection(0xF0); //Set 4 inputs (0,1,2,3) and 4 outputs (4,5,6,7)
-                        modules.yDigitalIO.set_portOpenDrain(0x0F); //Set 4 open drain (0,1,2,3) and 4 no open drain (4,5,6,7)
-                        modules.yDigitalIO.set_portPolarity(0x00);
-                        modules.yDigitalIO.registerValueCallback(computeIO);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yDigitalIO + ".digitalIO");
-                    }
-                })
-            }
-            //Connexion to motor DC module
-            ).then(() => {
-                modules.yMotorDC_pump = YMotor.FindMotor(serials.yMotorDC + ".motor");
-                modules.yMotorDC_pump.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yMotorDC + ".motor");
-                        modules.yMotorDC_pump.set_drivingForce(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yMotorDC + ".motor");
-                    }
-                })
-            }
-            //Connexion to relay module
-            ).then(() => {
-                modules.yRelay_elecMagnet = YRelay.FindRelay(serials.yRelay + ".relay1");
-                modules.yRelay_elecMagnet.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yRelay + ".relay1");
-                        modules.yRelay_elecMagnet.set_state(true);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yRelay + ".relay1");
-                    }
-                })
-            }
-            //Connexion to servo 1 module 
-            ).then(() => {
-                //Servo motor for camera
-                modules.yServo1_Camera = YServo.FindServo(serials.yServo1 + ".servo1");
-                modules.yServo1_Camera.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo1 + ".servo1");
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo1");
-                    }
-                })
-                //Servo motor 1 for top left propeller
-                modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo2");
-                modules.yServo1_VSPTopLeft_1.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log("Using module " + serials.yServo1 + ".servo2");
-                        modules.yServo1_VSPTopLeft_1.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo2");
-                    }
-                })
-                //Servo motor 2 for top left propeller
-                modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo3");
-                modules.yServo1_VSPTopLeft_2.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo1 + ".servo3");
-                        modules.yServo1_VSPTopLeft_2.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo3");
-                    }
-                })
-                //Servo motor 1 for top right propeller
-                modules.yServo1_VSPTopRight_1 = YServo.FindServo(serials.yServo1 + ".servo4");
-                modules.yServo1_VSPTopRight_1.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo1 + ".servo4");
-                        modules.yServo1_VSPTopRight_1.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo4");
-                    }
-                })
-                //Servo motor 2 for top right propeller
-                modules.yServo1_VSPTopRight_2 = YServo.FindServo(serials.yServo1 + ".servo5");
-                modules.yServo1_VSPTopRight_2.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo1 + ".servo5");
-                        modules.yServo1_VSPTopRight_2.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo5");
-                    }
-                })
-            }
-            //Connexion to servo 2 module 
-            ).then(() => {
-                //Servo motor for thrust
-                modules.yServo2_Thrust = YServo.FindServo(serials.yServo2 + ".servo1");
-                modules.yServo2_Thrust.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo2 + ".servo1");
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo1");
-                    }
-                })
-                //Servo motor 1 for bottom left propeller
-                modules.yServo2_VSPBottomLeft_1 = YServo.FindServo(serials.yServo2 + ".servo2");
-                modules.yServo2_VSPBottomLeft_1.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log("Using module " + serials.yServo1 + ".servo2");
-                        modules.yServo2_VSPBottomLeft_1.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo2");
-                    }
-                })
-                //Servo motor 2 for bottom left propeller
-                modules.yServo2_VSPBottomLeft_2 = YServo.FindServo(serials.yServo2 + ".servo3");
-                modules.yServo2_VSPBottomLeft_2.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo2 + ".servo3");
-                        modules.yServo2_VSPBottomLeft_2.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo3");
-                    }
-                })
-                //Servo motor 1 for bottom right propeller
-                modules.yServo2_VSPBottomRight_1 = YServo.FindServo(serials.yServo2 + ".servo4");
-                modules.yServo2_VSPBottomRight_1.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo2 + ".servo4");
-                        modules.yServo2_VSPBottomRight_1.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo1 + ".servo4");
-                    }
-                })
-                //Servo motor 2 for bottom right propeller
-                modules.yServo2_VSPBottomRight_2 = YServo.FindServo(serials.yServo2 + ".servo5");
-                modules.yServo2_VSPBottomRight_2.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yServo2 + ".servo5");
-                        modules.yServo2_VSPBottomRight_2.set_position(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yServo2 + ".servo5");
-                    }
-                })
-            }
-            );
+        else {
+            console.log("Can't find module " + serials.y3d + ".tilt1");
+        }
+        //Connextion to pitch module
+        modules.yTilt_Pitch = YTilt.FindTilt(serials.y3d + ".tilt2");
+        if (await modules.yTilt_Pitch.isOnline()) {
+            console.log('Using module ' + serials.y3d + ".tilt2");
+            await modules.yTilt_Pitch.registerValueCallback(computePitch);
+        }
+        else {
+            console.log("Can't find module " + serials.y3d + ".tilt2");
+        }
+        //Connexion to compass module
+        modules.yCompass = YCompass.FindCompass(serials.y3d + ".compass");
+        if (await modules.yCompass.isOnline()) {
+            console.log('Using module ' + serials.y3d + ".compass");
+            await modules.yCompass.registerValueCallback(computeCompass);
+        }
+        else {
+            console.log("Can't find module " + serials.y3d + ".compass");
+        }
+        //Connexion to Digital-IO module
+        modules.yDigitalIO = YDigitalIO.FindDigitalIO(serials.yDigitalIO + ".digitalIO");
+        if (await modules.yDigitalIO.isOnline()) {
+            console.log('Using module ' + serials.yDigitalIO + ".digitalIO");
+            await modules.yDigitalIO.set_portDirection(0xF0); //Set 4 inputs (0,1,2,3) and 4 outputs (4,5,6,7)
+            await modules.yDigitalIO.set_portOpenDrain(0x0F); //Set 4 open drain (0,1,2,3) and 4 no open drain (4,5,6,7)
+            await modules.yDigitalIO.set_portPolarity(0x00);
+            await modules.yDigitalIO.registerValueCallback(computeIO);
+        }
+        else {
+            console.log("Can't find module " + serials.yDigitalIO + ".digitalIO");
+        }
+        //Connexion to motor DC module
+        modules.yMotorDC_pump = YMotor.FindMotor(serials.yMotorDC + ".motor");
+        if (await modules.yMotorDC_pump.isOnline()) {
+            console.log('Using module ' + serials.yMotorDC + ".motor");
+            await modules.yMotorDC_pump.set_drivingForce(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yMotorDC + ".motor");
+        }
+        //Connexion to relay module
+        modules.yRelay_elecMagnet = YRelay.FindRelay(serials.yRelay + ".relay1");
+        if (await modules.yRelay_elecMagnet.isOnline()) {
+            console.log('Using module ' + serials.yRelay + ".relay1");
+            await modules.yRelay_elecMagnet.set_state(true);
+        }
+        else {
+            console.log("Can't find module " + serials.yRelay + ".relay1");
+        }
+        //Connexion to servo 1 module 
+        //Servo motor for camera
+        modules.yServo1_Camera = YServo.FindServo(serials.yServo1 + ".servo1");
+        if (await modules.yServo1_Camera.isOnline()) {
+            console.log('Using module ' + serials.yServo1 + ".servo1");
+        }
+        else {
+            console.log("Can't find module " + serials.yServo1 + ".servo1");
+        }
+        //Servo motor 1 for top left propeller
+        modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo2");
+        if (await modules.yServo1_VSPTopLeft_1.isOnline()) {
+            console.log("Using module " + serials.yServo1 + ".servo2");
+            await modules.yServo1_VSPTopLeft_1.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo1 + ".servo2");
+        }
+        //Servo motor 2 for top left propeller
+        modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo3");
+        if (await modules.yServo1_VSPTopLeft_2.isOnline()) {
+            console.log('Using module ' + serials.yServo1 + ".servo3");
+            await modules.yServo1_VSPTopLeft_2.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo1 + ".servo3");
+        }
+        //Servo motor 1 for top right propeller
+        modules.yServo1_VSPTopRight_1 = YServo.FindServo(serials.yServo1 + ".servo4");
+        if (await modules.yServo1_VSPTopRight_1.isOnline()) {
+            console.log('Using module ' + serials.yServo1 + ".servo4");
+            await modules.yServo1_VSPTopRight_1.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo1 + ".servo4");
+        }
+        //Servo motor 2 for top right propeller
+        modules.yServo1_VSPTopRight_2 = YServo.FindServo(serials.yServo1 + ".servo5");
+        if (await modules.yServo1_VSPTopRight_2.isOnline()) {
+            console.log('Using module ' + serials.yServo1 + ".servo5");
+            await modules.yServo1_VSPTopRight_2.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo1 + ".servo5");
+        }
+        //Connexion to servo 2 module 
+        //Servo motor for thrust
+        modules.yServo2_Thrust = YServo.FindServo(serials.yServo2 + ".servo1");
+        if (await modules.yServo2_Thrust.isOnline()) {
+            console.log('Using module ' + serials.yServo2 + ".servo1");
+            // FIXME: check if this is the right init value
+            await modules.yServo2_Thrust.set_position(-1000);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo2 + ".servo1");
+        }
+        //Servo motor 1 for bottom left propeller
+        modules.yServo2_VSPBottomLeft_1 = YServo.FindServo(serials.yServo2 + ".servo2");
+        if (await modules.yServo2_VSPBottomLeft_1.isOnline()) {
+            console.log("Using module " + serials.yServo1 + ".servo2");
+            await modules.yServo2_VSPBottomLeft_1.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo2 + ".servo2");
+        }
+        //Servo motor 2 for bottom left propeller
+        modules.yServo2_VSPBottomLeft_2 = YServo.FindServo(serials.yServo2 + ".servo3");
+        if (await modules.yServo2_VSPBottomLeft_2.isOnline()) {
+            console.log('Using module ' + serials.yServo2 + ".servo3");
+            await modules.yServo2_VSPBottomLeft_2.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo2 + ".servo3");
+        }
+        //Servo motor 1 for bottom right propeller
+        modules.yServo2_VSPBottomRight_1 = YServo.FindServo(serials.yServo2 + ".servo4");
+        if (await modules.yServo2_VSPBottomRight_1.isOnline()) {
+            console.log('Using module ' + serials.yServo2 + ".servo4");
+            await modules.yServo2_VSPBottomRight_1.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo1 + ".servo4");
+        }
+        //Servo motor 2 for bottom right propeller
+        modules.yServo2_VSPBottomRight_2 = YServo.FindServo(serials.yServo2 + ".servo5");
+        if (await modules.yServo2_VSPBottomRight_2.isOnline()) {
+            console.log('Using module ' + serials.yServo2 + ".servo5");
+            await modules.yServo2_VSPBottomRight_2.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo2 + ".servo5");
+        }
     }
 
     function connectYoctoPump(ipaddress, serials, modules) {
@@ -617,10 +568,19 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         stopBits: 1
     };
     //Open serialport for DropSens sensor
-    var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
+    //var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     var gamepadIndex = -1;
-    function init() {
+    async function init() {
+        //Connect to Yocto module
+        await connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
+        //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
+        //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
+        //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
+        //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);
+        //connectYoctoPump("192.168.4.2", serialPump, pumpYoctoModules);
+        setInterval(computeWinderLength, 1000);
+
         //Connection to gampepad
         window.addEventListener("gamepadconnected", function (e) {
             var gp = navigator.getGamepads()[e.gamepad.index];
@@ -629,17 +589,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 gp.buttons.length, gp.axes.length);
             if (gp.id == "PC Game Controller        (Vendor: 11ff Product: 3331)") {
                 gamepadIndex = gp.index;
-                setInterval(gamepadLoop, 150);
+                setTimeout(gamepadLoop, 500);
+                //setInterval(gamepadLoop, 150);
             }
         });
-        //Connect to Yocto module
-        connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
-        //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
-        //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
-        //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
-        //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);
-        //connectYoctoPump("192.168.4.2", serialPump, pumpYoctoModules);
-        setInterval(computeWinderLength, 1000);
 
         //Connection to platform camera 
         //rtsp://192.168.100.100:554/11
@@ -676,6 +629,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         var indexSerial = 0;
         var vaPotential, vaCurrent;
         var tempStringData = [], serialAllData = [], packageTransmitted = 0, flag = false;
+        /*
         serialPort.on('open', function () {
             console.log('Serialport opened, writing ' + writeToSerial[indexSerial]);
             serialPort.write(writeToSerial[indexSerial]);
@@ -748,6 +702,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
             }
         });
+        */
         //Compute measurement for DropSens sensor
         $scope.$watch('leftData.computeVa', function (value) {
             if (value) {
@@ -759,10 +714,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
 
         //Terminal command for starting HotSpot: netsh wlan start hostednetwork
         //require('nw.gui').Window.get().showDevTools(); alert('pause'); debugger;
-
+        /*
         if (module3dconnexion) {
             module3dconnexion.init3dConnexion("Bubblot NW");
         }
+        */
         transitionTimeout = $timeout(getValues, 500);
         //setInterval(getEvent, 200);
         //Keyboard shortcuts
@@ -1162,7 +1118,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
     var button11Pressed = false, button4Pressed = false, button2Pressed = false, button5Pressed = false, button3Pressed = false;
     //Loop function to get joystick values
-    function gamepadLoop() {
+    async function gamepadLoop() {
         var gamepad = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
         if (gamepad) {
             if (gamepad[gamepadIndex]) {
@@ -1364,30 +1320,32 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             - 9.197 * Math.pow(10, -5) * Math.pow(VSP4Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP4Angle, 2) + 2.585 * Math.pow(10, -1) * VSP4Angle
             + 31.42);
         //Moving servo motor to orientate propellers
+        _yocto_api.YAPI.HandleEvents();
         if (bubblot1YoctoModules.yServo1_VSPTopLeft_1) {
-            bubblot1YoctoModules.yServo1_VSPTopLeft_1.set_position(VSP1AngleServo1);
+            await bubblot1YoctoModules.yServo1_VSPTopLeft_1.set_position(Math.round(VSP1AngleServo1));
         }
         if (bubblot1YoctoModules.yServo1_VSPTopLeft_2) {
-            bubblot1YoctoModules.yServo1_VSPTopLeft_2.set_position(VSP1AngleServo2);
+            await bubblot1YoctoModules.yServo1_VSPTopLeft_2.set_position(Math.round(VSP1AngleServo2));
         }
         if (bubblot1YoctoModules.yServo1_VSPTopRight_1) {
-            bubblot1YoctoModules.yServo1_VSPTopRight_1.set_position(VSP2AngleServo1);
+            await bubblot1YoctoModules.yServo1_VSPTopRight_1.set_position(Math.round(VSP2AngleServo1));
         }
         if (bubblot1YoctoModules.yServo1_VSPTopRight_2) {
-            bubblot1YoctoModules.yServo1_VSPTopRight_2.set_position(VSP2AngleServo2);
-        }
-        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_1) {
-            bubblot1YoctoModules.yServo2_VSPBottomLeft_1.set_position(VSP3AngleServo1);
+            await bubblot1YoctoModules.yServo1_VSPTopRight_2.set_position(Math.round(VSP2AngleServo2));
         }
         if (bubblot1YoctoModules.yServo2_VSPBottomLeft_2) {
-            bubblot1YoctoModules.yServo2_VSPBottomLeft_2.set_position(VSP3AngleServo2);
+            await bubblot1YoctoModules.yServo2_VSPBottomLeft_2.set_position(Math.round(VSP3AngleServo2));
+        }
+        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_1) {
+            await bubblot1YoctoModules.yServo2_VSPBottomLeft_1.set_position(Math.round(VSP3AngleServo1));
         }
         if (bubblot1YoctoModules.yServo2_VSPBottomRight_1) {
-            bubblot1YoctoModules.yServo2_VSPBottomRight_1.set_position(VSP4AngleServo1);
+            await bubblot1YoctoModules.yServo2_VSPBottomRight_1.set_position(Math.round(VSP4AngleServo1));
         }
         if (bubblot1YoctoModules.yServo2_VSPBottomRight_2) {
-            bubblot1YoctoModules.yServo2_VSPBottomRight_2.set_position(VSP4AngleServo2);
+            await bubblot1YoctoModules.yServo2_VSPBottomRight_2.set_position(Math.round(VSP4AngleServo2));
         }
+        setTimeout(gamepadLoop, 150);
     }
     function getEvent() {
         if (module3dconnexion) {

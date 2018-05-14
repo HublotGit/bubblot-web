@@ -10,6 +10,8 @@ Procédure d'installation
  et dans C:\Users\Eric\AppData\Roaming\npm\node_modules\node-gyp\src
 
 Serialport:
+-npm uninstall
+-Install latest node version
 -npm -g install node-gyp@latest
 -copy win_delay_load_hook.cc C:\Users\USERNAME\AppData\Roaming\npm\node_modules\node-gyp\src
 -cd node_modules\serialport\

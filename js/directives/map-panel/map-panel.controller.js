@@ -607,10 +607,10 @@
   Version: 0.1.0;
   (◠‿◠✿)
 */      $scope.updateCalendarRwd = function () {
-            createCalendar(element, -1);
+            if(objCalendar) createCalendar(element, -1);
         }
         $scope.updateCalendarFwd = function () {
-            createCalendar(element, 1);
+            if(objCalendar) createCalendar(element, 1);
         }
         function createCalendar(element, adjuster) {
             if (typeof adjuster !== 'undefined') {
@@ -973,7 +973,7 @@
             DisabledDays: [],
             ModelChange: element
         };
-        var objCalendar;
+        var objCalendar=null;
         var Calendar = function (model, options, date) {
             // Default Values
             this.Options = {

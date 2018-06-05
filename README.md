@@ -12,10 +12,8 @@ Procédure d'installation
 Serialport:
 -npm uninstall
 -Install latest node version
--npm -g install node-gyp@latest
--copy win_delay_load_hook.cc C:\Users\USERNAME\AppData\Roaming\npm\node_modules\node-gyp\src
--cd node_modules\serialport\
--node-gyp rebuild
+-npm install
+-copy paste serialPort in node_modules
 
 
 CouchDB:

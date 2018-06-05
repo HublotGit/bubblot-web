@@ -15,10 +15,8 @@
     "gulp": "^3.9.1",
     "gulp-sass": "^2.3.1",
     "node-couchdb": "^1.1.1",
-    "onvif": "^0.5.3",
     "recordrtc": "^5.4.0",
     "serialport": "^4.0.7",
-    "vrviewer": "file:vraddon",
     "ws": "^1.1.0"
   },
   "devDependencies": {

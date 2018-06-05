@@ -218,7 +218,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         movieCursor: false,
         updatePanel: false,
         graphName: "",
-        playData: false
+        playData: false,
+        calendarFwd: false,
+        calendarRwd: false,
     };
     $scope.notifData = {
         bubblotSecurity: false,
@@ -425,7 +427,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         modules.yServo2_Thrust = YServo.FindServo(serials.yServo2 + ".servo1");
         if (await modules.yServo2_Thrust.isOnline()) {
             console.log('Using module ' + serials.yServo2 + ".servo1");
-            // FIXME: check if this is the right init value
+            //await modules.yServo2_Thrust.set_positionAtPowerOn(1000)
+            //servoModule = await modules.yServo2_Thrust.getModule();
+            //await servoModule.saveToFlash();
             await modules.yServo2_Thrust.set_position(-1000);
         }
         else {
@@ -594,36 +598,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
         });
 
-        //Connection to platform camera 
-        //rtsp://192.168.100.100:554/11
-        var CAMERA_HOST = '192.168.100.100',
-            USERNAME = 'admin',
-            PASSWORD = '',
-            PORT = 8080;
-
-        var onvif = require('onvif');
-        onvif.Discovery.probe(function (err, cams) {
-            //Search for IP Camera
-            if (err) { throw err; }
-            cams.forEach(function (cam) {
-                cam.username = 'admin';
-                cam.password = '';
-                console.log(cam);
-            });
-            //Create new camera
-            winderCamera = new Cam({
-                hostname: CAMERA_HOST,
-                username: USERNAME,
-                password: PASSWORD,
-                port: PORT
-            }, function (err) {
-                if (err) {
-                    console.log('Connection with Platform Camera (IP: ' + CAMERA_HOST + ') failed');
-                    return;
-                }
-                console.log('Platform Camera (IP: ' + CAMERA_HOST + ') connected');
-            });
-        });
         //Open function for DropSens sensor
         var writeToSerial = ['$V;', '$Ltech=01;'];
         var indexSerial = 0;
@@ -999,17 +973,17 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
             }
             else if (!switchWinderDirection1) {
-                if (winderYoctoModules.yRelay_winderDirection) {
+                if (winderYoctoModules.yRelay_WinderDirection) {
                     if (value > 0) {
                         winderYoctoModules.yRelay_winderBrake.set_state(false);
-                        winderYoctoModules.yRelay_winderDirection.set_state(true);
+                        winderYoctoModules.yRelay_WinderDirection.set_state(true);
                         winderDirection1 = true;
                         stopWinderOk = false;
                         clearTimeout(stopWinderTime);
                     }
                     else if (value < 0) {
                         winderYoctoModules.yRelay_winderBrake.set_state(false);
-                        winderYoctoModules.yRelay_winderDirection.set_state(false);
+                        winderYoctoModules.yRelay_WinderDirection.set_state(false);
                         winderDirection1 = false;
                         stopWinderOk = false;
                         clearTimeout(stopWinderTime);
@@ -1740,12 +1714,12 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         winderYoctoModules.yRelay_winderBrake.set_state(true);
     }
     function winderDirectionTimeout() {
-        if (winderYoctoModules.yRelay_winderDirection && $scope.winderData.winderSpeed1 > 0) {
-            winderYoctoModules.yRelay_winderDirection.set_state(true);
+        if (winderYoctoModules.yRelay_WinderDirection && $scope.winderData.winderSpeed1 > 0) {
+            winderYoctoModules.yRelay_WinderDirection.set_state(true);
             winderDirection1 = true;
         }
-        else if (winderYoctoModules.yRelay_winderDirection) {
-            winderYoctoModules.yRelay_winderDirection.set_state(false);
+        else if (winderYoctoModules.yRelay_WinderDirection) {
+            winderYoctoModules.yRelay_WinderDirection.set_state(false);
             winderDirection1 = false;
         }
         winderYoctoModules.yPwmOutput_WinderSpeed.set_dutyCycle(Math.abs($scope.winderData.winderSpeed1) / 5.5 * 100);

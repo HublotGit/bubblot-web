@@ -12,7 +12,7 @@
             controller: 'nozeCtrl',
             controllerAs: 'vm',
             scope: {
-                circleSize: '=', circleThickness: '=', turbidity: '=', magnetism: '='
+                circleSize: '=', circleThickness: '=', turbidityRed: '=',turbidityGreen: '=',turbidityBlue: '=',magnetism: '='
             },
         }
     }

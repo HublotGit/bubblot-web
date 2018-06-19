@@ -52,10 +52,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         twistLeft: false,
         twistRight: false,
         threeDAngle: 30,
-        turbidity: 0.2,
-        turbidityRed: 0.2,
-        turbidityBlue: 0.2,
-        turbidityGreen: 0.2,
+        turbidityRed: 0,
+        turbidityBlue: 0,
+        turbidityGreen: 0,
         magnetism: 0.5,
         computeVa: false,
         vaData: [],
@@ -241,7 +240,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         recData: false,
         help: false
     };
-    var bubblot1YoctoModules = {
+    var bubblotYoctoModules = {
         yDigitalIO: null,
         yTilt_Roll: null,
         yTilt_Pitch: null,
@@ -257,11 +256,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yServo2_VSPBottomRight_1: null,
         yServo2_VSPBottomRight_2: null,
         yMotorDC_pump: null,
-        yColor: null,
-        yRelay_elecMagnet: null
+        yColorLed_turbi: null,
+        yAnButton_turbi: null,
+        yRelay_elecMagnet: null,
+        yRelay_pump: null
     }
 
-    var serialBubblot1 = {
+    var serialBubblot = {
         yDigitalIO: 'Yocto-Maxi-IO',
         y3d: 'Yocto-3D',
         yGps: 'Yocto-Gps',
@@ -269,7 +270,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yServo2: 'Yocto-Servo2',
         yRelay: 'Yocto-Relay',
         yMotorDC: 'Yocto-Motor-DC',
-        yColor: 'Yocto-Color'
+        yColor: 'Yocto-Color',
+        yKnob: 'Yocto-Knob'
     }
 
     var pumpYoctoModules = {
@@ -299,7 +301,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
 
     var winderYoctoModules = {
         yRelay_WinderDirection: null,
-        yRelay_WinderBrake: null,
         yPwmOutput_WinderSpeed: null,
         yPwmInput_WinderLength: null
     }
@@ -315,7 +316,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         await YAPI.LogUnhandledPromiseRejections();
         await YAPI.DisableExceptions();
         // Setup the API to use the VirtualHub on local machine
-        if(await YAPI.RegisterHub('http://' + ipaddress + ':4444', errmsg) != YAPI.SUCCESS) {
+        if (await YAPI.RegisterHub('http://' + ipaddress + ':4444', errmsg) != YAPI.SUCCESS) {
             console.log('Cannot contact VirtualHub on ' + ipaddress + ': ' + errmsg.msg);
             return;
         }
@@ -471,6 +472,24 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         else {
             console.log("Can't find module " + serials.yServo2 + ".servo5");
         }
+        //Connexion to knob module
+        modules.yAnButton_turbi = YAnButton.FindAnButton(serials.yKnob + ".anButton5");
+        if (await modules.yAnButton_turbi.isOnline()) {
+            console.log('Using module ' + serials.yKnob + ".anButton1");
+            modules.yAnButton_turbi.registerValueCallback(computeKnobValue);
+        }
+        else {
+            console.log("Can't find module " + serials.yKnob + ".anButton1");
+        }
+        //Connexion to color module
+        modules.yColorLed_turbi = YColorLed.FindColorLed(serials.yColor + ".colorLed1");
+        if (await modules.yColorLed_turbi.isOnline()) {
+            console.log('Using module ' + serials.yColor + ".colorLed1");
+            await modules.yColorLed_turbi.set_rgbColor(0x000000);
+        }
+        else {
+            console.log("Can't find module " + serials.yColor + ".colorLed1");
+        }
     }
 
     function connectYoctoPump(ipaddress, serials, modules) {
@@ -482,23 +501,23 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             // Setup the API to use the VirtualHub on local machine
             return YAPI.RegisterHub('http://' + ipaddress + ':4444', errmsg);
         }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to Pwm Tx module
-                modules.yPwmOutput_pump = YPwmOutput.FindPwmOutput(serials.yPwmOutput + ".pwmOutput1");
-                modules.yPwmOutput_pump.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
-                        modules.yPwmOutput_pump.set_frequency(20000);
-                        modules.yPwmOutput_pump.set_enabled(Y_ENABLED_TRUE);
-                        modules.yPwmOutput_pump.set_dutyCycle(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yPwmOutput + ".pwmOutput1");
-                    }
-                })
-            }
-            );
+        ).then(() => {
+            // by default use any connected module suitable for the demo
+            //Connexion to Pwm Tx module
+            modules.yPwmOutput_pump = YPwmOutput.FindPwmOutput(serials.yPwmOutput + ".pwmOutput1");
+            modules.yPwmOutput_pump.isOnline().then((onLine) => {
+                if (onLine) {
+                    console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
+                    modules.yPwmOutput_pump.set_frequency(20000);
+                    modules.yPwmOutput_pump.set_enabled(Y_ENABLED_TRUE);
+                    modules.yPwmOutput_pump.set_dutyCycle(0);
+                }
+                else {
+                    console.log("Can't find module " + serials.yPwmOutput + ".pwmOutput1");
+                }
+            })
+        }
+        );
     }
 
     function connectYoctoWinder(ipaddress, serials, modules) {
@@ -510,60 +529,50 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             // Setup the API to use the VirtualHub on local machine
             return YAPI.RegisterHub('http://' + ipaddress + ':4444', errmsg);
         }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to relay module
-                modules.yRelay_WinderDirection = YRelay.FindRelay(serials.yRelay + ".relay1");
-                modules.yRelay_WinderDirection.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yRelay + ".relay1");
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yRelay + ".relay1");
-                    }
-                })
-                modules.yRelay_WinderBrake = YRelay.FindRelay(serials.yRelay + ".relay2");
-                modules.yRelay_WinderBrake.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yRelay + ".relay2");
-                        modules.yRelay_WinderBrake.set_state(true);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yRelay + ".relay2");
-                    }
-                })
-            }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to PWM output module
-                modules.yPwmOutput_WinderSpeed = YPwmOutput.FindPwmOutput(serials.yPwmOutput + ".pwmOutput1");
-                modules.yPwmOutput_WinderSpeed.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
-                        modules.yPwmOutput_WinderSpeed.set_frequency(5000);
-                        modules.yPwmOutput_WinderSpeed.set_enabled(Y_ENABLED_TRUE);
-                        modules.yPwmOutput_WinderSpeed.set_dutyCycle(0);
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yPwmOutput + ".pwmOutput1");
-                    }
-                })
-            }
-            ).then(() => {
-                // by default use any connected module suitable for the demo
-                //Connexion to PWM input module
-                modules.yPwmInput_WinderLength = YPwmInput.FindPwmInput(serials.yPwmInput + ".pwmInput1");
-                modules.yPwmInput_WinderLength.isOnline().then((onLine) => {
-                    if (onLine) {
-                        console.log('Using module ' + serials.yPwmInput + ".pwmInput1");
-                        modules.yPwmInput_WinderLength.resetCounter();
-                    }
-                    else {
-                        console.log("Can't find module " + serials.yPwmInput + ".pwmInput1");
-                    }
-                });
-            }
-            );
+        ).then(() => {
+            // by default use any connected module suitable for the demo
+            //Connexion to relay module
+            modules.yRelay_WinderDirection = YRelay.FindRelay(serials.yRelay + ".relay1");
+            modules.yRelay_WinderDirection.isOnline().then((onLine) => {
+                if (onLine) {
+                    console.log('Using module ' + serials.yRelay + ".relay1");
+                }
+                else {
+                    console.log("Can't find module " + serials.yRelay + ".relay1");
+                }
+            })
+        }
+        ).then(() => {
+            // by default use any connected module suitable for the demo
+            //Connexion to PWM output module
+            modules.yPwmOutput_WinderSpeed = YPwmOutput.FindPwmOutput(serials.yPwmOutput + ".pwmOutput1");
+            modules.yPwmOutput_WinderSpeed.isOnline().then((onLine) => {
+                if (onLine) {
+                    console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
+                    modules.yPwmOutput_WinderSpeed.set_frequency(5000);
+                    modules.yPwmOutput_WinderSpeed.set_enabled(Y_ENABLED_TRUE);
+                    modules.yPwmOutput_WinderSpeed.set_dutyCycle(0);
+                }
+                else {
+                    console.log("Can't find module " + serials.yPwmOutput + ".pwmOutput1");
+                }
+            })
+        }
+        ).then(() => {
+            // by default use any connected module suitable for the demo
+            //Connexion to PWM input module
+            modules.yPwmInput_WinderLength = YPwmInput.FindPwmInput(serials.yPwmInput + ".pwmInput1");
+            modules.yPwmInput_WinderLength.isOnline().then((onLine) => {
+                if (onLine) {
+                    console.log('Using module ' + serials.yPwmInput + ".pwmInput1");
+                    modules.yPwmInput_WinderLength.resetCounter();
+                }
+                else {
+                    console.log("Can't find module " + serials.yPwmInput + ".pwmInput1");
+                }
+            });
+        }
+        );
     }
     var serialPortOpenOptions = {
         baudRate: 115200,
@@ -577,7 +586,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var gamepadIndex = -1;
     async function init() {
         //Connect to Yocto module
-        await connectYoctoBubblot("192.168.1.2", serialBubblot1, bubblot1YoctoModules);
+        await connectYoctoBubblot("localhost", serialBubblot, bubblotYoctoModules);
         //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
@@ -730,26 +739,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 $scope.rightDataPump.isCtrl = true;
                 isCtrl = true;
             }
-            //Left arrow is pressed
-            else if (keyCode == 37) {
-                //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(-1, 0, 0, 'left');
-            }
-            //Right arrow is pressed
-            else if (keyCode == 39) {
-                //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(1, 0, 0, 'right');
-            }
-            //Up arrow is pressed
-            else if (keyCode == 38) {
-                //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(0, 1, 0, 'up');
-            }
-            //Down arrow is pressed
-            else if (keyCode == 40) {
-                //Move winder camera
-                if (document.getElementById('winderDisplay').style.display == "block" && !ignore_keypress && winderCamera) moveWinderCamera(0, -1, 0, 'down');
-            }
         };
         document.onkeyup = function (e) {
             var keyCode = e.keyCode;
@@ -857,10 +846,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         $scope.$apply();
                     }
                 }
-                else if (isCtrl && !ignore_keypress) {
-                    if (event.deltaY < 0) moveWinderCamera(0, 0, 1, "zoom in");
-                    else moveWinderCamera(0, 0, -1, "zoom out");
-                }
                 else if (!isCtrl) {
                     if ($scope.winderData.mainControl <= 0.5 && $scope.winderData.mainControl >= -0.5) {
                         $scope.winderData.mainControl = $scope.winderData.mainControl - event.deltaY / 5000;
@@ -878,16 +863,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         var j = 0;
         $scope.$watch('leftData.pumpOn', function (value) {
-            if (value && bubblot1YoctoModules.yMotorDC_pump) {
-                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove($scope.leftData.pumpPower * 100, $scope.leftData.pumpPower * 500);
+            if (value && bubblotYoctoModules.yMotorDC_pump) {
+                bubblotYoctoModules.yMotorDC_pump.drivingForceMove($scope.leftData.pumpPower * 100, $scope.leftData.pumpPower * 500);
             }
-            else if (!value && bubblot1YoctoModules.yMotorDC_pump) {
-                bubblot1YoctoModules.yMotorDC_pump.drivingForceMove(0, $scope.leftData.pumpPower * 500);
+            else if (!value && bubblotYoctoModules.yMotorDC_pump) {
+                bubblotYoctoModules.yMotorDC_pump.drivingForceMove(0, $scope.leftData.pumpPower * 500);
             }
         });
         $scope.$watch('leftData.pumpPower', function (value) {
-            if ($scope.leftData.pumpOn && bubblot1YoctoModules.yMotorDC_pump) {
-                bubblot1YoctoModules.yMotorDC_pump.set_drivingForce(value * 100);
+            if ($scope.leftData.pumpOn && bubblotYoctoModules.yMotorDC_pump) {
+                bubblotYoctoModules.yMotorDC_pump.set_drivingForce(value * 100);
             }
         });
         $scope.$watch('rightData.spotlightSwitchOn', function (value) {
@@ -911,13 +896,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
         });
         $scope.$watch('leftData.threeDAngle', function (value) {
-            if (bubblot1YoctoModules.yServo1_Camera) {
-                bubblot1YoctoModules.yServo1_Camera.set_position((value - 38) / 16 * 2000);
+            if (bubblotYoctoModules.yServo1_Camera) {
+                bubblotYoctoModules.yServo1_Camera.set_position((value - 38) / 16 * 2000);
             }
         });
         $scope.$watch('rightData.thrust', function (value) {
-            if (bubblot1YoctoModules.yServo2_Thrust) {
-                bubblot1YoctoModules.yServo2_Thrust.set_position((value * 2000 - 1000));
+            if (bubblotYoctoModules.yServo2_Thrust) {
+                bubblotYoctoModules.yServo2_Thrust.set_position((value * 2000 - 1000));
             }
         });
         $scope.$watch('winderData.railMode', function (value) {
@@ -975,14 +960,12 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             else if (!switchWinderDirection1) {
                 if (winderYoctoModules.yRelay_WinderDirection) {
                     if (value > 0) {
-                        winderYoctoModules.yRelay_winderBrake.set_state(false);
                         winderYoctoModules.yRelay_WinderDirection.set_state(true);
                         winderDirection1 = true;
                         stopWinderOk = false;
                         clearTimeout(stopWinderTime);
                     }
                     else if (value < 0) {
-                        winderYoctoModules.yRelay_winderBrake.set_state(false);
                         winderYoctoModules.yRelay_WinderDirection.set_state(false);
                         winderDirection1 = false;
                         stopWinderOk = false;
@@ -1025,20 +1008,20 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             $scope.notifData.bubblotSecurity = value;
         });
         $scope.$watch('rightData.ballastFill', function (value) {
-            if (bubblot1YoctoModules.yDigitalIO) {
+            if (bubblotYoctoModules.yDigitalIO) {
                 if (value) {
-                    bubblot1YoctoModules.yDigitalIO.set_bitState(4, 1);
-                    bubblot1YoctoModules.yRelay_elecMagnet.set_state(true);
+                    bubblotYoctoModules.yDigitalIO.set_bitState(4, 1);
+                    bubblotYoctoModules.yRelay_elecMagnet.set_state(true);
                 }
                 else {
-                    bubblot1YoctoModules.yDigitalIO.set_bitState(4, 0);
+                    bubblotYoctoModules.yDigitalIO.set_bitState(4, 0);
                 }
             }
         });
         $scope.$watch('rightData.ballastEmpty', function (value) {
-            if (bubblot1YoctoModules.yDigitalIO) {
+            if (bubblotYoctoModules.yDigitalIO) {
                 if (value) {
-                    bubblot1YoctoModules.yRelay_elecMagnet.set_state(false);
+                    bubblotYoctoModules.yRelay_elecMagnet.set_state(false);
                 }
                 else {
                 }
@@ -1240,10 +1223,22 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
                 //Button 6 released
                 else if (!gp.buttons[5].pressed) button5Pressed = false;
-                //Button 1 pressed => switch on pump
-                if (gp.buttons[11].pressed) $scope.leftData.pumpOn = true;
+                //Button 1 pressed => switch on pump + turbidity detection
+                if (gp.buttons[11].pressed) {
+                    $scope.leftData.pumpOn = true;
+                    if (!turbiColorActivated) {
+                        await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
+                        amountTurbi = 0;
+                        totalTurbi = 0;
+                        setTimeout(computeTurbidityRed, 1000);
+                    }
+                    turbiColorActivated = true;
+                }
                 //Button 1 released => switch off pump
-                else if (!gp.buttons[11].pressed) $scope.leftData.pumpOn = false;
+                else if (!gp.buttons[11].pressed) {
+                    $scope.leftData.pumpOn = false;
+                    turbiColorActivated = false;
+                }
             }
             else {
                 $scope.rightData.engine1Radius = 0;
@@ -1295,29 +1290,29 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             + 31.42);
         //Moving servo motor to orientate propellers
         _yocto_api.YAPI.HandleEvents();
-        if (bubblot1YoctoModules.yServo1_VSPTopLeft_1) {
-            await bubblot1YoctoModules.yServo1_VSPTopLeft_1.set_position(Math.round(VSP1AngleServo1));
+        if (bubblotYoctoModules.yServo1_VSPTopLeft_1) {
+            await bubblotYoctoModules.yServo1_VSPTopLeft_1.set_position(Math.round(VSP1AngleServo1));
         }
-        if (bubblot1YoctoModules.yServo1_VSPTopLeft_2) {
-            await bubblot1YoctoModules.yServo1_VSPTopLeft_2.set_position(Math.round(VSP1AngleServo2));
+        if (bubblotYoctoModules.yServo1_VSPTopLeft_2) {
+            await bubblotYoctoModules.yServo1_VSPTopLeft_2.set_position(Math.round(VSP1AngleServo2));
         }
-        if (bubblot1YoctoModules.yServo1_VSPTopRight_1) {
-            await bubblot1YoctoModules.yServo1_VSPTopRight_1.set_position(Math.round(VSP2AngleServo1));
+        if (bubblotYoctoModules.yServo1_VSPTopRight_1) {
+            await bubblotYoctoModules.yServo1_VSPTopRight_1.set_position(Math.round(VSP2AngleServo1));
         }
-        if (bubblot1YoctoModules.yServo1_VSPTopRight_2) {
-            await bubblot1YoctoModules.yServo1_VSPTopRight_2.set_position(Math.round(VSP2AngleServo2));
+        if (bubblotYoctoModules.yServo1_VSPTopRight_2) {
+            await bubblotYoctoModules.yServo1_VSPTopRight_2.set_position(Math.round(VSP2AngleServo2));
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_2) {
-            await bubblot1YoctoModules.yServo2_VSPBottomLeft_2.set_position(Math.round(VSP3AngleServo2));
+        if (bubblotYoctoModules.yServo2_VSPBottomLeft_2) {
+            await bubblotYoctoModules.yServo2_VSPBottomLeft_2.set_position(Math.round(VSP3AngleServo2));
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_1) {
-            await bubblot1YoctoModules.yServo2_VSPBottomLeft_1.set_position(Math.round(VSP3AngleServo1));
+        if (bubblotYoctoModules.yServo2_VSPBottomLeft_1) {
+            await bubblotYoctoModules.yServo2_VSPBottomLeft_1.set_position(Math.round(VSP3AngleServo1));
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomRight_1) {
-            await bubblot1YoctoModules.yServo2_VSPBottomRight_1.set_position(Math.round(VSP4AngleServo1));
+        if (bubblotYoctoModules.yServo2_VSPBottomRight_1) {
+            await bubblotYoctoModules.yServo2_VSPBottomRight_1.set_position(Math.round(VSP4AngleServo1));
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomRight_2) {
-            await bubblot1YoctoModules.yServo2_VSPBottomRight_2.set_position(Math.round(VSP4AngleServo2));
+        if (bubblotYoctoModules.yServo2_VSPBottomRight_2) {
+            await bubblotYoctoModules.yServo2_VSPBottomRight_2.set_position(Math.round(VSP4AngleServo2));
         }
         setTimeout(gamepadLoop, 150);
     }
@@ -1544,29 +1539,29 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             - 9.197 * Math.pow(10, -5) * Math.pow(VSP4Angle, 3) + 2.847 * Math.pow(10, -3) * Math.pow(VSP4Angle, 2) + 2.585 * Math.pow(10, -1) * VSP4Angle
             + 31.42);
         //Moving servo motor to orientate propellers
-        if (bubblot1YoctoModules.yServo1_VSPTopLeft_1) {
-            bubblot1YoctoModules.yServo1_VSPTopLeft_1.set_position(VSP1AngleServo1);
+        if (bubblotYoctoModules.yServo1_VSPTopLeft_1) {
+            bubblotYoctoModules.yServo1_VSPTopLeft_1.set_position(VSP1AngleServo1);
         }
-        if (bubblot1YoctoModules.yServo1_VSPTopLeft_2) {
-            bubblot1YoctoModules.yServo1_VSPTopLeft_2.set_position(VSP1AngleServo2);
+        if (bubblotYoctoModules.yServo1_VSPTopLeft_2) {
+            bubblotYoctoModules.yServo1_VSPTopLeft_2.set_position(VSP1AngleServo2);
         }
-        if (bubblot1YoctoModules.yServo1_VSPTopRight_1) {
-            bubblot1YoctoModules.yServo1_VSPTopRight_1.set_position(VSP2AngleServo1);
+        if (bubblotYoctoModules.yServo1_VSPTopRight_1) {
+            bubblotYoctoModules.yServo1_VSPTopRight_1.set_position(VSP2AngleServo1);
         }
-        if (bubblot1YoctoModules.yServo1_VSPTopRight_2) {
-            bubblot1YoctoModules.yServo1_VSPTopRight_2.set_position(VSP2AngleServo2);
+        if (bubblotYoctoModules.yServo1_VSPTopRight_2) {
+            bubblotYoctoModules.yServo1_VSPTopRight_2.set_position(VSP2AngleServo2);
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_1) {
-            bubblot1YoctoModules.yServo2_VSPBottomLeft_1.set_position(VSP3AngleServo1);
+        if (bubblotYoctoModules.yServo2_VSPBottomLeft_1) {
+            bubblotYoctoModules.yServo2_VSPBottomLeft_1.set_position(VSP3AngleServo1);
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomLeft_2) {
-            bubblot1YoctoModules.yServo2_VSPBottomLeft_2.set_position(VSP3AngleServo2);
+        if (bubblotYoctoModules.yServo2_VSPBottomLeft_2) {
+            bubblotYoctoModules.yServo2_VSPBottomLeft_2.set_position(VSP3AngleServo2);
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomRight_1) {
-            bubblot1YoctoModules.yServo2_VSPBottomRight_1.set_position(VSP4AngleServo1);
+        if (bubblotYoctoModules.yServo2_VSPBottomRight_1) {
+            bubblotYoctoModules.yServo2_VSPBottomRight_1.set_position(VSP4AngleServo1);
         }
-        if (bubblot1YoctoModules.yServo2_VSPBottomRight_2) {
-            bubblot1YoctoModules.yServo2_VSPBottomRight_2.set_position(VSP4AngleServo2);
+        if (bubblotYoctoModules.yServo2_VSPBottomRight_2) {
+            bubblotYoctoModules.yServo2_VSPBottomRight_2.set_position(VSP4AngleServo2);
         }
     }
 
@@ -1697,21 +1692,73 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
     function computeTemp(object, value) {
     }
-    var amountTurbi = 0, totalTurbi = 0;
-    function computeTurbidity(object, value) {
-        amountTurbi++;
-        totalTurbi = totalTurbi + (1000 - value);
-        $scope.leftData.turbidity = 1 - value / 1000;
+    var turbiColor = 0; turbiColorActivated = false;
+    async function computeTurbidityColor() {
+        turbiColorActivated = true;
+        if (turbiColor == 3) turbiColor = 0;
+        switch (turbiColor) {
+            case 0:
+
+                turbiColor++;
+                break;
+            case 1:
+                await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x00FF00);
+                setTimeout(computeTurbidityGreen, 1000);
+                turbiColor++;
+                break;
+            case 2:
+                await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x0000FF);
+                setTimeout(computeTurbidityBlue, 1000);
+                turbiColor++;
+                break;
+            default:
+                break;
+        }
+        if ($scope.leftData.pumpOn) setTimeout(computeTurbidityColor, 1000);
+        else {
+            turbiColorActivated = false;
+            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
+            turbiColor = 0;
+        }
     }
-    function computeAverageTurbidity() {
-        if (!amountTurbi == 0) $scope.leftData.turbidityRed = totalTurbi / amountTurbi;
-        //console.log($scope.leftData.turbidityRed);
-        totalTurbi = 0;
-        amountTurbi = 0;
+    var amountTurbi = 0, totalTurbi = 0, turbidity = 1000.0, lastTurbi = 1000.0;
+    function computeKnobValue(object, value) {
+        totalTurbi = totalTurbi + parseInt(value);
+        amountTurbi++;
+        lastTurbi = parseInt(value);
+    }
+    async function computeTurbidityRed() {
+        if (amountTurbi == 0) $scope.leftData.turbidityRed = (1 - lastTurbi / 1000.0)/3.0;
+        else $scope.leftData.turbidityRed = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
+        if (turbiColorActivated) {
+            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x00FF00);
+            setTimeout(computeTurbidityGreen, 1000);
+            totalTurbi = 0, amountTurbi = 0;
+        }
+        else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
+    }
+    async function computeTurbidityGreen() {
+        if (amountTurbi == 0) $scope.leftData.turbidityGreen = (1 - lastTurbi / 1000.0)/3.0;
+        else $scope.leftData.turbidityGreen = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
+        if (turbiColorActivated) {
+            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x0000FF);
+            setTimeout(computeTurbidityBlue, 1000);
+            totalTurbi = 0, amountTurbi = 0;
+        }
+        else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
+    }
+    async function computeTurbidityBlue() {
+        if (amountTurbi == 0) $scope.leftData.turbidityBlue = (1 - lastTurbi / 1000.0)/3.0;
+        else $scope.leftData.turbidityBlue = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
+        if (turbiColorActivated) {
+            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
+            setTimeout(computeTurbidityRed, 1000);
+            totalTurbi = 0, amountTurbi = 0;
+        }
+        else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
     }
     function stopWinderTimeout() {
         stopWinderOk = true;
-        winderYoctoModules.yRelay_winderBrake.set_state(true);
     }
     function winderDirectionTimeout() {
         if (winderYoctoModules.yRelay_WinderDirection && $scope.winderData.winderSpeed1 > 0) {
@@ -1880,45 +1927,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             // either request error occured 
             // ...or err.code=EDOCCONFLICT if document with the same id already exists 
         });
-    }
-    var stop_timer, ignore_keypress = false, winderCamera = null;
-    function moveWinderCamera(x_speed, y_speed, zoom_speed, msg) {
-        // Step 1 - Turn off the keyboard processing (so keypresses do not buffer up)
-        // Step 2 - Clear any existing 'stop' timeouts. We will re-schedule a new 'stop' command in this function 
-        // Step 3 - Send the Pan/Tilt/Zoom 'move' command.
-        // Step 4 - In the callback from the PTZ 'move' command we schedule the ONVIF Stop command to be executed after a short delay and re-enable the keyboard
-
-        // Clear any pending 'stop' commands
-        if (stop_timer) clearTimeout(stop_timer);
-
-        // Pause keyboard processing
-        ignore_keypress = true;
-
-        // Move the camera
-        winderCamera.continuousMove({
-            x: x_speed,
-            y: y_speed,
-            zoom: zoom_speed
-        },
-            // completion callback function
-            function (err, stream, xml) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    // schedule a Stop command to run in the future 
-                    stop_timer = setTimeout(stopWinderCamera, 100);
-                    ignore_keypress = false;
-                }
-            });
-    }
-    function stopWinderCamera() {
-        // send a stop command, stopping Pan/Tilt and stopping zoom
-        winderCamera.stop({ panTilt: true, zoom: true },
-            function (err, stream, xml) {
-                if (err) {
-                    console.log(err);
-                }
-            });
     }
     init();
 }

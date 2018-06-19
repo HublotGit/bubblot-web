@@ -60,7 +60,7 @@ $positionXDotWarning: 43.3%;
       @include border(3px);
       @include fontUse($fontFamilly, 9px, $fontWeight);
       @include centerItemX($centerValue);
-      animation: recordOn 2s infinite;
+      //animation: recordOn 2s infinite;
    }
 
    &.focus-left {

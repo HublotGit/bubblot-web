@@ -429,7 +429,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         if (await modules.yServo2_Thrust.isOnline()) {
             console.log('Using module ' + serials.yServo2 + ".servo1");
             //await modules.yServo2_Thrust.set_positionAtPowerOn(1000)
-            //servoModule = await modules.yServo2_Thrust.getModule();
+            //servoModule = await modules.yServo2_Thrust.get_module();
             //await servoModule.saveToFlash();
             await modules.yServo2_Thrust.set_position(-1000);
         }
@@ -491,7 +491,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             console.log("Can't find module " + serials.yColor + ".colorLed1");
         }
     }
-
     function connectYoctoPump(ipaddress, serials, modules) {
         var YAPI = _yocto_api.YAPI;
         YAPI.LogUnhandledPromiseRejections().then(() => {
@@ -1230,7 +1229,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
                         amountTurbi = 0;
                         totalTurbi = 0;
-                        setTimeout(computeTurbidityRed, 1000);
+                        setTimeout(computeTurbidityRed, 500);
                     }
                     turbiColorActivated = true;
                 }
@@ -1692,35 +1691,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
     function computeTemp(object, value) {
     }
-    var turbiColor = 0; turbiColorActivated = false;
-    async function computeTurbidityColor() {
-        turbiColorActivated = true;
-        if (turbiColor == 3) turbiColor = 0;
-        switch (turbiColor) {
-            case 0:
-
-                turbiColor++;
-                break;
-            case 1:
-                await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x00FF00);
-                setTimeout(computeTurbidityGreen, 1000);
-                turbiColor++;
-                break;
-            case 2:
-                await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x0000FF);
-                setTimeout(computeTurbidityBlue, 1000);
-                turbiColor++;
-                break;
-            default:
-                break;
-        }
-        if ($scope.leftData.pumpOn) setTimeout(computeTurbidityColor, 1000);
-        else {
-            turbiColorActivated = false;
-            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
-            turbiColor = 0;
-        }
-    }
     var amountTurbi = 0, totalTurbi = 0, turbidity = 1000.0, lastTurbi = 1000.0;
     function computeKnobValue(object, value) {
         totalTurbi = totalTurbi + parseInt(value);
@@ -1732,7 +1702,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         else $scope.leftData.turbidityRed = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
         if (turbiColorActivated) {
             await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x00FF00);
-            setTimeout(computeTurbidityGreen, 1000);
+            setTimeout(computeTurbidityGreen, 500);
             totalTurbi = 0, amountTurbi = 0;
         }
         else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
@@ -1742,7 +1712,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         else $scope.leftData.turbidityGreen = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
         if (turbiColorActivated) {
             await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x0000FF);
-            setTimeout(computeTurbidityBlue, 1000);
+            setTimeout(computeTurbidityBlue, 500);
             totalTurbi = 0, amountTurbi = 0;
         }
         else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
@@ -1752,7 +1722,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         else $scope.leftData.turbidityBlue = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
         if (turbiColorActivated) {
             await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
-            setTimeout(computeTurbidityRed, 1000);
+            setTimeout(computeTurbidityRed, 500);
             totalTurbi = 0, amountTurbi = 0;
         }
         else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);

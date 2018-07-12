@@ -268,6 +268,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yGps: 'Yocto-Gps',
         yServo1: 'Yocto-Servo1',
         yServo2: 'Yocto-Servo2',
+        yServo3: 'Yocto-Servo3',
         yRelay: 'Yocto-Relay',
         yMotorDC: 'Yocto-Motor-DC',
         yColor: 'Yocto-Color',
@@ -290,6 +291,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yServo2_VSPBottomLeft_2: null,
         yServo2_VSPBottomRight_1: null,
         yServo2_VSPBottomRight_2: null,
+        yServo3_VoltAmp: null,
         yGps_Longitude: null,
         yGps_Latitude: null,
         yPwmOutput_pump: null,
@@ -468,6 +470,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         if (await modules.yServo2_VSPBottomRight_2.isOnline()) {
             console.log('Using module ' + serials.yServo2 + ".servo5");
             await modules.yServo2_VSPBottomRight_2.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo2 + ".servo5");
+        }
+        //Servo motor 3 volt amp
+        modules.yServo3_VoltAmp = YServo.FindServo(serials.yServo3 + ".servo1");
+        if (await modules.yServo3_VoltAmp.isOnline()) {
+            console.log('Using module ' + serials.yServo3 + ".servo1");
+            await modules.yServo3_VoltAmp.set_position(700);
         }
         else {
             console.log("Can't find module " + serials.yServo2 + ".servo5");
@@ -682,15 +693,28 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     packageTransmitted = 0;
                     $scope.leftData.computeVa = false;
                 }
-            }
+            }               
         });
         */
         //Compute measurement for DropSens sensor
-        $scope.$watch('leftData.computeVa', function (value) {
+        $scope.$watch('leftData.computeVa', async function (value) {
             if (value) {
                 vaPotential = 0;
                 console.log('serialPort writing $R;');
-                serialPort.write('$R;');
+                //serialPort.write('$R;');
+                if(bubblotYoctoModules.yServo3_VoltAmp){
+                    //await bubblotYoctoModules.yServo3_VoltAmp.move(0, 1000);
+                    await bubblotYoctoModules.yServo3_VoltAmp.move(1000, 3000);
+                    setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700, 250);
+                        setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(1000,3000);
+                            setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700,250);
+                                setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(1000,3000);
+                                    setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700,250);
+                                        setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(1000,3000);
+                                            setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700,250);
+                                            $scope.leftData.computeVa = false;
+                                            $scope.$apply()}, 9000)}, 750); }, 3500); }, 750); }, 3500); }, 750); }, 3500);
+                }
             }
         });
 

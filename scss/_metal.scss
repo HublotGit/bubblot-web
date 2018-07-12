@@ -13,10 +13,46 @@
       height: 100%;
       background: $radialColor;
       .graph {
-         @include centerItemX($centerValue);
-         top: 16%;
-         width: 70%;
-         height: 54%;
+         position:absolute;
+         left:13%;
+         top: 20%;
+         width: 67%;
+         height: 50%;
+         &.hide{
+             display:none;
+         }
+      }
+      .tank-va{
+        @include centerItemX($centerValue);
+        top:20%;
+        background-color: $secondColor;
+        width:55%;
+        height:45%;
+        @include border(20px);
+        border-style: solid;
+        border-width: 5px;
+        border-color: black;
+        &.hide{
+            display:none;
+        }
+        .water-va{
+            position: absolute;
+            right:0;
+            height:100%;
+            display:block;
+            //width:0%;
+            @include border(20px);
+            background-color: DeepSkyBlue;
+            &.in{
+                background-color: DeepSkyBlue;
+                animation: waterEvolution1 3s linear forwards, waterEvolution2 0.25s 3.5s linear forwards, 
+                            waterEvolution1 3s 4.25s linear forwards, waterEvolution2 0.25s 7.75s linear forwards,
+                            waterEvolution1 3s 8.5s linear forwards, waterEvolution2 0.25s 12s linear forwards,
+                            waterEvolution3 3s 12.75s linear forwards, waterEvolution5 3s 16.25s linear forwards,
+                            waterEvolution4 0.25s 22.25s linear forwards;
+                            
+            }
+        }
       }
    }
 
@@ -60,3 +96,49 @@
       }
    }
 }
+
+@keyframes waterEvolution1 {
+    from {
+       width: 0%;
+    }
+    to {
+       width: 100%;
+    }
+ }
+ @keyframes waterEvolution2 {
+    from {
+       width: 100%;
+    }
+    to {
+       width: 0%;
+    }
+ }
+ @keyframes waterEvolution3 {
+    from {
+       width: 0%;
+    }
+    to {
+       width: 100%;
+    }
+ }
+ @keyframes waterEvolution4 {
+    from {
+       width: 100%;
+    }
+    to {
+       width: 0%;
+    }
+ }
+ @keyframes waterEvolution5 {
+    0% {
+        background: DeepSkyBlue;
+      }
+      /* Adding a step in the middle */
+      50% {
+        background: blueviolet;
+      }
+      100% {
+        background: DeepSkyBlue;
+      }
+ }
+ 

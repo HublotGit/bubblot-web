@@ -591,7 +591,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         stopBits: 1
     };
     //Open serialport for DropSens sensor
-    //var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
+    var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     var gamepadIndex = -1;
     async function init() {

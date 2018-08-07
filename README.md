@@ -1,19 +1,14 @@
-Procédure d'installation
+﻿Procédure d'installation
 - npm -g install npm@next
 - npm install -g gulp dans une console administrateur
-- Installer Visual Studio 2015 Community avec le module C++ uniquement
+- Installer Visual Studio 2017 Community avec le module C++ uniquement (tout cocher module c++)
 - npm install dans le répertoire du projet
 - Installer PICVIDEO.EXE
 - Copier pvmjpgx40.dll dans C:\Program Files\Common Files\Pegasus Imaging
 - Installer les drivers 3DConnexion
 - Copier win_delay_load_hook.cc dans C:\Users\Eric\AppData\Roaming\npm\node_modules\npm\node_modules\node-gyp\src
- et dans C:\Users\Eric\AppData\Roaming\npm\node_modules\node-gyp\src
-
-Serialport:
--npm uninstall
--Install latest node version
--npm install
--copy paste serialPort in node_modules
+ et dans C:\Users\Eric\AppData\Roaming\npm\node_modules\node-gyp\src et C:\Program Files\nodejs\node_modules\npm\node_modules\node-gyp\src
+- npm rebuild --build-from-source serialport
 
 
 CouchDB:

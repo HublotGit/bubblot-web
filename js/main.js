@@ -1034,7 +1034,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             if (bubblotYoctoModules.yDigitalIO) {
                 if (value) {
                     bubblotYoctoModules.yDigitalIO.set_bitState(4, 1);
-                    bubblotYoctoModules.yRelay_elecMagnet.set_state(true);
+                    //bubblotYoctoModules.yRelay_elecMagnet.set_state(true);
                 }
                 else {
                     bubblotYoctoModules.yDigitalIO.set_bitState(4, 0);
@@ -1044,7 +1044,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         $scope.$watch('rightData.ballastEmpty', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
                 if (value) {
-                    bubblotYoctoModules.yRelay_elecMagnet.set_state(false);
+                    //bubblotYoctoModules.yRelay_elecMagnet.set_state(false);
                 }
                 else {
                 }

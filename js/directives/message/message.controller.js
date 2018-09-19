@@ -86,5 +86,45 @@
                 }
             });
         }
+        $scope.printShark = function () {
+            htmlContent = htmlContent1 + "<div class='message-image-shark'></div>\r\n" + htmlContent2;
+            fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
+                if (err) throw err;
+                else {
+                    ssh.execCommand('/home/pi/Desktop/refresh.sh', { cwd: '/var/www' }).then(function (result) {
+                    })
+                }
+            });
+        }
+        $scope.printMinion = function () {
+            htmlContent = htmlContent1 + "<div class='message-image-minion'></div>\r\n" + htmlContent2;
+            fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
+                if (err) throw err;
+                else {
+                    ssh.execCommand('/home/pi/Desktop/refresh.sh', { cwd: '/var/www' }).then(function (result) {
+                    })
+                }
+            });
+        }
+        $scope.printMinion2 = function () {
+            htmlContent = htmlContent1 + "<div class='message-image-minion2'></div>\r\n" + htmlContent2;
+            fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
+                if (err) throw err;
+                else {
+                    ssh.execCommand('/home/pi/Desktop/refresh.sh', { cwd: '/var/www' }).then(function (result) {
+                    })
+                }
+            });
+        }
+        $scope.printBubble = function () {
+            htmlContent = htmlContent1 + "<div class='message-image-bubble'></div>\r\n" + htmlContent2;
+            fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
+                if (err) throw err;
+                else {
+                    ssh.execCommand('/home/pi/Desktop/refresh.sh', { cwd: '/var/www' }).then(function (result) {
+                    })
+                }
+            });
+        }
     }
 }());

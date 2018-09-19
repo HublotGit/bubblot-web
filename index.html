@@ -114,6 +114,34 @@
                     response.end();
                 });
             }
+            else if (request.url == '/shark.gif') {
+                fs.readFile('Raspberry/raspberry-web/shark.gif', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/minion.gif') {
+                fs.readFile('Raspberry/raspberry-web/minion.gif', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/minion2.gif') {
+                fs.readFile('Raspberry/raspberry-web/minion2.gif', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/bubble.gif') {
+                fs.readFile('Raspberry/raspberry-web/bubble.gif', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
             else {
                 fs.readFile('Raspberry/raspberry-web/index.html', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'text/html', 'Content-Length': data.length });

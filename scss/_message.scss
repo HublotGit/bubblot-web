@@ -1,0 +1,59 @@
+@import "mixins";
+// Cadran map panel
+.cadran-message {
+    position:absolute;
+    top:0.5%;
+    left:10.5%;
+    width:12%;
+    form{
+        .message-title{
+            text-align: center;
+            @include fontUse($fontFamilly, 127%, $fontWeight);
+            color: $activeColor;
+        }
+        input{
+            @include fontUse($fontFamilly, 127%, $fontWeight);
+            margin: 5 0;
+        }
+        .predefined-messages{
+            text-align: center;
+            @include fontUse($fontFamilly, 110%, $fontWeight);
+            background-color: gray;
+            border: 2px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+            table{
+                width:100%;
+                background-color: gray;
+                margin: auto;
+                border: 2px solid black;
+                border-radius: 5px;
+                .message-cell{
+                    width:100%;
+                    padding-top: 100%;
+                    cursor: pointer;
+                    &.happy{
+                        background: url('../img/message/happy.png') no-repeat center; 
+                        background-size:100%;
+                    }
+                    &.nice{
+                        background: url('../img/message/nice.png') no-repeat center; 
+                        background-size:100%;
+                    }
+                    &.sad{
+                        background: url('../img/message/sad.png') no-repeat center; 
+                        background-size:100%;
+                    }
+                    &.pacman{
+                        background: url('../img/message/pacman.gif') no-repeat center; 
+                        background-size:100%;
+                    }
+                    &.hublot{
+                        background: url('../img/message/hublot.gif') no-repeat center; 
+                        background-size:100%;
+                    }
+                }
+            }
+    }   
+}

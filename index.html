@@ -65,6 +65,7 @@
         }
         //Handle user request
         function onRequest(request, response) {
+            console.log(request.url)
             if (request.url == '/main.css') {
                 fs.readFile('Raspberry/raspberry-web/main.css', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'text/css', 'Content-Length': data.length });
@@ -79,64 +80,64 @@
                     response.end();
                 });
             }
-            else if (request.url == '/happy.png') {
-                fs.readFile('Raspberry/raspberry-web/happy.png', function (err, data) {
+            else if (request.url == '/img/happy.png') {
+                fs.readFile('Raspberry/raspberry-web/img/happy.png', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/sad.png') {
-                fs.readFile('Raspberry/raspberry-web/sad.png', function (err, data) {
+            else if (request.url == '/img/sad.png') {
+                fs.readFile('Raspberry/raspberry-web/img/sad.png', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/nice.png') {
-                fs.readFile('Raspberry/raspberry-web/nice.png', function (err, data) {
+            else if (request.url == '/img/nice.png') {
+                fs.readFile('Raspberry/raspberry-web/img/nice.png', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/hublot.gif') {
-                fs.readFile('Raspberry/raspberry-web/hublot.gif', function (err, data) {
+            else if (request.url == '/img/hublot.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/hublot.gif', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/pacman.gif') {
-                fs.readFile('Raspberry/raspberry-web/pacman.gif', function (err, data) {
+            else if (request.url == '/img/pacman.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/pacman.gif', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/shark.gif') {
-                fs.readFile('Raspberry/raspberry-web/shark.gif', function (err, data) {
+            else if (request.url == '/img/shark.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/shark.gif', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/minion.gif') {
-                fs.readFile('Raspberry/raspberry-web/minion.gif', function (err, data) {
+            else if (request.url == '/img/minion.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/minion.gif', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/minion2.gif') {
-                fs.readFile('Raspberry/raspberry-web/minion2.gif', function (err, data) {
+            else if (request.url == '/img/minion2.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/minion2.gif', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
                 });
             }
-            else if (request.url == '/bubble.gif') {
-                fs.readFile('Raspberry/raspberry-web/bubble.gif', function (err, data) {
+            else if (request.url == '/img/bubble.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/bubble.gif', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
                     response.write(data);
                     response.end();
@@ -151,6 +152,7 @@
             }
 
         }
+        //SSH connection to refresh the HTML page on the raspberry
         var ssh = new node_ssh();
         const password = 'raspberry'
         ssh.connect({

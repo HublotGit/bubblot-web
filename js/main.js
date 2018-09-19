@@ -61,7 +61,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         pumpOn: false,
         pumpPower: 0,
         filledOk: false,
-        help: false
+        help: false,
+        displayListEmo: false
     };
     $scope.rightData = {
         focusRightIndex: 0,
@@ -1839,7 +1840,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
             else if (va > 4 && va <= 5) {
                 sn = true;
-                isVa = true;
+                isVa = true; 
             }
             else {
                 fe = true;

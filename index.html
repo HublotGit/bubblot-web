@@ -9,7 +9,7 @@
 
     <script>
         var _yocto_api = {};
-        var YoctoLibExport = function(symbol, definition) {
+        var YoctoLibExport = function (symbol, definition) {
             _yocto_api[symbol] = definition;
         }
         if (typeof require != 'undefined') {
@@ -48,14 +48,93 @@
             var recordRTC = require('recordrtc');
             var SerialPort = require('serialport');
             var NodeCouchDb = require('node-couchdb');
-            var exeq = require('exeq');
+            var http = require("http");
+            node_ssh = require('node-ssh');
         }
     </script>
 
     <script>
+        //create a server object:
+        http.createServer(onRequest).listen(8080); //the server object listens on port 8080
+        console.log("Server is now running...");
+        //404 response
+        function send404Response(response) {
+            response.writeHead(404, { "Content-Type": "text-plain" });
+            response.write("Error 404: Page not found!");
+            response.end();
+        }
+        //Handle user request
+        function onRequest(request, response) {
+            if (request.url == '/main.css') {
+                fs.readFile('Raspberry/raspberry-web/main.css', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'text/css', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/main.js') {
+                fs.readFile('Raspberry/raspberry-web/main.js', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'text/javascript', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/happy.png') {
+                fs.readFile('Raspberry/raspberry-web/happy.png', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/sad.png') {
+                fs.readFile('Raspberry/raspberry-web/sad.png', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/nice.png') {
+                fs.readFile('Raspberry/raspberry-web/nice.png', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/hublot.gif') {
+                fs.readFile('Raspberry/raspberry-web/hublot.gif', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/pacman.gif') {
+                fs.readFile('Raspberry/raspberry-web/pacman.gif', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else {
+                fs.readFile('Raspberry/raspberry-web/index.html', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'text/html', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+
+        }
+        var ssh = new node_ssh();
+        const password = 'raspberry'
+        ssh.connect({
+            host: '10.88.143.46',
+            username: 'pi',
+            port: 22,
+            password,
+            tryKeyboard: true,
+        })
         //CouchDB instance of bubblot 1
         const couchBubblot1 = new NodeCouchDb({
-            host: 'localhost', //IP adress bubblot 1 192.168.1.1
+            host: 'localhost', //IP address bubblot 1 192.168.1.1
             protocol: 'http',
             port: 5984,
             auth: {
@@ -101,7 +180,7 @@
             // data is json response 
             // headers is an object with all response headers 
             // status is statusCode number 
-            if (data.user == idBubblot) { 
+            if (data.user == idBubblot) {
                 couchBubblot1.update("pump", {
                     _id: data._id,
                     _rev: data._rev,
@@ -134,7 +213,7 @@
                         couchBubblot1.update("winder", {
                             _id: data._id,
                             _rev: data._rev,
-                            user: idBubblot, 
+                            user: idBubblot,
                         }).then(({ data, headers, status }) => {
                             // data is json response 
                             // headers is an object with all response headers 
@@ -359,7 +438,7 @@
 
 </head>
 
-<body ng-controller="mainController as vm" style="background-color:rgba(0,0,0,0);"> 
+<body ng-controller="mainController as vm" style="background-color:rgba(0,0,0,0);">
 
     <!-- Audio winder ALERT -->
     <audio src="img/audioAlert.wav" id="audio-alert-winder" loop></audio>
@@ -685,7 +764,7 @@
     </script>
 
     <script src="node_modules/angular/angular.js"></script>
-    <script src="js/main.js"></script> 
+    <script src="js/main.js"></script>
     <script src="js/directives/circle-progress/circle-progress.js"></script>
     <script src="js/directives/horizon/horizon.controller.js"></script>
     <script src="js/directives/horizon/horizon.js"></script>
@@ -757,6 +836,8 @@
     <script src="js/directives/map-panel/map-panel.js"></script>
     <script src="js/directives/map/map.controller.js"></script>
     <script src="js/directives/map/map.js"></script>
+    <script src="js/directives/message/message.js"></script>
+    <script src="js/directives/message/message.controller.js"></script>
 
 </body>
 

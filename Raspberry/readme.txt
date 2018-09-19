@@ -1,0 +1,84 @@
+###Connect RD wifi###
+-sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+-Edit file as such:
+
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=CH
+ap_scan=1
+
+network={
+    scan_ssid=1
+    ssid="RD"
+    psk="wifi4RND"
+}
+
+-sudo reboot
+######
+
+###Install VirutalUSB###
+-Download https://urldefense.proofpoint.com/v2/url?u=http-3A__virtualhere.com_sites_default_files_usbserver_vhusbdarmpi3&d=DwIBaQ&c=uSEuY5DFUpK1tHJgduTViA&r=zrRO3e5H_zWHxPaqxVR6AiITzPd4iGSsg72uR38ALac&m=u7euefJ9PNf6kUQK830HQkL46dxb4Y6miNIhNlEBYwA&s=vv_rIMFvIPjNw-mV_uO8OqlRWrO2mJXzdNMWy-B5ufY&e=
+-sudo chmod +x ./vhusbdarmpi3
+-sudo crontab -e
+-add the following line: @reboot sudo PATH_TO_VHUSBDARMIPI3/vhusbdarmpi3 -b
+######
+
+###Launch chromium at boot and refresh###
+-sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
+-Add:
+    @xset s off
+    @xset -dpms
+    @xset s noblank
+    @chromium-browser --app=http:/IP_PC:8080 --start-fullscreen
+-sudo apt-get install xdotool
+-copy refresh.sh in /home/pi/Desktop
+-enable ssh on the pi
+######
+
+###Install yad### (no needed)
+1. Download and unpack from Sourceforge
+2. cd to yad directory
+3. sudo apt-get update && sudo apt-get upgrade
+4. sudo apt-get install intltool
+5. sudo apt-get install libgtk2.0-dev libwebkitgtk-1.0-0 libwebkitgtk-dev
+6. sudo autoreconf -ivf
+7. ./configure --enable-icon-browser
+8. make
+9. sudo make install
+10. Test
+######
+
+###Disable sleep mode###
+-sudo nano /boot/config.txt
+-Add this line: 
+    hdmi_blanking=1
+-sudo nano ~/.config/lxsession/LXDE-pi/autostart
+-Add this lines:
+    @xset s 0 0
+    @xset s noblank
+    @xset s noexpose
+    @xset dpms 0 0 0
+-sudo reboot
+######
+
+###Install LCD-Touchscreen drivers###
+-sudo nano /boot/config.txt
+-Append the following lines at the bottom:
+
+#Uncomment to set LCD screen set up
+hdmi_group=2
+hdmi_mode=1
+hdmi_mode=87
+hdmi_cvt 800 480 60 6 0 0 0
+
+-Navigate in the terminal to the folder where the LCD-Touchscreen drivers are located
+-Install the drivers with the following commands:
+
+tar xzvf joy-IT-lcd5-driver.tar.gz (if the LCD-show folder has not been decompressed yet)
+cd LCD-show/
+sudo bash ./LCD5-show
+
+-reboot with the LCD-Touchscreen plugged 
+######
+
+

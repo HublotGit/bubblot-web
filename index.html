@@ -65,7 +65,6 @@
         }
         //Handle user request
         function onRequest(request, response) {
-            console.log(request.url)
             if (request.url == '/main.css') {
                 fs.readFile('Raspberry/raspberry-web/main.css', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'text/css', 'Content-Length': data.length });
@@ -154,7 +153,7 @@
         }
         //SSH connection to refresh the HTML page on the raspberry
         var ssh = new node_ssh();
-        const password = 'raspberry'
+        const password = 'bubblot'
         ssh.connect({
             host: '10.88.143.46',
             username: 'pi',

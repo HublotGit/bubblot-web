@@ -1,10 +1,10 @@
 
 ! Flag si separer graphes cam
-giCamFlagSepGraph                        0
+giCamFlagSepGraph                        1
 
 ! Cam num
 gpiCamNum[0]                             0
-gpiCamNum[1]                             0
+gpiCamNum[1]                             1
 
 ! Flag si sync cam
 giCamFlagSync                            1

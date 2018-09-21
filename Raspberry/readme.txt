@@ -33,6 +33,7 @@ network={
 -sudo apt-get install xdotool
 -copy refresh.sh in /home/pi/Desktop
 -enable ssh on the pi
+-change password to "bubblot"
 ######
 
 ###Install yad### (no needed)

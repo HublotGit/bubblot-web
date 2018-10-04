@@ -23,7 +23,7 @@ network={
 -add the following line: @reboot sudo PATH_TO_VHUSBDARMIPI3/vhusbdarmpi3 -b
 ######
 
-###Launch chromium at boot and refresh###
+###Launch chromium at boot + refresh web page + fix ip###
 -sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
 -Add:
     @xset s off
@@ -32,8 +32,22 @@ network={
     @chromium-browser --app=http:/IP_PC:8080 --start-fullscreen
 -sudo apt-get install xdotool
 -copy refresh.sh in /home/pi/Desktop
+-sudo chmod +x refresh.sh
 -enable ssh on the pi
 -change password to "bubblot"
+-sudo nano /etc/dhcpcd.conf
+-add the following lines:
+    interface eth0
+
+    static ip_address=192.168.1.3/24
+    static routers=192.168.1.1
+    static domain_name_servers=192.168.1.1
+
+    interface wlan0
+
+    static ip_address=192.168.1.3/24
+    static routers=192.168.1.1
+    static domain_name_servers=192.168.1.1
 ######
 
 ###Install yad### (no needed)

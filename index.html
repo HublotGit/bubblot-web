@@ -46,10 +46,10 @@
             var randomFillSync = require("crypto").randomFillSync;
             var fs = require('fs');
             var recordRTC = require('recordrtc');
-            var SerialPort = require('serialport');
+            //var SerialPort = require('serialport');
             var NodeCouchDb = require('node-couchdb');
             var http = require("http");
-            node_ssh = require('node-ssh');
+            var node_ssh = require('node-ssh');
         }
     </script>
 
@@ -155,7 +155,7 @@
         var ssh = new node_ssh();
         const password = 'bubblot'
         ssh.connect({
-            host: '10.88.143.46',
+            host: '192.168.1.6',
             username: 'pi',
             port: 22,
             password,
@@ -163,7 +163,7 @@
         })
         //CouchDB instance of bubblot 1
         const couchBubblot1 = new NodeCouchDb({
-            host: 'localhost', //IP address bubblot 1 192.168.1.1
+            host: '192.168.1.237', //IP address bubblot 1 192.168.1.1
             protocol: 'http',
             port: 5984,
             auth: {
@@ -172,10 +172,10 @@
             }
         });
         //Init winder user in the dataBase
-        var idWinder = "0f14989011256516380f22bc5f003f2c";
+        var idWinder = "97c0b8bc9a05e0e65dbb3ae5f8000684";
         //idPerso: 0f14989011256516380f22bc5f003f2c
         //idZotac: 203dcd7303db8df08d50a660c8008ee7
-        var idPump = "56ba23e46550745a92abf78d220043a5";
+        var idPump = "97c0b8bc9a05e0e65dbb3ae5f8001c84";
         //idPerso: 56ba23e46550745a92abf78d220043a5
         //idZotac: 203dcd7303db8df08d50a660c804f8a5
         var idBubblot = "1";

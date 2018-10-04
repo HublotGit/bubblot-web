@@ -520,7 +520,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 if (onLine) {
                     console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
                     modules.yPwmOutput_pump.set_frequency(20000);
-                    modules.yPwmOutput_pump.set_enabled(Y_ENABLED_TRUE);
+                    modules.yPwmOutput_pump.set_enabled(_yocto_api.Y_ENABLED_TRUE);
                     modules.yPwmOutput_pump.set_dutyCycle(0);
                 }
                 else {
@@ -561,7 +561,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 if (onLine) {
                     console.log('Using module ' + serials.yPwmOutput + ".pwmOutput1");
                     modules.yPwmOutput_WinderSpeed.set_frequency(5000);
-                    modules.yPwmOutput_WinderSpeed.set_enabled(Y_ENABLED_TRUE);
+                    modules.yPwmOutput_WinderSpeed.set_enabled(_yocto_api.Y_ENABLED_TRUE);
                     modules.yPwmOutput_WinderSpeed.set_dutyCycle(0);
                 }
                 else {
@@ -592,13 +592,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         stopBits: 1
     };
     //Open serialport for DropSens sensor
-    var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
+    //var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     var gamepadIndex = -1;
     async function init() {
         //Connect to Yocto module
-        await connectYoctoBubblot("localhost", serialBubblot, bubblotYoctoModules);
-        //connectYoctoWinder1("192.168.1.4", serialWinder, winderYoctoModules);
+        await connectYoctoBubblot("192.168.1.2", serialBubblot, bubblotYoctoModules);
+        connectYoctoWinder("192.168.1.228", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);

@@ -100,6 +100,27 @@
                     response.end();
                 });
             }
+            else if (request.url == '/img/minionFace.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/minionFace.png', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/img/minionGlass.gif') {
+                fs.readFile('Raspberry/raspberry-web/img/minionGlass.png', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
+            else if (request.url == '/img/minionGlass2.png') {
+                fs.readFile('Raspberry/raspberry-web/img/minionGlass2.png', function (err, data) {
+                    response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });
+                    response.write(data);
+                    response.end();
+                });
+            }
             else if (request.url == '/img/hublot.gif') {
                 fs.readFile('Raspberry/raspberry-web/img/hublot.gif', function (err, data) {
                     response.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': data.length });

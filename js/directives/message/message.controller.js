@@ -102,6 +102,39 @@
                 }
             });
         }
+        //Function to write HTML file with minion emoticon + refresh the web page on the client
+        $scope.printMinionFace = function () {
+            htmlContent = htmlContent1 + "<div class='message-image-minion-face'></div>\r\n" + htmlContent2;
+            fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
+                if (err) throw err;
+                else {
+                    ssh.execCommand('/home/pi/Desktop/refresh.sh', { cwd: '/var/www' }).then(function (result) {
+                    })
+                }
+            });
+        }
+        //Function to write HTML file with minion emoticon + refresh the web page on the client
+        $scope.printMinionGlass = function () {
+            htmlContent = htmlContent1 + "<div class='message-image-minion-glass'></div>\r\n" + htmlContent2;
+            fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
+                if (err) throw err;
+                else {
+                    ssh.execCommand('/home/pi/Desktop/refresh.sh', { cwd: '/var/www' }).then(function (result) {
+                    })
+                }
+            });
+        }
+        //Function to write HTML file with minion emoticon + refresh the web page on the client
+        $scope.printMinionGlass2 = function () {
+            htmlContent = htmlContent1 + "<div class='message-image-minion-glass2'></div>\r\n" + htmlContent2;
+            fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
+                if (err) throw err;
+                else {
+                    ssh.execCommand('/home/pi/Desktop/refresh.sh', { cwd: '/var/www' }).then(function (result) {
+                    })
+                }
+            });
+        }
         //Function to write HTML file with pacman emoticon + refresh the web page on the client
         $scope.printPacman = function () {
             htmlContent = htmlContent1 + "<div class='message-image-pacman'></div>\r\n" + htmlContent2;

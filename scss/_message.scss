@@ -3,27 +3,29 @@
 .cadran-message {
     position:absolute;
     top:0.5%;
-    left:10.5%;
-    width:12%;
+    left:11.5%;
+    width:10%;
     form{
         .message-title{
             text-align: center;
-            @include fontUse($fontFamilly, 127%, $fontWeight);
+            @include fontUse($fontFamilly, 103%, $fontWeight);
             color: $activeColor;
         }
+        .message-table{
+            margin: auto;
+        }
         input{
-            @include fontUse($fontFamilly, 127%, $fontWeight);
-            margin: 5 0;
+            @include fontUse($fontFamilly, 103%, $fontWeight);
+            width:100%;
         }
         .predefined-messages{
-            text-align: center;
-            @include fontUse($fontFamilly, 110%, $fontWeight);
-            background-color: gray;
-            border: 2px solid black;
-            border-radius: 5px;
+            background: url('../img/message/happy.png') no-repeat center; 
+            background-size:100%;
             cursor: pointer;
+            width:100%;
+            padding-top: 100%;
         }
-            table{
+            .emoticons-list{
                 width:100%;
                 background-color: gray;
                 margin: auto;

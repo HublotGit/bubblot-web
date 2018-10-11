@@ -1,8 +1,16 @@
 <div id="message" class="cadran-message">
     <form>
         <div class="message-title">MESSAGE FOR DIVERS</div>
-        <input class="message-text" style="width:100%" type="text">
-        <div class="predefined-messages" ng-click="displayListEmo=!displayListEmo">EMOTICONS</div>
+        <table class="message-table">
+            <tr>
+                <td style="width:85%;">
+                    <input class="message-text" type="text">
+                </td>
+                <td style="width:15%;">
+                    <div class="predefined-messages" ng-click="displayListEmo=!displayListEmo"></div>
+                </td>
+            </tr>
+        </table>
         <table class="emoticons-list">
             <tr>
                 <td>

@@ -22,7 +22,7 @@
                         //scope.updateGraph(element.find('canvas')[0]);
                         //element.find(".water-va")[0].addClass = ".water-va.in";
                         //console.log(element.find(".water-va.in"));
-                        //setTimeout(function(){ scope. }, 2500);
+                        setTimeout(function(){ scope.computeVa=false }, 23000);
                     }
                 });     
             }

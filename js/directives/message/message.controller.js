@@ -5,7 +5,6 @@
         .controller('messageCtrl', messageCtrl);
 
     function messageCtrl($scope, $element) {
-        $scope.displayPreMessage = false;
         //Structure of the HTML file that is sent to the client
         var htmlContent1 = "<!DOCTYPE html>\r\n";
         htmlContent1 += "<html>\r\n";
@@ -79,6 +78,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with sad emoticon + refresh the web page on the client
         $scope.printSad = function () {
@@ -90,6 +90,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with nice emoticon + refresh the web page on the client
         $scope.printNice = function () {
@@ -101,6 +102,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with minion emoticon + refresh the web page on the client
         $scope.printMinionFace = function () {
@@ -123,6 +125,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with minion emoticon + refresh the web page on the client
         $scope.printMinionGlass2 = function () {
@@ -134,6 +137,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with pacman emoticon + refresh the web page on the client
         $scope.printPacman = function () {
@@ -145,6 +149,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with hublot emoticon + refresh the web page on the client
         $scope.printHublot = function () {
@@ -156,6 +161,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with shark emoticon + refresh the web page on the client
         $scope.printShark = function () {
@@ -167,6 +173,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with minion emoticon + refresh the web page on the client
         $scope.printMinion = function () {
@@ -178,6 +185,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with minion emoticon + refresh the web page on the client
         $scope.printMinion2 = function () {
@@ -189,10 +197,11 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
         //Function to write HTML file with bubble emoticon + refresh the web page on the client
         $scope.printBubble = function () {
-            htmlContent = htmlContent1 + "<div class='message-image-bubble'></div>\r\n" + htmlContent2;
+            htmlContent = htmlContent1 + "<div class='message-image-bubble'></div>\r\n" + htmlContent2;   
             fs.writeFile('Raspberry/raspberry-web/index.html', htmlContent, function (err) {
                 if (err) throw err;
                 else {
@@ -200,6 +209,7 @@
                     })
                 }
             });
+            $scope.displayListEmo=false;
         }
     }
 }());

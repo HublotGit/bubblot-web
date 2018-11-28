@@ -95,8 +95,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         distanceyToPump: -20,
         spotlightIntensity: 75,
         foglightIntensity: 75,
-        spotlightSwitchOn: true,
-        foglightSwitchOn: true,
+        spotlightSwitchOn: false,
+        foglightSwitchOn: false,
         cameraRec: false,
         cameraRecMenu: true,
         cameraPlay: false,
@@ -482,16 +482,16 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             await modules.yServo3_VoltAmp.set_position(700);
         }
         else {
-            console.log("Can't find module " + serials.yServo2 + ".servo5");
+            console.log("Can't find module " + serials.yServo2 + ".servo1");
         }
         //Connexion to knob module
         modules.yAnButton_turbi = YAnButton.FindAnButton(serials.yKnob + ".anButton5");
         if (await modules.yAnButton_turbi.isOnline()) {
-            console.log('Using module ' + serials.yKnob + ".anButton1");
+            console.log('Using module ' + serials.yKnob + ".anButton5");
             modules.yAnButton_turbi.registerValueCallback(computeKnobValue);
         }
         else {
-            console.log("Can't find module " + serials.yKnob + ".anButton1");
+            console.log("Can't find module " + serials.yKnob + ".anButton5");
         }
         //Connexion to color module
         modules.yColorLed_turbi = YColorLed.FindColorLed(serials.yColor + ".colorLed1");
@@ -598,7 +598,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     async function init() {
         //Connect to Yocto module
         await connectYoctoBubblot("192.168.1.2", serialBubblot, bubblotYoctoModules);
-        connectYoctoWinder("192.168.1.228", serialWinder, winderYoctoModules);
+        //connectYoctoWinder("192.168.1.228", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);
@@ -900,23 +900,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
         });
         $scope.$watch('rightData.spotlightSwitchOn', function (value) {
-            if (digitalio) {
-                if (value) {
-                    digitalIoState |= 64;
-                } else {
-                    digitalIoState &= 255 - 64;
-                }
-                digitalio.set_portState(digitalIoState);
+            if (bubblotYoctoModules.yDigitalIO) {
+                if(value) bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
+                else bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
             }
         });
         $scope.$watch('rightData.foglightSwitchOn', function (value) {
-            if (digitalio) {
-                if (value) {
-                    digitalIoState |= 128;
-                } else {
-                    digitalIoState &= 255 - 128;
-                }
-                digitalio.set_portState(digitalIoState);
+            if (bubblotYoctoModules.yDigitalIO) {
+                if(value) bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
+                else bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
             }
         });
         $scope.$watch('leftData.threeDAngle', function (value) {

@@ -4,7 +4,7 @@
         .module('bubblot')
         .controller('lightingCtrl', lightingCtrl);
 
-    function lightingCtrl($scope) {
+    function lightingCtrl($timeout, $scope) {
         var vm = this;
         var cadran=document.getElementsByClassName('cadrans-container lighting');
         for(var i=0; i<cadran.length; i++){
@@ -39,6 +39,18 @@
                     $scope.$apply();
                 }
             }
+        }
+        $scope.spotlightSwitchOnFunction = function () {
+            $scope.spotlightSwitchOn=!$scope.spotlightSwitchOn;
+            $timeout(function(){
+                $scope.$apply();
+            });
+        }
+        $scope.foglightSwitchOnFunction = function () {
+            $scope.foglightSwitchOn=!$scope.foglightSwitchOn;
+            $timeout(function(){
+                $scope.$apply();
+            });
         }
     }
 

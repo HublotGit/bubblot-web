@@ -1,8 +1,8 @@
 <div id="lighting" class="cadrans-container lighting">
     <div class="cadran"></div>
-    <div class="spotlight-btn on" ng-class="{on:spotlightSwitchOn}" ng-click="spotlightSwitchOn=!spotlightSwitchOn">
+    <div class="spotlight-btn" ng-class="{on:spotlightSwitchOn}" ng-click="spotlightSwitchOnFunction()">
     </div>
-    <div class="foglight-btn" ng-class="{on:foglightSwitchOn}" ng-click="foglightSwitchOn=!foglightSwitchOn"></div>
+    <div class="foglight-btn" ng-class="{on:foglightSwitchOn}" ng-click="foglightSwitchOnFunction()"></div>
     <div class="spotlight-progressbar">
         <div class="progress-bar" style="width: {{spotlightSwitchOn?spotlightIntensity:0}}%"></div>
         <div class="selected-drag" style="left: {{spotlightSwitchOn?spotlightIntensity:0}}%;opacity: {{spotlightSwitchOn?1:0}}" draggable position="spotlightIntensity"></div>

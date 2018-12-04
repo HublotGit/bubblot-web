@@ -126,7 +126,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         security: 40,
         securityAlert: false,
         ballastState: 50,
-        thrust: 0.2,
         isCtrl: false,
         help: false
     };
@@ -927,13 +926,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         $scope.$watch('rightData.spotlightSwitchOn', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
                 if (value) bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
-                else bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
+                else bubblotYoctoModules.yDigitalIO.set_bitState(6, 0);
             }
         });
         $scope.$watch('rightData.foglightSwitchOn', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
                 if (value) bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
-                else bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
+                else bubblotYoctoModules.yDigitalIO.set_bitState(7, 0);
             }
         });
         $scope.$watch('leftData.threeDAngle', function (value) {
@@ -1132,6 +1131,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
                     $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
                     $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    bubblotYoctoModules.yServo2_Thrust.set_position(-500);
                 }
                 else {
                     //Get joystick position
@@ -1759,9 +1759,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         lastTurbi = parseInt(value);
     }
     async function computeReedValue(object, value) {
-        console.log(value);
-        if (false) $scope.leftData.alarmGround = false;
-        else $scope.leftData.alarmGround = false;
+        if(value > 500){
+            $scope.leftData.alarmGround = false;
+            bubblotYoctoModules.yServo2_Thrust.set_position(parseFloat($scope.rightData.thrust)*2000-1000);
+        } 
+        else $scope.leftData.alarmGround = true;
     }
     async function computeTurbidityRed() {
         if (amountTurbi == 0) $scope.leftData.turbidityRed = (1 - lastTurbi / 1000.0) / 3.0;

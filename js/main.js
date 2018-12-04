@@ -56,6 +56,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         turbidityBlue: 0,
         turbidityGreen: 0,
         magnetism: 0.5,
+        alarmGround: false,
         computeVa: false,
         vaData: [],
         pumpOn: false,
@@ -485,10 +486,20 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             console.log("Can't find module " + serials.yServo2 + ".servo1");
         }
         //Connexion to knob module
+        //Turbidity detection
         modules.yAnButton_turbi = YAnButton.FindAnButton(serials.yKnob + ".anButton5");
         if (await modules.yAnButton_turbi.isOnline()) {
             console.log('Using module ' + serials.yKnob + ".anButton5");
-            modules.yAnButton_turbi.registerValueCallback(computeKnobValue);
+            await modules.yAnButton_turbi.registerValueCallback(computeTurbiValue);
+        }
+        else {
+            console.log("Can't find module " + serials.yKnob + ".anButton5");
+        }
+        //Reed relai for ground detection 
+        modules.yAnButton_reed = YAnButton.FindAnButton(serials.yKnob + ".anButton4");
+        if (await modules.yAnButton_reed.isOnline()) {
+            console.log('Using module ' + serials.yKnob + ".anButton4");
+            await modules.yAnButton_reed.registerValueCallback(computeReedValue);
         }
         else {
             console.log("Can't find module " + serials.yKnob + ".anButton5");
@@ -703,18 +714,32 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 vaPotential = 0;
                 console.log('serialPort writing $R;');
                 //serialPort.write('$R;');
-                if(bubblotYoctoModules.yServo3_VoltAmp){
+                if (bubblotYoctoModules.yServo3_VoltAmp) {
                     //await bubblotYoctoModules.yServo3_VoltAmp.move(0, 1000);
                     await bubblotYoctoModules.yServo3_VoltAmp.move(1000, 3000);
-                    setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700, 250);
-                        setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(1000,3000);
-                            setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700,250);
-                                setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(1000,3000);
-                                    setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700,250);
-                                        setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(1000,3000);
-                                            setTimeout(async function(){ await bubblotYoctoModules.yServo3_VoltAmp.move(700,250);
-                                            $scope.leftData.computeVa = false;
-                                            $scope.$apply()}, 9000)}, 750); }, 3500); }, 750); }, 3500); }, 750); }, 3500);
+                    setTimeout(async function () {
+                        await bubblotYoctoModules.yServo3_VoltAmp.move(700, 250);
+                        setTimeout(async function () {
+                            await bubblotYoctoModules.yServo3_VoltAmp.move(1000, 3000);
+                            setTimeout(async function () {
+                                await bubblotYoctoModules.yServo3_VoltAmp.move(700, 250);
+                                setTimeout(async function () {
+                                    await bubblotYoctoModules.yServo3_VoltAmp.move(1000, 3000);
+                                    setTimeout(async function () {
+                                        await bubblotYoctoModules.yServo3_VoltAmp.move(700, 250);
+                                        setTimeout(async function () {
+                                            await bubblotYoctoModules.yServo3_VoltAmp.move(1000, 3000);
+                                            setTimeout(async function () {
+                                                await bubblotYoctoModules.yServo3_VoltAmp.move(700, 250);
+                                                $scope.leftData.computeVa = false;
+                                                $scope.$apply()
+                                            }, 9000)
+                                        }, 750);
+                                    }, 3500);
+                                }, 750);
+                            }, 3500);
+                        }, 750);
+                    }, 3500);
                 }
             }
         });
@@ -901,13 +926,13 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         $scope.$watch('rightData.spotlightSwitchOn', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
-                if(value) bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
+                if (value) bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
                 else bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
             }
         });
         $scope.$watch('rightData.foglightSwitchOn', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
-                if(value) bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
+                if (value) bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
                 else bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
             }
         });
@@ -1096,120 +1121,134 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         if (gamepad) {
             if (gamepad[gamepadIndex]) {
                 var gp = gamepad[gamepadIndex];
-                //Get joystick position
-                if (Math.abs(gp.axes[0]) >= Math.abs(gp.axes[1]) && Math.abs(gp.axes[0]) >= Math.abs(gp.axes[5])) {
-                    if (!gp.buttons[1].pressed) {
-                        //Move right
-                        if (gp.axes[0] >= 0) {
-                            $scope.rightData.engine1Angle = 180 + 135;
-                            $scope.rightData.engine2Angle = 0 + 135;
-                            $scope.rightData.engine3Angle = 180 + 135;
-                            $scope.rightData.engine4Angle = 0 + 135;
-                        }
-                        //Move left
-                        else {
-                            $scope.rightData.engine1Angle = 0 + 135;
-                            $scope.rightData.engine2Angle = 180 + 135;
-                            $scope.rightData.engine3Angle = 0 + 135;
-                            $scope.rightData.engine4Angle = 180 + 135;
-                        }
-                    }
-                    else {
-                        //Rotate Ry
-                        if (gp.axes[0] >= 0) {
-                            $scope.rightData.engine1Angle = 180 + 135;
-                            $scope.rightData.engine2Angle = 0 + 135
-                            $scope.rightData.engine3Angle = 0 + 135;
-                            $scope.rightData.engine4Angle = 180 + 135;
-                        }
-                        //Rotate -Ry
-                        else {
-                            $scope.rightData.engine1Angle = 0 + 135;
-                            $scope.rightData.engine2Angle = 180 + 135;
-                            $scope.rightData.engine3Angle = 180 + 135;
-                            $scope.rightData.engine4Angle = 0 + 135;
-                        }
-                    }
-                    $scope.rightData.engine1Radius = Math.abs(gp.axes[0]) * 60;
-                    $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
-                    $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
-                    $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
-                }
-                else if (Math.abs(gp.axes[1]) >= Math.abs(gp.axes[5])) {
-                    if (!gp.buttons[1].pressed) {
-                        //Move forward
-                        if (gp.axes[1] <= 0) {
-                            $scope.rightData.engine1Angle = 90 + 135;
-                            $scope.rightData.engine2Angle = 270 + 135 - 360;
-                            $scope.rightData.engine3Angle = 270 + 135 - 360;
-                            $scope.rightData.engine4Angle = 90 + 135;
-                        }
-                        //Move backward
-                        else {
-                            $scope.rightData.engine1Angle = 270 + 135 - 360;
-                            $scope.rightData.engine2Angle = 90 + 135;
-                            $scope.rightData.engine3Angle = 90 + 135;
-                            $scope.rightData.engine4Angle = 270 + 135 - 360;
-                        }
-                    }
-                    else {
-                        //Rotate Rx
-                        if (gp.axes[1] <= 0) {
-                            $scope.rightData.engine1Angle = 90 + 135;
-                            $scope.rightData.engine2Angle = 270 + 135 - 360;
-                            $scope.rightData.engine3Angle = 90 + 135;
-                            $scope.rightData.engine4Angle = 270 + 135 - 360;
-                        }
-                        //Rotate -Rx
-                        else {
-                            $scope.rightData.engine1Angle = 270 + 135 - 360;
-                            $scope.rightData.engine2Angle = 90 + 135;
-                            $scope.rightData.engine3Angle = 270 + 135 - 360;
-                            $scope.rightData.engine4Angle = 90 + 135;
-                        }
-                    }
-                    $scope.rightData.engine1Radius = Math.abs(gp.axes[1]) * 60;
+                //Check if ground alarm
+                if ($scope.leftData.alarmGround) {
+                    //Move up
+                    $scope.rightData.engine1Angle = 180 + 135;
+                    $scope.rightData.engine2Angle = 180 + 135;
+                    $scope.rightData.engine3Angle = 0 + 135;
+                    $scope.rightData.engine4Angle = 0 + 135;
+                    $scope.rightData.engine1Radius = 60;
                     $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
                     $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
                     $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                 }
                 else {
-                    if (!gp.buttons[1].pressed) {
-                        //Move up
-                        if (gp.axes[5] <= 0) {
-                            $scope.rightData.engine1Angle = 180 + 135;
-                            $scope.rightData.engine2Angle = 180 + 135;
-                            $scope.rightData.engine3Angle = 0 + 135;
-                            $scope.rightData.engine4Angle = 0 + 135;
+                    //Get joystick position
+                    if (Math.abs(gp.axes[0]) >= Math.abs(gp.axes[1]) && Math.abs(gp.axes[0]) >= Math.abs(gp.axes[5])) {
+                        if (!gp.buttons[1].pressed) {
+                            //Move right
+                            if (gp.axes[0] >= 0) {
+                                $scope.rightData.engine1Angle = 180 + 135;
+                                $scope.rightData.engine2Angle = 0 + 135;
+                                $scope.rightData.engine3Angle = 180 + 135;
+                                $scope.rightData.engine4Angle = 0 + 135;
+                            }
+                            //Move left
+                            else {
+                                $scope.rightData.engine1Angle = 0 + 135;
+                                $scope.rightData.engine2Angle = 180 + 135;
+                                $scope.rightData.engine3Angle = 0 + 135;
+                                $scope.rightData.engine4Angle = 180 + 135;
+                            }
                         }
-                        //Move down
                         else {
-                            $scope.rightData.engine1Angle = 0 + 135;
-                            $scope.rightData.engine2Angle = 0 + 135;
-                            $scope.rightData.engine3Angle = 180 + 135;
-                            $scope.rightData.engine4Angle = 180 + 135;
+                            //Rotate Ry
+                            if (gp.axes[0] >= 0) {
+                                $scope.rightData.engine1Angle = 180 + 135;
+                                $scope.rightData.engine2Angle = 0 + 135
+                                $scope.rightData.engine3Angle = 0 + 135;
+                                $scope.rightData.engine4Angle = 180 + 135;
+                            }
+                            //Rotate -Ry
+                            else {
+                                $scope.rightData.engine1Angle = 0 + 135;
+                                $scope.rightData.engine2Angle = 180 + 135;
+                                $scope.rightData.engine3Angle = 180 + 135;
+                                $scope.rightData.engine4Angle = 0 + 135;
+                            }
                         }
+                        $scope.rightData.engine1Radius = Math.abs(gp.axes[0]) * 60;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
+                    }
+                    else if (Math.abs(gp.axes[1]) >= Math.abs(gp.axes[5])) {
+                        if (!gp.buttons[1].pressed) {
+                            //Move forward
+                            if (gp.axes[1] <= 0) {
+                                $scope.rightData.engine1Angle = 90 + 135;
+                                $scope.rightData.engine2Angle = 270 + 135 - 360;
+                                $scope.rightData.engine3Angle = 270 + 135 - 360;
+                                $scope.rightData.engine4Angle = 90 + 135;
+                            }
+                            //Move backward
+                            else {
+                                $scope.rightData.engine1Angle = 270 + 135 - 360;
+                                $scope.rightData.engine2Angle = 90 + 135;
+                                $scope.rightData.engine3Angle = 90 + 135;
+                                $scope.rightData.engine4Angle = 270 + 135 - 360;
+                            }
+                        }
+                        else {
+                            //Rotate Rx
+                            if (gp.axes[1] <= 0) {
+                                $scope.rightData.engine1Angle = 90 + 135;
+                                $scope.rightData.engine2Angle = 270 + 135 - 360;
+                                $scope.rightData.engine3Angle = 90 + 135;
+                                $scope.rightData.engine4Angle = 270 + 135 - 360;
+                            }
+                            //Rotate -Rx
+                            else {
+                                $scope.rightData.engine1Angle = 270 + 135 - 360;
+                                $scope.rightData.engine2Angle = 90 + 135;
+                                $scope.rightData.engine3Angle = 270 + 135 - 360;
+                                $scope.rightData.engine4Angle = 90 + 135;
+                            }
+                        }
+                        $scope.rightData.engine1Radius = Math.abs(gp.axes[1]) * 60;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                     }
                     else {
-                        //Rotate Rz
-                        if (gp.axes[5] <= 0) {
-                            $scope.rightData.engine1Angle = 270 + 135 - 360;
-                            $scope.rightData.engine2Angle = 270 + 135 - 360;
-                            $scope.rightData.engine3Angle = 90 + 135;
-                            $scope.rightData.engine4Angle = 90 + 135;
+                        if (!gp.buttons[1].pressed) {
+                            //Move up
+                            if (gp.axes[5] <= 0) {
+                                $scope.rightData.engine1Angle = 180 + 135;
+                                $scope.rightData.engine2Angle = 180 + 135;
+                                $scope.rightData.engine3Angle = 0 + 135;
+                                $scope.rightData.engine4Angle = 0 + 135;
+                            }
+                            //Move down
+                            else {
+                                $scope.rightData.engine1Angle = 0 + 135;
+                                $scope.rightData.engine2Angle = 0 + 135;
+                                $scope.rightData.engine3Angle = 180 + 135;
+                                $scope.rightData.engine4Angle = 180 + 135;
+                            }
                         }
-                        //Rotate -Rz
                         else {
-                            $scope.rightData.engine1Angle = 90 + 135;
-                            $scope.rightData.engine2Angle = 90 + 135;
-                            $scope.rightData.engine3Angle = 270 + 135 - 360;
-                            $scope.rightData.engine4Angle = 270 + 135 - 360;
+                            //Rotate Rz
+                            if (gp.axes[5] <= 0) {
+                                $scope.rightData.engine1Angle = 270 + 135 - 360;
+                                $scope.rightData.engine2Angle = 270 + 135 - 360;
+                                $scope.rightData.engine3Angle = 90 + 135;
+                                $scope.rightData.engine4Angle = 90 + 135;
+                            }
+                            //Rotate -Rz
+                            else {
+                                $scope.rightData.engine1Angle = 90 + 135;
+                                $scope.rightData.engine2Angle = 90 + 135;
+                                $scope.rightData.engine3Angle = 270 + 135 - 360;
+                                $scope.rightData.engine4Angle = 270 + 135 - 360;
+                            }
                         }
+                        $scope.rightData.engine1Radius = Math.abs(gp.axes[5]) * 60;
+                        $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
+                        $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                     }
-                    $scope.rightData.engine1Radius = Math.abs(gp.axes[5]) * 60;
-                    $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
-                    $scope.rightData.engine3Radius = $scope.rightData.engine1Radius;
-                    $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                 }
                 //Button 3 pressed => reduce pump power
                 if (gp.buttons[2].pressed && !button2Pressed) {
@@ -1241,14 +1280,19 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 else if (!gp.buttons[5].pressed) button5Pressed = false;
                 //Button 1 pressed => switch on pump + turbidity detection
                 if (gp.buttons[11].pressed) {
-                    $scope.leftData.pumpOn = true;
-                    if (!turbiColorActivated) {
-                        await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
-                        amountTurbi = 0;
-                        totalTurbi = 0;
-                        setTimeout(computeTurbidityRed, 500);
+                    if (gp.buttons[1].pressed) {
+                        if (!turbiColorActivated) {
+                            $scope.leftData.pumpOn = false;
+                            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
+                            amountTurbi = 0;
+                            totalTurbi = 0;
+                            setTimeout(computeTurbidityRed, 500);
+                        }
+                        turbiColorActivated = true;
                     }
-                    turbiColorActivated = true;
+                    else {
+                        $scope.leftData.pumpOn = true;
+                    }
                 }
                 //Button 1 released => switch off pump
                 else if (!gp.buttons[11].pressed) {
@@ -1709,14 +1753,19 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     function computeTemp(object, value) {
     }
     var amountTurbi = 0, totalTurbi = 0, turbidity = 1000.0, lastTurbi = 1000.0;
-    function computeKnobValue(object, value) {
+    async function computeTurbiValue(object, value) {
         totalTurbi = totalTurbi + parseInt(value);
         amountTurbi++;
         lastTurbi = parseInt(value);
     }
+    async function computeReedValue(object, value) {
+        console.log(value);
+        if (false) $scope.leftData.alarmGround = false;
+        else $scope.leftData.alarmGround = false;
+    }
     async function computeTurbidityRed() {
-        if (amountTurbi == 0) $scope.leftData.turbidityRed = (1 - lastTurbi / 1000.0)/3.0;
-        else $scope.leftData.turbidityRed = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
+        if (amountTurbi == 0) $scope.leftData.turbidityRed = (1 - lastTurbi / 1000.0) / 3.0;
+        else $scope.leftData.turbidityRed = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0) / 3.0;
         if (turbiColorActivated) {
             await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x00FF00);
             setTimeout(computeTurbidityGreen, 500);
@@ -1725,8 +1774,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
     }
     async function computeTurbidityGreen() {
-        if (amountTurbi == 0) $scope.leftData.turbidityGreen = (1 - lastTurbi / 1000.0)/3.0;
-        else $scope.leftData.turbidityGreen = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
+        if (amountTurbi == 0) $scope.leftData.turbidityGreen = (1 - lastTurbi / 1000.0) / 3.0;
+        else $scope.leftData.turbidityGreen = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0) / 3.0;
         if (turbiColorActivated) {
             await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x0000FF);
             setTimeout(computeTurbidityBlue, 500);
@@ -1735,8 +1784,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         else await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0x000000);
     }
     async function computeTurbidityBlue() {
-        if (amountTurbi == 0) $scope.leftData.turbidityBlue = (1 - lastTurbi / 1000.0)/3.0;
-        else $scope.leftData.turbidityBlue = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0)/3.0;
+        if (amountTurbi == 0) $scope.leftData.turbidityBlue = (1 - lastTurbi / 1000.0) / 3.0;
+        else $scope.leftData.turbidityBlue = (1 - parseFloat(totalTurbi) / amountTurbi / 1000.0) / 3.0;
         if (turbiColorActivated) {
             await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
             setTimeout(computeTurbidityRed, 500);
@@ -1832,7 +1881,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             }
             else if (va > 4 && va <= 5) {
                 sn = true;
-                isVa = true; 
+                isVa = true;
             }
             else {
                 fe = true;

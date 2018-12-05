@@ -1278,25 +1278,28 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }
                 //Button 6 released
                 else if (!gp.buttons[5].pressed) button5Pressed = false;
-                //Button 1 pressed => switch on pump + turbidity detection
+                //Button 1 pressed => switch on pump 
                 if (gp.buttons[11].pressed) {
-                    if (gp.buttons[1].pressed) {
-                        if (!turbiColorActivated) {
-                            $scope.leftData.pumpOn = false;
-                            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
-                            amountTurbi = 0;
-                            totalTurbi = 0;
-                            setTimeout(computeTurbidityRed, 500);
-                        }
-                        turbiColorActivated = true;
-                    }
-                    else {
-                        $scope.leftData.pumpOn = true;
-                    }
+                    $scope.leftData.pumpOn = false;
                 }
                 //Button 1 released => switch off pump
                 else if (!gp.buttons[11].pressed) {
                     $scope.leftData.pumpOn = false;
+                }
+                //Axis 9 => switch on turbidity
+                if (gp.axes[9].toFixed(2) == 0.14) {
+                    if (!turbiColorActivated) {
+                        if (bubblotYoctoModules.yColorLed_turbi) {
+                            await bubblotYoctoModules.yColorLed_turbi.set_rgbColor(0xFF0000);
+                            amountTurbi = 0;
+                            totalTurbi = 0;
+                            turbiColorActivated = true;
+                            setTimeout(computeTurbidityRed, 500);
+                        }
+                    }
+                }
+                //Axis 9 => switch off turbidity
+                else {
                     turbiColorActivated = false;
                 }
             }
@@ -1758,12 +1761,23 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         amountTurbi++;
         lastTurbi = parseInt(value);
     }
+    var timerReed = null;
     async function computeReedValue(object, value) {
-        if(value > 500){
-            $scope.leftData.alarmGround = false;
-            bubblotYoctoModules.yServo2_Thrust.set_position(parseFloat($scope.rightData.thrust)*2000-1000);
-        } 
-        else $scope.leftData.alarmGround = true;
+        if (value > 500) {
+            if ($scope.leftData.alarmGround) {
+                timerReed = setTimeout(function () {
+                    $scope.leftData.alarmGround = false;
+                    bubblotYoctoModules.yServo2_Thrust.set_position(parseFloat($scope.rightData.thrust) * 2000 - 1000);
+                }, 2000);
+            }
+        }
+        else {
+            $scope.leftData.alarmGround = true;
+            if (timer) {
+                clearTimeout(timerReed); 
+                timerReed = null;
+            }
+        }
     }
     async function computeTurbidityRed() {
         if (amountTurbi == 0) $scope.leftData.turbidityRed = (1 - lastTurbi / 1000.0) / 3.0;

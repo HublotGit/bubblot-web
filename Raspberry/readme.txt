@@ -49,20 +49,7 @@ static routers=192.168.1.1
 static domain_name_servers=192.168.1.1
 ######
 
-###Install yad### (no needed)
-1. Download and unpack from Sourceforge
-2. cd to yad directory
-3. sudo apt-get update && sudo apt-get upgrade
-4. sudo apt-get install intltool
-5. sudo apt-get install libgtk2.0-dev libwebkitgtk-1.0-0 libwebkitgtk-dev
-6. sudo autoreconf -ivf
-7. ./configure --enable-icon-browser
-8. make
-9. sudo make install
-10. Test
-######
-
-###Disable sleep mode###
+###Disable sleep mode + fix boot issue###
 -sudo nano /boot/config.txt
 -Add this line: 
 hdmi_blanking=1
@@ -73,6 +60,10 @@ hdmi_blanking=1
 @xset s noexpose
 @xset dpms 0 0 0
 -sudo reboot
+
+-sudo nano /boot/cmdline.txt
+-Add this line:
+fsck.repair=yes
 ######
 
 ###Install LCD-Touchscreen drivers###

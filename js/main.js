@@ -1133,6 +1133,37 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     $scope.rightData.engine4Radius = $scope.rightData.engine1Radius;
                     bubblotYoctoModules.yServo2_Thrust.set_position(-500);
                 }
+                //If no input regulation of roll and pitch
+                else if(Math.abs(gp.axes[0]) < 0.1 || Math.abs(gp.axes[1]) < 0.1 || Math.abs(gp.axes[5]) < 0.1){
+                    //Rotate Ry
+                    if (gp.axes[0] >= 0) {
+                        $scope.rightData.engine1Angle = 180 + 135;
+                        $scope.rightData.engine2Angle = 0 + 135;
+                        $scope.rightData.engine3Angle = 0 + 135;
+                        $scope.rightData.engine4Angle = 180 + 135;
+                    }
+                    //Rotate -Ry
+                    else {
+                        $scope.rightData.engine1Angle = 0 + 135;
+                        $scope.rightData.engine2Angle = 180 + 135;
+                        $scope.rightData.engine3Angle = 180 + 135;
+                        $scope.rightData.engine4Angle = 0 + 135;
+                    }
+                    //Rotate Rx
+                    if (gp.axes[1] <= 0) {
+                        $scope.rightData.engine1Angle = 90 + 135;
+                        $scope.rightData.engine2Angle = 270 + 135 - 360;
+                        $scope.rightData.engine3Angle = 90 + 135;
+                        $scope.rightData.engine4Angle = 270 + 135 - 360;
+                    }
+                    //Rotate -Rx 
+                    else {
+                        $scope.rightData.engine1Angle = 270 + 135 - 360;
+                        $scope.rightData.engine2Angle = 90 + 135;
+                        $scope.rightData.engine3Angle = 270 + 135 - 360;
+                        $scope.rightData.engine4Angle = 90 + 135;
+                    }
+                }
                 else {
                     //Get joystick position
                     if (Math.abs(gp.axes[0]) >= Math.abs(gp.axes[1]) && Math.abs(gp.axes[0]) >= Math.abs(gp.axes[5])) {
@@ -1156,7 +1187,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                             //Rotate Ry
                             if (gp.axes[0] >= 0) {
                                 $scope.rightData.engine1Angle = 180 + 135;
-                                $scope.rightData.engine2Angle = 0 + 135
+                                $scope.rightData.engine2Angle = 0 + 135;
                                 $scope.rightData.engine3Angle = 0 + 135;
                                 $scope.rightData.engine4Angle = 180 + 135;
                             }
@@ -1280,7 +1311,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 else if (!gp.buttons[5].pressed) button5Pressed = false;
                 //Button 1 pressed => switch on pump 
                 if (gp.buttons[11].pressed) {
-                    $scope.leftData.pumpOn = false;
+                    $scope.leftData.pumpOn = true;
                 }
                 //Button 1 released => switch off pump
                 else if (!gp.buttons[11].pressed) {
@@ -1762,7 +1793,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         lastTurbi = parseInt(value);
     }
     var timerReed = null;
+    //Reed relai to detect ground
     async function computeReedValue(object, value) {
+        //If no ground
         if (value > 500) {
             if ($scope.leftData.alarmGround) {
                 timerReed = setTimeout(function () {
@@ -1771,9 +1804,10 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                 }, 2000);
             }
         }
+        //If ground
         else {
             $scope.leftData.alarmGround = true;
-            if (timer) {
+            if (timerReed) {
                 clearTimeout(timerReed); 
                 timerReed = null;
             }

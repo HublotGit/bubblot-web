@@ -937,7 +937,7 @@
 
                     var number = DayNumber(i + 1);
                     day.appendChild(number);
-
+ 
                     days.appendChild(day);
                 }
                 mainSection.appendChild(days);
@@ -996,7 +996,7 @@
             }
 
             model ? this.Model = model : this.Model = {};
-            this.Today = new Date();
+            this.Today = new Date(2018,1);
 
             this.Selected = this.Today
             this.Today.Month = this.Today.getMonth();

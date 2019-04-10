@@ -33,6 +33,7 @@
     <script type="text/javascript" src="js/yocto_pwminput.js"></script>
     <script type="text/javascript" src="js/yocto_digitalio.js"></script>
     <script type="text/javascript" src="js/yocto_motor.js"></script>
+    <script type="text/javascript" src="js/yocto_quadraturedecoder.js"></script>
     <script type="text/javascript" src="js/yocto_datalogger.js"></script>
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/circle-progress.js"></script>
@@ -46,7 +47,7 @@
             var randomFillSync = require("crypto").randomFillSync;
             var fs = require('fs');
             var recordRTC = require('recordrtc');
-            //var SerialPort = require('serialport');
+            var SerialPort = require('serialport');
             var NodeCouchDb = require('node-couchdb');
             var http = require("http");
             var node_ssh = require('node-ssh');
@@ -184,7 +185,7 @@
         })
         //CouchDB instance of bubblot 1
         const couchBubblot1 = new NodeCouchDb({
-            host: '192.168.1.237', //IP address bubblot 1 192.168.1.1
+            host: 'localhost', //IP address bubblot 1 192.168.1.1
             protocol: 'http',
             port: 5984,
             auth: {

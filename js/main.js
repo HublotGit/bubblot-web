@@ -1050,11 +1050,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         $scope.$watch('rightData.ballastFill', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
                 if (value) {
-                    bubblotYoctoModules.yDigitalIO.set_bitState(4, 1);
+                    bubblotYoctoModules.yDigitalIO.set_bitState(3, 1);
                     //bubblotYoctoModules.yRelay_elecMagnet.set_state(true);
                 }
                 else {
-                    bubblotYoctoModules.yDigitalIO.set_bitState(4, 0);
+                    bubblotYoctoModules.yDigitalIO.set_bitState(3, 0);
                 }
             }
         });
@@ -1111,7 +1111,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             if ($scope.notifData.recData) intervalDataSave = setInterval(saveData, 2000);
             else clearInterval(intervalDataSave);
         });
-
     }
     var button11Pressed = false, button4Pressed = false, button2Pressed = false, button5Pressed = false, button3Pressed = false;
     //Loop function to get joystick values
@@ -1508,7 +1507,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     };
     function computeIO(object, value) {
         valueBin = ConvertBase.hex2bin(value[1]);
-        if ((valueBin & 0b0001) == 1) {
+        if ((valueBin & 0b0100) == 8) {
             $scope.rightData.ballastState = 0;
             $scope.rightData.ballastEmpty = false;
         }

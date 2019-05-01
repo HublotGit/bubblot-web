@@ -1,6 +1,8 @@
 <div id="camera" class="cadrans-container camera">
     <div class="cadran"></div>
-    <video class="cameraGear" autoplay loop></video>
+    <div class="canvasCamera">
+            <video class="cameraGear" autoplay loop></video>
+    </div>
     <div class="red-circle"  ng-class="{on: cameraRec}"></div>
     <div class="green-circle"  ng-class="{on: (!cameraRecMenu)}"></div>
     <div class="btn-rec"  ng-click="rec()"></div>

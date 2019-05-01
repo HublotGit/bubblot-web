@@ -194,10 +194,10 @@
             }
         });
         //Init winder user in the dataBase
-        var idWinder = "97c0b8bc9a05e0e65dbb3ae5f8000684";
+        var idWinder = "834ff7bebfa35ece5046ff7d0b0001cf";
         //idPerso: 0f14989011256516380f22bc5f003f2c
         //idZotac: 203dcd7303db8df08d50a660c8008ee7
-        var idPump = "97c0b8bc9a05e0e65dbb3ae5f8001c84";
+        var idPump = "834ff7bebfa35ece5046ff7d0b0012b5";
         //idPerso: 56ba23e46550745a92abf78d220043a5
         //idZotac: 203dcd7303db8df08d50a660c804f8a5
         var idBubblot = "1";
@@ -500,7 +500,7 @@
 
     <!-- Bubblot display -->
     <div id="bubblotDisplay">
-        <video src="img/video.webm" class="camera-bubblot" autoplay style="width:100%;height:100%;z-index: -10" loop></video>
+        <video src="img/video.webm" class="camera-bubblot" autoplay style="width:100%;height:100%;z-index: -10;display:none" loop></video>
         <!-- Background video for presentation -->
         <video src="img/video.webm" class="video-background" style="position: fixed; top:-100%; left:-50%; width:200%; height: 200%; display:none;"
             autoplay loop></video>
@@ -759,6 +759,18 @@
 
     <!-- Display and choose the media devices -->
     <script>
+        navigator.mediaDevices.enumerateDevices().then(function (devices) {
+            for(var i = 0; i < devices.length; i ++){
+                var device = devices[i];
+                if (device.kind === 'videoinput') {
+                    console.log(device.deviceId + " " + device.label);
+                    if (device.label === 'HD USB Camera (05a3:9230)') {
+                        window.videoCameraId = device.deviceId;
+                        console.log('Found Record Camera ');
+                    }
+                }
+            };
+        });
         /*
         MediaStreamTrack.getSources(function (sourceInfos) {
             var audioSource = null;
@@ -779,7 +791,6 @@
                 }
             }
         });
-        */
         var video = document.getElementsByClassName('camera-winder'),
             vendorURL = window.URL || window.webkitURL;
 
@@ -810,7 +821,7 @@
                 optional: [{ sourceId: "6ca878592677b703218e45bc18851900a811fb63058f3311ab636ec74e73c228" }]
             }
         };
-
+    */
         //navigator.getMedia(mediaConstraints, successCallback, errorCallback);
     </script>
 

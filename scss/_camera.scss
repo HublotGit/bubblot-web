@@ -14,10 +14,15 @@ $positionXBtnSmall: 42px;
       background-size: 229% 230%;
    }
 
-   .cameraGear{
-     width: 100%;
-     height:80%;
-     z-index: 0;
+   .canvasCamera{
+     z-index:0;
+     width:100%;
+     height: 100%;
+    .cameraGear{
+      width: 130%;
+      height:80%;
+      z-index: 0;
+    }
    }
 
    .red-circle{

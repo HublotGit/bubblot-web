@@ -69,8 +69,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         focusRightIndex: 0,
         positionClass: ["focus-right", "right-one", "right-two", "right-three", "right-four"],
         focusOrigClass: "right-five",
-        depth: 0.3,
-        security: 60,
+        depth: 0,
+        security: 0,
         securityAlert: false,
         ballastState: 50,
         ballastFill: false,
@@ -262,7 +262,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yColorLed_turbi: null,
         yAnButton_turbi: null,
         yRelay_elecMagnet: null,
-        yRelay_pump: null
+        yRelay_pump: null,
+        yPressure_Security: null,
+        yPressure_Depth: null,
     }
 
     var serialBubblot = {
@@ -275,7 +277,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yRelay: 'Yocto-Relay',
         yMotorDC: 'Yocto-Motor-DC',
         yColor: 'Yocto-Color',
-        yKnob: 'Yocto-Knob'
+        yKnob: 'Yocto-Knob',
+        yPressureSecurity: 'Yocto-Pressure2',
+        yPressureDepth: 'Yocto-Pressure1',
     }
 
     var pumpYoctoModules = {
@@ -347,8 +351,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         modules.yDigitalIO = YDigitalIO.FindDigitalIO(serials.yDigitalIO + ".digitalIO");
         if (await modules.yDigitalIO.isOnline()) {
             console.log('Using module ' + serials.yDigitalIO + ".digitalIO");
-            await modules.yDigitalIO.set_portDirection(0xF0); //Set 4 inputs (0,1,2,3) and 4 outputs (4,5,6,7)
-            await modules.yDigitalIO.set_portOpenDrain(0x0F); //Set 4 open drain (0,1,2,3) and 4 no open drain (4,5,6,7)
+            await modules.yDigitalIO.set_portDirection(0xF8); //Set 3 inputs (0,1,2) and 4 outputs (3,4,5,6,7)
+            await modules.yDigitalIO.set_portOpenDrain(0x07); //Set 3 open drain (0,1,2) and 4 no open drain (3,4,5,6,7)
             await modules.yDigitalIO.set_portPolarity(0x00);
             await modules.yDigitalIO.registerValueCallback(computeIO);
         }
@@ -383,46 +387,46 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             console.log("Can't find module " + serials.yServo1 + ".servo1");
         }
         //Servo motor 1 for top left propeller
-        modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo2");
+        modules.yServo1_VSPTopLeft_1 = YServo.FindServo(serials.yServo1 + ".servo3");
         if (await modules.yServo1_VSPTopLeft_1.isOnline()) {
-            console.log("Using module " + serials.yServo1 + ".servo2");
+            console.log("Using module " + serials.yServo1 + ".servo3");
             await modules.yServo1_VSPTopLeft_1.set_position(0);
-        }
-        else {
-            console.log("Can't find module " + serials.yServo1 + ".servo2");
-        }
-        //Servo motor 2 for top left propeller
-        modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo3");
-        if (await modules.yServo1_VSPTopLeft_2.isOnline()) {
-            console.log('Using module ' + serials.yServo1 + ".servo3");
-            await modules.yServo1_VSPTopLeft_2.set_position(0);
         }
         else {
             console.log("Can't find module " + serials.yServo1 + ".servo3");
         }
-        //Servo motor 1 for top right propeller
-        modules.yServo1_VSPTopRight_1 = YServo.FindServo(serials.yServo1 + ".servo4");
-        if (await modules.yServo1_VSPTopRight_1.isOnline()) {
-            console.log('Using module ' + serials.yServo1 + ".servo4");
-            await modules.yServo1_VSPTopRight_1.set_position(0);
+        //Servo motor 2 for top left propeller
+        modules.yServo1_VSPTopLeft_2 = YServo.FindServo(serials.yServo1 + ".servo2");
+        if (await modules.yServo1_VSPTopLeft_2.isOnline()) {
+            console.log('Using module ' + serials.yServo1 + ".servo2");
+            await modules.yServo1_VSPTopLeft_2.set_position(0);
         }
         else {
-            console.log("Can't find module " + serials.yServo1 + ".servo4");
+            console.log("Can't find module " + serials.yServo1 + ".servo2");
         }
-        //Servo motor 2 for top right propeller
-        modules.yServo1_VSPTopRight_2 = YServo.FindServo(serials.yServo1 + ".servo5");
-        if (await modules.yServo1_VSPTopRight_2.isOnline()) {
+        //Servo motor 1 for top right propeller
+        modules.yServo1_VSPTopRight_1 = YServo.FindServo(serials.yServo1 + ".servo5");
+        if (await modules.yServo1_VSPTopRight_1.isOnline()) {
             console.log('Using module ' + serials.yServo1 + ".servo5");
-            await modules.yServo1_VSPTopRight_2.set_position(0);
+            await modules.yServo1_VSPTopRight_1.set_position(0);
         }
         else {
             console.log("Can't find module " + serials.yServo1 + ".servo5");
         }
+        //Servo motor 2 for top right propeller
+        modules.yServo1_VSPTopRight_2 = YServo.FindServo(serials.yServo1 + ".servo4");
+        if (await modules.yServo1_VSPTopRight_2.isOnline()) {
+            console.log('Using module ' + serials.yServo1 + ".servo4");
+            await modules.yServo1_VSPTopRight_2.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo1 + ".servo4");
+        }
         //Connexion to servo 2 module 
         //Servo motor for thrust
-        modules.yServo2_Thrust = YServo.FindServo(serials.yServo2 + ".servo1");
+        modules.yServo2_Thrust = YServo.FindServo(serials.yServo3 + ".servo5");
         if (await modules.yServo2_Thrust.isOnline()) {
-            console.log('Using module ' + serials.yServo2 + ".servo1");
+            console.log('Using module ' + serials.yServo3 + ".servo5");
             //await modules.yServo2_Thrust.set_positionAtPowerOn(1000)
             //servoModule = await modules.yServo2_Thrust.get_module();
             //await servoModule.saveToFlash();
@@ -432,40 +436,40 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             console.log("Can't find module " + serials.yServo2 + ".servo1");
         }
         //Servo motor 1 for bottom left propeller
-        modules.yServo2_VSPBottomLeft_1 = YServo.FindServo(serials.yServo2 + ".servo2");
+        modules.yServo2_VSPBottomLeft_1 = YServo.FindServo(serials.yServo2 + ".servo3");
         if (await modules.yServo2_VSPBottomLeft_1.isOnline()) {
-            console.log("Using module " + serials.yServo1 + ".servo2");
+            console.log("Using module " + serials.yServo2 + ".servo3");
             await modules.yServo2_VSPBottomLeft_1.set_position(0);
-        }
-        else {
-            console.log("Can't find module " + serials.yServo2 + ".servo2");
-        }
-        //Servo motor 2 for bottom left propeller
-        modules.yServo2_VSPBottomLeft_2 = YServo.FindServo(serials.yServo2 + ".servo3");
-        if (await modules.yServo2_VSPBottomLeft_2.isOnline()) {
-            console.log('Using module ' + serials.yServo2 + ".servo3");
-            await modules.yServo2_VSPBottomLeft_2.set_position(0);
         }
         else {
             console.log("Can't find module " + serials.yServo2 + ".servo3");
         }
+        //Servo motor 2 for bottom left propeller
+        modules.yServo2_VSPBottomLeft_2 = YServo.FindServo(serials.yServo2 + ".servo2");
+        if (await modules.yServo2_VSPBottomLeft_2.isOnline()) {
+            console.log('Using module ' + serials.yServo2 + ".servo2");
+            await modules.yServo2_VSPBottomLeft_2.set_position(0);
+        }
+        else {
+            console.log("Can't find module " + serials.yServo2 + ".servo2");
+        }
         //Servo motor 1 for bottom right propeller
-        modules.yServo2_VSPBottomRight_1 = YServo.FindServo(serials.yServo2 + ".servo4");
+        modules.yServo2_VSPBottomRight_1 = YServo.FindServo(serials.yServo2 + ".servo5");
         if (await modules.yServo2_VSPBottomRight_1.isOnline()) {
-            console.log('Using module ' + serials.yServo2 + ".servo4");
+            console.log('Using module ' + serials.yServo2 + ".servo5");
             await modules.yServo2_VSPBottomRight_1.set_position(0);
         }
         else {
-            console.log("Can't find module " + serials.yServo1 + ".servo4");
+            console.log("Can't find module " + serials.yServo2 + ".servo5");
         }
         //Servo motor 2 for bottom right propeller
-        modules.yServo2_VSPBottomRight_2 = YServo.FindServo(serials.yServo2 + ".servo5");
+        modules.yServo2_VSPBottomRight_2 = YServo.FindServo(serials.yServo2 + ".servo4");
         if (await modules.yServo2_VSPBottomRight_2.isOnline()) {
-            console.log('Using module ' + serials.yServo2 + ".servo5");
+            console.log('Using module ' + serials.yServo2 + ".servo4");
             await modules.yServo2_VSPBottomRight_2.set_position(0);
         }
         else {
-            console.log("Can't find module " + serials.yServo2 + ".servo5");
+            console.log("Can't find module " + serials.yServo2 + ".servo4");
         }
         //Servo motor 3 volt amp
         modules.yServo3_VoltAmp = YServo.FindServo(serials.yServo3 + ".servo1");
@@ -503,6 +507,28 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         }
         else {
             console.log("Can't find module " + serials.yColor + ".colorLed1");
+        }
+        //Connexion to security pressure module
+        modules.yPressure_Security = YPressure.FindPressure(serials.yPressureSecurity + ".pressure");
+        if (await modules.yPressure_Security.isOnline()) {
+            console.log('Using module ' + serials.yPressureSecurity + ".pressure");
+            //modules.yPressure_Security.unmuteValueCallbacks()
+            modules.yPressure_Security.set_reportFrequency("1/s");
+            modules.yPressure_Security.registerTimedReportCallback(computePressureSecurity);
+        }
+        else {
+            console.log("Can't find module " + serials.yPressureSecurity + ".pressure");
+        }
+        //Connexion to depth pressure module
+        modules.yPressure_Depth = YPressure.FindPressure(serials.yPressureDepth + ".pressure");
+        if (await modules.yPressure_Depth.isOnline()) {
+            console.log('Using module ' + serials.yPressureDepth + ".pressure");
+            //modules.yPressure_Depth.unmuteValueCallbacks()
+            modules.yPressure_Depth.set_reportFrequency("1/s");
+            modules.yPressure_Depth.registerTimedReportCallback(computePressureDepth);
+        }
+        else {
+            console.log("Can't find module " + serials.yPressureDepth + ".pressure");
         }
     }
     async function connectYoctoPump(ipaddress, serials, modules) {
@@ -608,12 +634,12 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     var gamepadIndex = -1;
     async function init() {
         //Connect to Yocto module
-        //await connectYoctoBubblot("192.168.1.2", serialBubblot, bubblotYoctoModules);
+        await connectYoctoBubblot("192.168.1.4", serialBubblot, bubblotYoctoModules);
         //connectYoctoWinder("192.168.1.228", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);
-        await connectYoctoPump("localhost", serialPump, pumpYoctoModules);
+        //await connectYoctoPump("localhost", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
 
         //Connection to gampepad
@@ -925,14 +951,14 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         });
         $scope.$watch('rightData.spotlightSwitchOn', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
-                if (value) bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
-                else bubblotYoctoModules.yDigitalIO.set_bitState(6, 0);
+                if (value) bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
+                else bubblotYoctoModules.yDigitalIO.set_bitState(7, 0);
             }
         });
         $scope.$watch('rightData.foglightSwitchOn', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
-                if (value) bubblotYoctoModules.yDigitalIO.set_bitState(7, 1);
-                else bubblotYoctoModules.yDigitalIO.set_bitState(7, 0);
+                if (value) bubblotYoctoModules.yDigitalIO.set_bitState(6, 1);
+                else bubblotYoctoModules.yDigitalIO.set_bitState(6, 0);
             }
         });
         $scope.$watch('leftData.threeDAngle', function (value) {
@@ -1051,17 +1077,20 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             if (bubblotYoctoModules.yDigitalIO) {
                 if (value) {
                     bubblotYoctoModules.yDigitalIO.set_bitState(3, 1);
-                    //bubblotYoctoModules.yRelay_elecMagnet.set_state(true);
+                    bubblotYoctoModules.yRelay_elecMagnet.set_state(false);
+                    $scope.rightData.ballastState = 100;
                 }
                 else {
                     bubblotYoctoModules.yDigitalIO.set_bitState(3, 0);
+                    $scope.rightData.ballastState = 50;
                 }
             }
         });
         $scope.$watch('rightData.ballastEmpty', function (value) {
             if (bubblotYoctoModules.yDigitalIO) {
                 if (value) {
-                    //bubblotYoctoModules.yRelay_elecMagnet.set_state(false);
+                    bubblotYoctoModules.yRelay_elecMagnet.set_state(true);
+                    $scope.rightData.ballastState = 0;
                 }
                 else {
                 }
@@ -1136,35 +1165,51 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                         bubblotYoctoModules.yServo2_Thrust.set_position(-500);
                     }
                     //If no input regulation of roll and pitch
-                    else if (Math.abs(gp.axes[0]) < 0.2 && Math.abs(gp.axes[1]) < 0.2 && Math.abs(gp.axes[5]) < 0.2) {
-                        //Rotate Ry
-                        if (gp.axes[0] >= 0) {
-                            $scope.rightData.engine1Angle = 180 + 135;
-                            $scope.rightData.engine2Angle = 0 + 135;
-                            $scope.rightData.engine3Angle = 0 + 135;
-                            $scope.rightData.engine4Angle = 180 + 135;
+                    else if (Math.abs(gp.axes[0]) < 0.3 && Math.abs(gp.axes[1]) < 0.3 && Math.abs(gp.axes[5]) < 0.6) {
+                        if ($scope.leftDataPump.horizonRoll > $scope.leftDataPump.horizonPitch || $scope.leftDataPump.horizonRoll < $scope.leftDataPump.horizonPitch) {
+                            if ($scope.leftDataPump.horizonRoll > 0) {
+                                $scope.rightData.engine1Angle = 180 + 135;
+                                $scope.rightData.engine2Angle = 0 + 135;
+                                $scope.rightData.engine3Angle = 0 + 135;
+                                $scope.rightData.engine4Angle = 180 + 135;
+                            }
+                            else {
+                                $scope.rightData.engine1Angle = 0 + 135;
+                                $scope.rightData.engine2Angle = 180 + 135;
+                                $scope.rightData.engine3Angle = 180 + 135;
+                                $scope.rightData.engine4Angle = 0 + 135;
+                            }
+                            /*
+                            $scope.rightData.engine1Radius = $scope.leftDataPump.horizonRoll > 45 ? 60:$scope.leftDataPump.horizonRoll/45*60;
+                            $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                            $scope.rightData.engine3Radius = 0.5*$scope.rightData.engine1Radius;
+                            $scope.rightData.engine4Radius = 0.5*$scope.rightData.engine1Radius;
+                            */
                         }
-                        //Rotate -Ry
                         else {
-                            $scope.rightData.engine1Angle = 0 + 135;
-                            $scope.rightData.engine2Angle = 180 + 135;
-                            $scope.rightData.engine3Angle = 180 + 135;
-                            $scope.rightData.engine4Angle = 0 + 135;
+                            if ($scope.leftDataPump.horizonPitch > 0) {
+                                $scope.rightData.engine1Angle = 90 + 135;
+                                $scope.rightData.engine2Angle = 270 + 135 - 360;
+                                $scope.rightData.engine3Angle = 90 + 135;
+                                $scope.rightData.engine4Angle = 270 + 135 - 360;
+                            }
+                            else {
+                                $scope.rightData.engine1Angle = 270 + 135 - 360;
+                                $scope.rightData.engine2Angle = 90 + 135;
+                                $scope.rightData.engine3Angle = 270 + 135 - 360;
+                                $scope.rightData.engine4Angle = 90 + 135;
+                            }
+                            /*
+                            $scope.rightData.engine1Radius = $scope.leftDataPump.horizonPitch > 45 ? 60:$scope.leftDataPump.horizonPitch/45*60;
+                            $scope.rightData.engine2Radius = $scope.rightData.engine1Radius;
+                            $scope.rightData.engine3Radius = 0.5*$scope.rightData.engine1Radius;
+                            $scope.rightData.engine4Radius = 0.5*$scope.rightData.engine1Radius;
+                            */
                         }
-                        //Rotate Rx
-                        if (gp.axes[1] <= 0) {
-                            $scope.rightData.engine1Angle = 90 + 135;
-                            $scope.rightData.engine2Angle = 270 + 135 - 360;
-                            $scope.rightData.engine3Angle = 90 + 135;
-                            $scope.rightData.engine4Angle = 270 + 135 - 360;
-                        }
-                        //Rotate -Rx 
-                        else {
-                            $scope.rightData.engine1Angle = 270 + 135 - 360;
-                            $scope.rightData.engine2Angle = 90 + 135;
-                            $scope.rightData.engine3Angle = 270 + 135 - 360;
-                            $scope.rightData.engine4Angle = 90 + 135;
-                        }
+                        $scope.rightData.engine1Radius = 0;
+                        $scope.rightData.engine2Radius = 0;
+                        $scope.rightData.engine3Radius = 0;
+                        $scope.rightData.engine4Radius = 0;
                     }
                     else {
                         //Get joystick position
@@ -1369,8 +1414,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         VSP4Angle = $scope.rightData.engine4Angle;
         VSP1Radius = $scope.rightData.engine1Radius;
         VSP2Radius = $scope.rightData.engine2Radius;
-        VSP3Radius = $scope.rightData.engine3Radius;
-        VSP4Radius = $scope.rightData.engine4Radius;
+        VSP3Radius = 0.3 * $scope.rightData.engine3Radius;
+        VSP4Radius = 0.3 * $scope.rightData.engine4Radius;
 
         VSP1AngleServo1 = -VSP1Radius / 45 * 10 * (-5.553 * Math.pow(10, -10) * Math.pow(VSP1Angle, 5) + 5.675 * Math.pow(10, -7) * Math.pow(VSP1Angle, 4)
             - 1.915 * Math.pow(10, -4) * Math.pow(VSP1Angle, 3) + 2.169 * Math.pow(10, -2) * Math.pow(VSP1Angle, 2) - 1.610 * Math.pow(10, -1) * VSP1Angle
@@ -1422,9 +1467,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         if (bubblotYoctoModules.yServo2_VSPBottomRight_2) {
             await bubblotYoctoModules.yServo2_VSPBottomRight_2.set_position(Math.round(VSP4AngleServo2));
         }
-        if(pumpYoctoModules.yMotorDC_pumpDirection){
+        if (pumpYoctoModules.yMotorDC_pumpDirection) {
             await pumpYoctoModules.yMotorDC_pumpDirection.set_drivingForce(($scope.rightDataPump.pulsesDirectionInput - $scope.rightDataPump.pulsesDirectionMeasured) / 8000 * 80);
-        } 
+        }
         setTimeout(gamepadLoop, 200);
     }
 
@@ -1508,15 +1553,15 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     function computeIO(object, value) {
         valueBin = ConvertBase.hex2bin(value[1]);
         if ((valueBin & 0b0100) == 8) {
-            $scope.rightData.ballastState = 0;
-            $scope.rightData.ballastEmpty = false;
+            //$scope.rightData.ballastState = 0;
+            //$scope.rightData.ballastEmpty = false;
         }
         else if ((valueBin & 0b0010) == 2) {
-            $scope.rightData.ballastState = 100;
-            $scope.rightData.ballastFill = false;
+            //$scope.rightData.ballastState = 100;
+            //$scope.rightData.ballastFill = false;
         }
         else {
-            $scope.rightData.ballastState = 50;
+            //$scope.rightData.ballastState = 50;
         }
         $scope.$apply();
     }
@@ -1553,6 +1598,28 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
     }
     function computeEncoder(object, value) {
         $scope.rightDataPump.pulsesDirectionMeasured = value;
+    }
+    function computePressureSecurity(object, YMeasure) {
+        $scope.rightData.security = ((YMeasure._avgVal / 1000 - 1)) / 0.1 * 100;
+        if ($scope.rightData.security > 100) $scope.rightData.security = 100;
+        else if ($scope.rightData.security < 0) $scope.rightData.security = 0;
+        $scope.$apply();
+        /*
+        if(YMeasure._avgVal/1000 - ($scope.rightData.depth*12 + 1) > 0.4) $scope.rightData.security = 100;
+        else if(YMeasure._avgVal/1000 - ($scope.rightData.depth*12 + 1) < 0.2) $scope.rightData.security = 0;
+        else $scope.rightData.security = (YMeasure._avgVal/1000 - ($scope.rightData.depth*12 + 1)-0.2)/0.2*100;
+        $scope.$apply();
+        */
+    }
+    function computePressureDepth(object, YMeasure) {
+        /*
+        if(YMeasure._avgVal < 1000) $scope.rightData.depth = 0;
+        else $scope.rightData.depth = (YMeasure._avgVal/1000 - 1)/12;
+        */
+        $scope.rightData.depth = ((YMeasure._avgVal / 1000 - 1))/0.1;
+        if ($scope.rightData.depth > 1) $scope.rightData.depth = 1;
+        else if ($scope.rightData.depth < 0) $scope.rightData.depth = 0;
+        $scope.$apply();
     }
     function computeLatitude(object, value) {
     }

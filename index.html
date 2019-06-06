@@ -33,6 +33,7 @@
     <script type="text/javascript" src="js/yocto_pwminput.js"></script>
     <script type="text/javascript" src="js/yocto_digitalio.js"></script>
     <script type="text/javascript" src="js/yocto_motor.js"></script>
+    <script type="text/javascript" src="js/yocto_pressure.js"></script>
     <script type="text/javascript" src="js/yocto_quadraturedecoder.js"></script>
     <script type="text/javascript" src="js/yocto_datalogger.js"></script>
     <script type="text/javascript" src="js/jquery.js"></script>
@@ -500,7 +501,7 @@
 
     <!-- Bubblot display -->
     <div id="bubblotDisplay">
-        <video src="img/video.webm" class="camera-bubblot" autoplay style="width:100%;height:100%;z-index: -10;display:none" loop></video>
+        <video src="img/video.webm" class="camera-bubblot" autoplay style="width:100%;height:100%;z-index: -10;display:blok" loop></video>
         <!-- Background video for presentation -->
         <video src="img/video.webm" class="video-background" style="position: fixed; top:-100%; left:-50%; width:200%; height: 200%; display:none;"
             autoplay loop></video>
@@ -711,22 +712,26 @@
         //Presentation mode
         shortcut.add("ctrl+2", function () {
             var cameraPump = document.getElementsByClassName('camera-pump');
-            var cameraBubblot = document.getElementsByClassName('camera-bubblot');
-            var videoBackground = document.getElementsByClassName('video-background');
+            //var cameraBubblot = document.getElementsByClassName('camera-bubblot');
+            //var videoBackground = document.getElementsByClassName('video-background');
             var fondMarin = document.getElementsByClassName('fond-marin');
             var fondMarin2 = document.getElementsByClassName('fond-marin2');
             for (var i = 0; i < cameraPump.length; i++) {
                 cameraPump[i].style.display = 'none';
             }
+            /*
             for (var i = 0; i < cameraBubblot.length; i++) {
                 cameraBubblot[i].style.display = 'none';
             }
+            */
             for (var i = 0; i < fondMarin2.length; i++) {
                 fondMarin2[i].style.display = 'none';
             }
+            /*
             for (var i = 0; i < videoBackground.length; i++) {
                 videoBackground[i].style.display = 'block';
             }
+            */
             for (var i = 0; i < fondMarin.length; i++) {
                 fondMarin[i].style = "transform: scale3d(1,1,1) translate3d(0, 0, 0);";
             }
@@ -735,19 +740,23 @@
         //3D mode
         shortcut.add("ctrl+3", function () {
             var cameraPump = document.getElementsByClassName('camera-pump');
-            var cameraBubblot = document.getElementsByClassName('camera-bubblot');
-            var videoBackground = document.getElementsByClassName('video-background');
+            //var cameraBubblot = document.getElementsByClassName('camera-bubblot');
+            //var videoBackground = document.getElementsByClassName('video-background');
             var fondMarin = document.getElementsByClassName('fond-marin');
             var fondMarin2 = document.getElementsByClassName('fond-marin2');
+            /*
             for (var i = 0; i < videoBackground.length; i++) {
                 videoBackground[i].style.display = 'none';
             }
+            */
             for (var i = 0; i < cameraPump.length; i++) {
                 cameraPump[i].style.display = 'block';
             }
+            /*
             for (var i = 0; i < cameraBubblot.length; i++) {
                 cameraBubblot[i].style.display = 'block';
             }
+            */
             for (var i = 0; i < fondMarin2.length; i++) {
                 fondMarin2[i].style.display = 'block';
             }

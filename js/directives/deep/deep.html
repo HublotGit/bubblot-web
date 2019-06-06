@@ -9,7 +9,7 @@
         <div class="progress-bar" id="progress-bar-spot-ballast"></div>
         <div class="indicateur" style="background: yellow; top: {{100-ballastState}}%;"></div>
     </div>
-    <div class="btn-ballast up" ng-click="ballastFill = true;ballastEmpty = false"></div>
+    <div class="btn-ballast up" ng-click="ballastFill = !ballastFill;ballastEmpty = false"></div>
     <div class="btn-ballast down" ng-click="ballastEmpty = true;ballastFill = false;"></div>
     <div class="led-security" ng-class="{error:securityAlert}">S </div>
     <circle-progress value="depth" circle-size="circleSize" circle-thickness="circleThickness" circle-ratio="0.75" circle-color=0 />

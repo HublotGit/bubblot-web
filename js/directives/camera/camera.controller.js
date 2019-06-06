@@ -11,11 +11,12 @@
             record, recordedVideo = "", recordedObject = "",
             date = new Date(), month, minutes, fileName;
 
+        /*
         navigator.getMedia = navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
             navigator.mozWetUserMedia ||
             navigator.msGetUserMedia;
-
+        */
         function successCallback(stream) {
             var options = {
                 mimeType: 'video/webm\;codecs=h264',
@@ -36,7 +37,7 @@
         };
 
 
-        setTimeout(() => { navigator.getMedia(mediaConstraints, successCallback, errorCallback); }, 5000);
+        navigator.getUserMedia(mediaConstraints, successCallback, errorCallback);
 
         $scope.rec = function () {
             if ($scope.cameraRecMenu == false) {

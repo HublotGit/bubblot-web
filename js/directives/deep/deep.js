@@ -16,12 +16,6 @@
                 scope.$watch('security', function (value) {
                     scope.checkSecurity(value);
                 });
-                scope.$watch('ballastFill', function (value) {
-                    if(value) scope.ballastEmpty = false;
-                });
-                scope.$watch('ballastEmpty', function (value) {
-                    if(value) scope.ballastFill = false;
-                });
             }
         }
     }

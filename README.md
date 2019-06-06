@@ -10,5 +10,4 @@
 - npm rebuild --build-from-source serialport
 
 
-
- 
+ Licence VirutalHere: 0000000016a7b442,0,MCICDwCEh+92Qc5b3ig755AqMwIPAIxhhL6W8XSpxZEhZUxT

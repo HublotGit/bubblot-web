@@ -12,8 +12,16 @@
             controller: 'nozeCtrl',
             controllerAs: 'vm',
             scope: {
-                circleSize: '=', circleThickness: '=', turbidityRed: '=',turbidityGreen: '=',turbidityBlue: '=',magnetism: '='
+                circleSize: '=', circleThickness: '=', turbidityRed: '=',turbidityGreen: '=',turbidityBlue: '=',magnetism: '=', magnetismXaxis:'=', magnetismYaxis:'='
             },
+            link: function(scope, element, attr) {  
+                scope.$watch('magnetismXaxis', function () {
+                    scope.updateMagnetism();
+                });  
+                scope.$watch('magnetismYaxis', function () {
+                    scope.updateMagnetism();
+                });   
+            }
         }
     }
 } ());

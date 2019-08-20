@@ -56,6 +56,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         turbidityBlue: 0,
         turbidityGreen: 0,
         magnetism: 0.5,
+        magnetismXaxis: 0,
+        magnetismYaxis: 0,
         alarmGround: false,
         computeVa: false,
         vaData: [],
@@ -101,7 +103,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         cameraRec: false,
         cameraRecMenu: true,
         cameraPlay: false,
-        help: false
+        help: false,
+        sonarDistance: 100,
     };
     $scope.leftDataPump = {
         focusLeftIndex: 0,
@@ -260,7 +263,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         yServo2_VSPBottomRight_2: null,
         yMotorDC_pump: null,
         yColorLed_turbi: null,
-        yAnButton_turbi: null,
+        yKnob_turbi: null,
+        yKnob_sonar: null,
         yRelay_elecMagnet: null,
         yRelay_pump: null,
         yPressure_Security: null,
@@ -482,22 +486,31 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         }
         //Connexion to knob module
         //Turbidity detection
-        modules.yAnButton_turbi = YAnButton.FindAnButton(serials.yKnob + ".anButton5");
-        if (await modules.yAnButton_turbi.isOnline()) {
+        modules.yKnob_turbi = YAnButton.FindAnButton(serials.yKnob + ".anButton5");
+        if (await modules.yKnob_turbi.isOnline()) {
             console.log('Using module ' + serials.yKnob + ".anButton5");
-            await modules.yAnButton_turbi.registerValueCallback(computeTurbiValue);
+            await modules.yKnob_turbi.registerValueCallback(computeTurbiValue);
         }
         else {
             console.log("Can't find module " + serials.yKnob + ".anButton5");
         }
-        //Reed relai for ground detection 
+        //Depth detection
+        modules.yKnob_sonar = YAnButton.FindAnButton(serials.yKnob + ".anButton1");
+        if (await modules.yKnob_sonar.isOnline()) {
+            console.log('Using module ' + serials.yKnob + ".anButton1");
+            //modules.yKnob_sonar.registerValueCallback(computeSonarValue);
+        }
+        else {
+            console.log("Can't find module " + serials.yKnob + ".anButton1");
+        }
+        //Reed relay for ground detection 
         modules.yAnButton_reed = YAnButton.FindAnButton(serials.yKnob + ".anButton4");
         if (await modules.yAnButton_reed.isOnline()) {
             console.log('Using module ' + serials.yKnob + ".anButton4");
             await modules.yAnButton_reed.registerValueCallback(computeReedValue);
         }
         else {
-            console.log("Can't find module " + serials.yKnob + ".anButton5");
+            console.log("Can't find module " + serials.yKnob + ".anButton4");
         }
         //Connexion to color module
         modules.yColorLed_turbi = YColorLed.FindColorLed(serials.yColor + ".colorLed1");
@@ -626,21 +639,26 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         baudRate: 115200,
         dataBits: 8,
         parity: 'none',
-        stopBits: 1
+        stopBits: 1,
     };
-    //Open serialport for DropSens sensor
+    //Create serialport for DropSens sensor
     var serialPort = new SerialPort('COM9', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
+    //Create serialport for Arduino
+    var serialArduino = new SerialPort('COM6', serialPortOpenOptions, function (err) { if (err) console.error('Error opening port'); });
+    //Create parser to readline on Arduino
+    var arduinoParser = serialArduino.pipe(new Readline({ delimiter: '\n' }));
     var previousWinderSpeed1 = 0, previousWinderSpeed2 = 0, switchWinderDirection1 = false, stopWinderTime, stopWinderOk = true, winderDirection1 = true;
     var gamepadIndex = -1;
     async function init() {
         //Connect to Yocto module
-        await connectYoctoBubblot("192.168.1.4", serialBubblot, bubblotYoctoModules);
+        await connectYoctoBubblot("localhost", serialBubblot, bubblotYoctoModules);
         //connectYoctoWinder("192.168.1.228", serialWinder, winderYoctoModules);
         //connectYoctoWinder2("192.168.2.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder3("192.168.3.4", serialWinder, winderYoctoModules);
         //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);
         //await connectYoctoPump("localhost", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
+        setInterval(computeSonarValue, 250);
 
         //Connection to gampepad
         window.addEventListener("gamepadconnected", function (e) {
@@ -731,6 +749,29 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
                     packageTransmitted = 0;
                     $scope.leftData.computeVa = false;
                 }
+            }
+        });
+        //Callback for Arduino port 
+        serialArduino.on('open', function () {
+            console.log("Arduino Micro Connected");
+        });
+        var indexArduino = -1;
+        //Callback for Arduino Data
+        arduinoParser.on('data', function (data) {
+            //Start signal
+            if(data.charCodeAt(0) == 38){
+                indexArduino=0;
+            }
+            //Read X value of magnetism
+            else if(indexArduino == 0){
+                $scope.leftData.magnetismXaxis = data/10.0;
+                indexArduino++;
+            }
+            //Read Y value of magnetism
+            else if(indexArduino == 1){
+                $scope.leftData.magnetismYaxis = data/10.0;
+                $scope.$apply();
+                indexArduino=0;
             }
         });
         //Compute measurement for DropSens sensor
@@ -1616,7 +1657,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         if(YMeasure._avgVal < 1000) $scope.rightData.depth = 0;
         else $scope.rightData.depth = (YMeasure._avgVal/1000 - 1)/12;
         */
-        $scope.rightData.depth = ((YMeasure._avgVal / 1000 - 1))/0.1;
+        $scope.rightData.depth = ((YMeasure._avgVal / 1000 - 1)) / 0.1;
         if ($scope.rightData.depth > 1) $scope.rightData.depth = 1;
         else if ($scope.rightData.depth < 0) $scope.rightData.depth = 0;
         $scope.$apply();
@@ -1630,6 +1671,12 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         totalTurbi = totalTurbi + parseInt(value);
         amountTurbi++;
         lastTurbi = parseInt(value);
+    }
+    function computeSonarValue() {
+        bubblotYoctoModules.yKnob_sonar.get_advertisedValue().then((value) => {
+            $scope.rightData.sonarDistance = value / 10;
+            $scope.$apply();
+        });
     }
     var timerReed = null;
     //Reed relai to detect ground

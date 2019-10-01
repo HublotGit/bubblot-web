@@ -56,8 +56,8 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         turbidityBlue: 0,
         turbidityGreen: 0,
         magnetism: 0.5,
-        magnetismXaxis: 0,
-        magnetismYaxis: 0,
+        magnetismXaxis: 30,
+        magnetismYaxis: 50,
         alarmGround: false,
         computeVa: false,
         vaData: [],
@@ -72,9 +72,9 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         positionClass: ["focus-right", "right-one", "right-two", "right-three", "right-four"],
         focusOrigClass: "right-five",
         depth: 0,
-        security: 0,
+        security: 90,
         securityAlert: false,
-        ballastState: 50,
+        ballastState: 70,
         ballastFill: false,
         ballastEmpty: false,
         thrust: 0,
@@ -658,7 +658,7 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         //connectYoctoWinder4("192.168.4.4", serialWinder, winderYoctoModules);
         //await connectYoctoPump("localhost", serialPump, pumpYoctoModules);
         setInterval(computeWinderLength, 1000);
-        setInterval(computeSonarValue, 250);
+        //setInterval(computeSonarValue, 250);
 
         //Connection to gampepad
         window.addEventListener("gamepadconnected", function (e) {
@@ -770,6 +770,11 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
             //Read Y value of magnetism
             else if(indexArduino == 1){
                 $scope.leftData.magnetismYaxis = data/10.0;
+                indexArduino++;
+            }
+            //Read sonar value
+            else if(indexArduino == 2){
+                $scope.rightData.sonarDistance = (10000-data)/92.0;
                 $scope.$apply();
                 indexArduino=0;
             }
@@ -1671,12 +1676,6 @@ angular.module('bubblot', []).controller('mainController', ['$scope', '$element'
         totalTurbi = totalTurbi + parseInt(value);
         amountTurbi++;
         lastTurbi = parseInt(value);
-    }
-    function computeSonarValue() {
-        bubblotYoctoModules.yKnob_sonar.get_advertisedValue().then((value) => {
-            $scope.rightData.sonarDistance = value / 10;
-            $scope.$apply();
-        });
     }
     var timerReed = null;
     //Reed relai to detect ground

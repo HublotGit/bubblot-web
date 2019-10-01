@@ -6,6 +6,8 @@
 
     function deepCtrl($scope, $element) {
         var vm = this;
+        $scope.updateSonarDistance = function(value){
+        }
         $scope.checkSecurity  = function () {
             if($scope.security>90 || $scope.security<10){
                 //$scope.securityAlert = true;
